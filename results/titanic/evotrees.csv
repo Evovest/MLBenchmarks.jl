@@ -1,0 +1,3 @@
+best_nround,L2,tree_type,metric,max_depth,eta,accuracy,model_type,rowsample,logloss,nbins,train_time,nrounds,loss,colsample,early_stopping_rounds
+448,10,binary,logloss,5,0.05,0.835820895522388,evotrees,0.75,0.40112138,64,0.4372789,500,logloss,0.6,5
+494,10,binary,logloss,7,0.05,0.7985074626865671,evotrees,0.25,0.41103366,64,0.5534543,500,logloss,0.6,5

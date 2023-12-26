@@ -1,19 +1,6 @@
+using MLBenchmarks
 
-abstract type Data{T} end
-
-Data{:allo}
-
-
-function load_data(::Type{Data{:salut}})
-    return 2
-end
-
-load_data(Data{:salut})
-
-
-# function load_data(::Allo{:salut})
-#     return 1
-# end
+load_data(:year)
 
 function load_data(x::Symbol)
     data = load_data(Data{x})

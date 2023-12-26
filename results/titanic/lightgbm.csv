@@ -1,0 +1,3 @@
+model_type,train_time,logloss,accuracy,num_class,best_nround,feature_fraction,metric,learning_rate,min_data_in_leaf,objective,num_iterations,early_stopping_round,lambda_l2,num_leaves,bagging_fraction,max_bin
+lightgbm,1.8531306,0.6429134905672055,0.835820895522388,1,0,0.9,"[""logloss""]",0.1,1,binary,500,5,1,2048,0.3,64
+lightgbm,0.6264918,0.38438792828105695,0.8656716417910447,1,0,0.5,"[""logloss""]",0.1,1,binary,500,5,10,512,0.6,64

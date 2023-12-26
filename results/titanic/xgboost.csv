@@ -1,0 +1,3 @@
+eval_metric,best_nround,colsample_bytree,max_depth,lambda,eta,accuracy,objective,model_type,tree_method,logloss,subsample,train_time,num_round,early_stopping_rounds,max_bin
+logloss,59,0.6,6,0,0.05,0.8283582089552238,reg:logistic,xgboost,hist,0.41907576,0.25,0.3050437,500,5,64
+logloss,167,0.4,10,10,0.05,0.7910447761194029,reg:logistic,xgboost,hist,0.46030885,0.25,0.6006631,500,5,64
