@@ -1,6 +1,7 @@
 function get_hyper_neurotrees(;
     loss="mse",
     metric="mse",
+    device="gpu",
     tree_type="base",
     early_stopping_rounds=5,
     nrounds=500,
@@ -22,6 +23,7 @@ function get_hyper_neurotrees(;
         hyper = Dict(
             :loss => loss,
             :metric => metric,
+            :device => device,
             :early_stopping_rounds => early_stopping_rounds,
             :tree_type => tree_type,
             :nrounds => nrounds,

@@ -10,6 +10,7 @@ function get_hyper_xgboost(;
     colsample_bytree=0.5,
     max_bin=64,
     lambda=1,
+    num_class=0,
 )
 
     # tunable = [:eta, :max_depth, :subsample, :colsample_bytree, :lambda, :max_bin]
@@ -28,7 +29,8 @@ function get_hyper_xgboost(;
             :subsample => _subsample,
             :colsample_bytree => _colsample_bytree,
             :lambda => _lambda,
-            :max_bin => _max_bin
+            :max_bin => _max_bin,
+            :num_class => num_class,
         )
 
         push!(hyper_list, hyper)

@@ -10,11 +10,11 @@ import NeuroTrees
 import EvoTrees
 import XGBoost
 import LightGBM
-import CatBoost
+# import CatBoost
 
 data = load_data(:titanic)
 result_vars = [:model_type, :train_time, :logloss, :accuracy]
-hyper_size = 2
+hyper_size = 16
 
 ################################
 # NeuroTrees
@@ -26,17 +26,19 @@ feature_names = data[:feature_names]
 target_name = data[:target_name]
 batchsize = min(4096, ceil(Int, 0.5 * nrow(dtrain)))
 
-hyper_list = MLBenchmarks.get_hyper_neurotrees(; loss="logloss", metric="logloss", nrounds=500, lr=[1e-3, 3e-4], wd=0.0, stack_size=[1, 2, 3], boosting_size=[1, 3], depth=[4, 5], hidden_size=[8, 16, 32], early_stopping_rounds=2, batchsize)
+hyper_list = MLBenchmarks.get_hyper_neurotrees(; loss="logloss", metric="logloss", tree_type="base", device="gpu", nrounds=500, lr=[1e-2, 3e-3], wd=0.0, stack_size=[1, 2, 3], boosting_size=[1], depth=[4, 5], hidden_size=[8, 16, 32], early_stopping_rounds=2, batchsize)
 hyper_list = sample(hyper_list, hyper_size, replace=false)
 
 results = Dict{Symbol,Any}[]
 for (i, hyper) in enumerate(hyper_list)
+    @info "iter $i"
     config = NeuroTrees.NeuroTreeRegressor(; hyper...)
-    train_time = @elapsed m, logger = NeuroTrees.fit(config, dtrain; deval, feature_names, target_name, metric=hyper[:metric], return_logger=true)
-    p_test = NeuroTrees.infer(m, dtest)
+    train_time = @elapsed m, logger = NeuroTrees.fit(config, dtrain; deval, feature_names, target_name, metric=hyper[:metric], early_stopping_rounds=hyper[:early_stopping_rounds], print_every_n=10, return_logger=true)
+    dinfer = NeuroTrees.get_df_loader_infer(dtest; feature_names, batchsize=config.batchsize, device=config.device)
+    p_test = NeuroTrees.infer(m, dinfer)
     _logloss = logloss(p_test, data[:dtest][:, data[:target_name]])
     _accuracy = accuracy(p_test, data[:dtest][:, data[:target_name]])
-    res = Dict(:model_type => "neurotrees", :train_time => train_time, :best_nround => logger[:best_iter], :logloss => _logloss, :accuracy => _accuracy)
+    res = Dict(:model_type => "neurotrees", :train_time => train_time, :best_nround => logger[:best_iter], :logloss => _logloss, :accuracy => _accuracy, hyper...)
     push!(results, res)
 end
 results_df = DataFrame(results)
@@ -52,13 +54,13 @@ dtest = data[:dtest]
 feature_names = data[:feature_names]
 target_name = data[:target_name]
 
-hyper_list = MLBenchmarks.get_hyper_evotrees(loss="logloss", metric="logloss", nrounds=500, eta=0.05, max_depth=5:2:11, rowsample=[0.25, 0.5, 0.75, 1.0], colsample=[0.4, 0.6, 0.8, 1.0], L2=[0, 1, 10])
+hyper_list = MLBenchmarks.get_hyper_evotrees(loss="logloss", metric="logloss", nrounds=500, early_stopping_rounds=5, eta=0.05, max_depth=5:2:11, rowsample=[0.25, 0.5, 0.75, 1.0], colsample=[0.4, 0.6, 0.8, 1.0], L2=[0, 1, 10])
 hyper_list = sample(hyper_list, hyper_size, replace=false)
 
 results = Dict{Symbol,Any}[]
 for (i, hyper) in enumerate(hyper_list)
     config = EvoTrees.EvoTreeRegressor(; hyper...)
-    train_time = @elapsed m, logger = EvoTrees.fit_evotree(config, dtrain; deval, fnames=feature_names, target_name, metric=hyper[:metric], return_logger=true)
+    train_time = @elapsed m, logger = EvoTrees.fit_evotree(config, dtrain; deval, fnames=feature_names, target_name, metric=hyper[:metric], early_stopping_rounds=hyper[:early_stopping_rounds], print_every_n=10, return_logger=true)
     p_test = EvoTrees.predict(m, dtest)
     _logloss = logloss(p_test, data[:dtest][:, data[:target_name]])
     _accuracy = accuracy(p_test, data[:dtest][:, data[:target_name]])
@@ -120,28 +122,24 @@ CSV.write(joinpath("results", "titanic", "lightgbm.csv"), results_df)
 ################################
 # CatBoost
 ################################
-using PythonCall
-dtrain = CatBoost.Pool(data[:dtrain][:, data[:feature_names]], label=PyList(data[:dtrain][:, data[:target_name]]))
-deval = CatBoost.Pool(data[:deval][:, data[:feature_names]], label=PyList(data[:deval][:, data[:target_name]]))
-dtest = CatBoost.Pool(data[:dtest][:, data[:feature_names]])
+# using PythonCall
+# dtrain = CatBoost.Pool(data[:dtrain][:, data[:feature_names]], label=PyList(data[:dtrain][:, data[:target_name]]))
+# deval = CatBoost.Pool(data[:deval][:, data[:feature_names]], label=PyList(data[:deval][:, data[:target_name]]))
+# dtest = CatBoost.Pool(data[:dtest][:, data[:feature_names]])
 
-hyper_list = MLBenchmarks.get_hyper_catboost(objective="Logloss", eval_metric="Logloss", iterations=500, early_stopping_rounds=5, learning_rate=0.1, max_depth=5:3:11, subsample=[0.3, 0.6, 0.9], rsm=[0.5, 0.9], reg_lambda=[0, 1, 10])
-hyper_list = sample(hyper_list, hyper_size, replace=false)
+# hyper_list = MLBenchmarks.get_hyper_catboost(objective="Logloss", eval_metric="Logloss", iterations=500, early_stopping_rounds=5, learning_rate=0.1, max_depth=5:3:11, subsample=[0.3, 0.6, 0.9], rsm=[0.5, 0.9], reg_lambda=[0, 1, 10])
+# hyper_list = sample(hyper_list, hyper_size, replace=false)
 
-# model = CatBoostClassifier(; hyper_list[1]...)
-# res = CatBoost.fit!(model, dtrain; eval_set=eval_pool)
-# p_test = CatBoost.predict(model, dtest; prediction_type="Probability")[:, 2]
-
-results = Dict{Symbol,Any}[]
-for (i, hyper) in enumerate(hyper_list)
-    model = CatBoost.CatBoostClassifier(; hyper...)
-    train_time = @elapsed res = CatBoost.fit!(model, dtrain; eval_set=deval)
-    p_test = CatBoost.predict(model, dtest; prediction_type="Probability")[:, 2]
-    _logloss = logloss(p_test, data[:dtest][:, data[:target_name]])
-    _accuracy = accuracy(p_test, data[:dtest][:, data[:target_name]])
-    res = Dict(:model_type => "catboost", :train_time => train_time, :best_nround => pyconvert(Int, res.best_iteration_), :logloss => _logloss, :accuracy => _accuracy, hyper...)
-    push!(results, res)
-end
-results_df = DataFrame(results)
-select!(results_df, result_vars, Not(result_vars))
-CSV.write(joinpath("results", "titanic", "catboost.csv"), results_df)
+# results = Dict{Symbol,Any}[]
+# for (i, hyper) in enumerate(hyper_list)
+#     model = CatBoost.CatBoostClassifier(; hyper...)
+#     train_time = @elapsed res = CatBoost.fit!(model, dtrain; eval_set=deval)
+#     p_test = CatBoost.predict(model, dtest; prediction_type="Probability")[:, 2]
+#     _logloss = logloss(p_test, data[:dtest][:, data[:target_name]])
+#     _accuracy = accuracy(p_test, data[:dtest][:, data[:target_name]])
+#     res = Dict(:model_type => "catboost", :train_time => train_time, :best_nround => pyconvert(Int, res.best_iteration_), :logloss => _logloss, :accuracy => _accuracy, hyper...)
+#     push!(results, res)
+# end
+# results_df = DataFrame(results)
+# select!(results_df, result_vars, Not(result_vars))
+# CSV.write(joinpath("results", "titanic", "catboost.csv"), results_df)

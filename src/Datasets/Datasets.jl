@@ -18,7 +18,7 @@ export load_data
 const aws_creds = AWSCredentials(ENV["AWS_ACCESS_KEY_ID_JDB"], ENV["AWS_SECRET_ACCESS_KEY_JDB"])
 const aws_config = AWSConfig(; creds=aws_creds, region="ca-central-1")
 
-dataset_list = [:year, :higgs, :yahoo_ltrc, :msrank, :titanic]
+dataset_list = [:year, :higgs, :yahoo_ltrc, :msrank, :titanic, :boston]
 
 abstract type Dataset{T} end
 
@@ -84,6 +84,6 @@ end
 include("year.jl")
 include("higgs.jl")
 include("titanic.jl")
-
+include("boston.jl")
 
 end

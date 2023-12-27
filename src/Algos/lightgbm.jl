@@ -2,12 +2,12 @@ function get_hyper_lgbm(;
     objective="regression",
     metric="rmse",
     num_iterations=100,
+    min_data_in_leaf=20,
     num_class=1,
     early_stopping_round=5,
     learning_rate=0.3,
     num_leaves=128,
-    min_data_in_leaf=1,
-    max_depth=6,
+    max_depth=-1,
     bagging_fraction=0.9,
     feature_fraction=0.8,
     max_bin=64,
@@ -26,7 +26,7 @@ function get_hyper_lgbm(;
             :early_stopping_round => early_stopping_round,
             :learning_rate => _learning_rate,
             :num_leaves => _num_leaves,
-            # :max_depth => _max_depth,
+            :max_depth => _max_depth,
             :bagging_fraction => _bagging_fraction,
             :feature_fraction => _feature_fraction,
             :lambda_l2 => _lambda_l2,
@@ -35,6 +35,7 @@ function get_hyper_lgbm(;
             :num_class => num_class,
         )
 
+        num_class == 0 ? delete!(hyper, :num_class) : nothing
         push!(hyper_list, hyper)
     end
 
