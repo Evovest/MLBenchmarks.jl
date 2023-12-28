@@ -8,7 +8,7 @@ function get_hyper_xgboost(;
     max_depth=6,
     subsample=0.5,
     colsample_bytree=0.5,
-    max_bin=64,
+    max_bin=128,
     lambda=1,
     num_class=0,
 )

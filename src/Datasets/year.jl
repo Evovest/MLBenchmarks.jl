@@ -18,9 +18,9 @@ function load_data(::Type{Dataset{:year}}; kwargs...)
     select!(df_tot, Not("Column1"))
     feature_names = setdiff(names(df_tot), ["y_raw", "y_norm", "w"])
     df_tot.w .= 1.0
-    target_name = "y_norm"
+    target_name = "y_raw"
 
-    transform!(df_tot, feature_names .=> percent_rank .=> feature_names)
+    # transform!(df_tot, feature_names .=> percent_rank .=> feature_names)
 
     dtrain = df_tot[train_idx, :]
     deval = df_tot[eval_idx, :]

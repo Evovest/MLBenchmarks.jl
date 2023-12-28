@@ -12,7 +12,7 @@ function get_hyper_evotrees(;
     max_depth=6,
     rowsample=0.5,
     colsample=0.5,
-    nbins=64,
+    nbins=128,
 )
 
     # tunable = [:eta, :max_depth, :subsample, :colsample_bytree, :lambda, :max_bin]

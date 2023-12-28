@@ -26,3 +26,4 @@ Manifest.toml
 data/
 .vscode/
 .CondaPkg/
+catboost_info/

@@ -3,6 +3,7 @@ using MLBenchmarks: mse, mae, logloss, accuracy
 
 using DataFrames
 using CSV
+using Statistics: mean, std
 using StatsBase: sample
 using OrderedCollections
 
@@ -12,8 +13,9 @@ import XGBoost
 import LightGBM
 # import CatBoost
 
-data = load_data(:titanic)
-result_vars = [:model_type, :train_time, :logloss, :accuracy]
+data_name = "titanic"
+data = load_data(Symbol(data_name))
+result_vars = [:model_type, :train_time, :best_nround, :logloss, :accuracy]
 hyper_size = 16
 
 ################################
@@ -26,7 +28,7 @@ feature_names = data[:feature_names]
 target_name = data[:target_name]
 batchsize = min(4096, ceil(Int, 0.5 * nrow(dtrain)))
 
-hyper_list = MLBenchmarks.get_hyper_neurotrees(; loss="logloss", metric="logloss", tree_type="base", device="gpu", nrounds=500, lr=[1e-2, 3e-3], wd=0.0, stack_size=[1, 2, 3], boosting_size=[1], depth=[4, 5], hidden_size=[8, 16, 32], early_stopping_rounds=2, batchsize)
+hyper_list = MLBenchmarks.get_hyper_neurotrees(; loss="logloss", metric="logloss", tree_type="stack", device="gpu", nrounds=500, lr=3e-3, num_trees=[16, 32, 64], stack_size=[1, 2, 3], boosting_size=1, depth=[3, 4, 5], hidden_size=[8, 16, 32], early_stopping_rounds=2, batchsize)
 hyper_list = sample(hyper_list, hyper_size, replace=false)
 
 results = Dict{Symbol,Any}[]
@@ -43,7 +45,7 @@ for (i, hyper) in enumerate(hyper_list)
 end
 results_df = DataFrame(results)
 select!(results_df, result_vars, Not(result_vars))
-CSV.write(joinpath("results", "titanic", "neurotrees.csv"), results_df)
+CSV.write(joinpath("results", data_name, "neurotrees.csv"), results_df)
 
 ################################
 # EvoTrees
@@ -54,7 +56,7 @@ dtest = data[:dtest]
 feature_names = data[:feature_names]
 target_name = data[:target_name]
 
-hyper_list = MLBenchmarks.get_hyper_evotrees(loss="logloss", metric="logloss", nrounds=500, early_stopping_rounds=5, eta=0.05, max_depth=5:2:11, rowsample=[0.25, 0.5, 0.75, 1.0], colsample=[0.4, 0.6, 0.8, 1.0], L2=[0, 1, 10])
+hyper_list = MLBenchmarks.get_hyper_evotrees(loss="logloss", metric="logloss", nrounds=500, early_stopping_rounds=5, eta=0.05, max_depth=5:2:11, rowsample=[0.4, 0.6, 0.8, 1.0], colsample=[0.4, 0.6, 0.8, 1.0], L2=[0, 1, 10])
 hyper_list = sample(hyper_list, hyper_size, replace=false)
 
 results = Dict{Symbol,Any}[]
@@ -69,7 +71,7 @@ for (i, hyper) in enumerate(hyper_list)
 end
 results_df = DataFrame(results)
 select!(results_df, result_vars, Not(result_vars))
-CSV.write(joinpath("results", "titanic", "evotrees.csv"), results_df)
+CSV.write(joinpath("results", data_name, "evotrees.csv"), results_df)
 
 ################################
 # XGBoost
@@ -78,7 +80,7 @@ dtrain = XGBoost.DMatrix(data[:dtrain][:, data[:feature_names]], data[:dtrain][:
 deval = XGBoost.DMatrix(data[:deval][:, data[:feature_names]], data[:deval][:, data[:target_name]])
 dtest = XGBoost.DMatrix(data[:dtest][:, data[:feature_names]])
 
-hyper_list = MLBenchmarks.get_hyper_xgboost(objective="reg:logistic", eval_metric="logloss", num_round=500, eta=0.05, max_depth=4:2:10, subsample=[0.25, 0.5, 0.75, 1.0], colsample_bytree=[0.4, 0.6, 0.8, 1.0], lambda=[0, 1, 10])
+hyper_list = MLBenchmarks.get_hyper_xgboost(objective="reg:logistic", eval_metric="logloss", num_round=500, eta=0.05, max_depth=4:2:10, subsample=[0.4, 0.6, 0.8, 1.0], colsample_bytree=[0.4, 0.6, 0.8, 1.0], lambda=[0, 1, 10])
 hyper_list = sample(hyper_list, hyper_size, replace=false)
 
 results = Dict{Symbol,Any}[]
@@ -92,7 +94,7 @@ for (i, hyper) in enumerate(hyper_list)
 end
 results_df = DataFrame(results)
 select!(results_df, result_vars, Not(result_vars))
-CSV.write(joinpath("results", "titanic", "xgboost.csv"), results_df)
+CSV.write(joinpath("results", data_name, "xgboost.csv"), results_df)
 
 ################################
 # LightGBM
@@ -116,7 +118,7 @@ for (i, hyper) in enumerate(hyper_list)
 end
 results_df = DataFrame(results)
 select!(results_df, result_vars, Not(result_vars))
-CSV.write(joinpath("results", "titanic", "lightgbm.csv"), results_df)
+CSV.write(joinpath("results", data_name, "lightgbm.csv"), results_df)
 
 
 ################################
@@ -127,7 +129,7 @@ CSV.write(joinpath("results", "titanic", "lightgbm.csv"), results_df)
 # deval = CatBoost.Pool(data[:deval][:, data[:feature_names]], label=PyList(data[:deval][:, data[:target_name]]))
 # dtest = CatBoost.Pool(data[:dtest][:, data[:feature_names]])
 
-# hyper_list = MLBenchmarks.get_hyper_catboost(objective="Logloss", eval_metric="Logloss", iterations=500, early_stopping_rounds=5, learning_rate=0.1, max_depth=5:3:11, subsample=[0.3, 0.6, 0.9], rsm=[0.5, 0.9], reg_lambda=[0, 1, 10])
+# hyper_list = MLBenchmarks.get_hyper_catboost(objective="Logloss", eval_metric="Logloss", iterations=500, early_stopping_rounds=5, learning_rate=0.1, max_depth=4:2:10, subsample=[0.3, 0.6, 0.9], rsm=[0.5, 0.9], reg_lambda=[0, 1, 10])
 # hyper_list = sample(hyper_list, hyper_size, replace=false)
 
 # results = Dict{Symbol,Any}[]
@@ -142,4 +144,4 @@ CSV.write(joinpath("results", "titanic", "lightgbm.csv"), results_df)
 # end
 # results_df = DataFrame(results)
 # select!(results_df, result_vars, Not(result_vars))
-# CSV.write(joinpath("results", "titanic", "catboost.csv"), results_df)
+# CSV.write(joinpath("results", data_name, "catboost.csv"), results_df)
