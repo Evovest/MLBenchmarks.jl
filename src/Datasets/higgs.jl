@@ -1,4 +1,4 @@
-function load_data(::Type{Dataset{:higgs}}; aws_config=AWSConfig(), uniformize=false, kwargs...)
+function load_data(::Type{Dataset{:higgs}}; uniformize=false, aws_config=AWSConfig(), kwargs...)
 
     path = "share/data/higgs/HIGGS.arrow"
     df_tot = read_arrow_aws(path; bucket="jeremiedb", aws_config)
@@ -14,9 +14,9 @@ function load_data(::Type{Dataset{:higgs}}; aws_config=AWSConfig(), uniformize=f
 
     if uniformize
         ops = uniformer(
-            data[:dtrain];
-            vars_in=data[:feature_names],
-            vars_out=data[:feature_names],
+            dtrain;
+            vars_in=feature_names,
+            vars_out=feature_names,
             nbins=255,
             min=-1,
             max=1,

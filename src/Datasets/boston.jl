@@ -1,4 +1,4 @@
-function load_data(::Type{Dataset{:boston}}; seed=123, kwargs...)
+function load_data(::Type{Dataset{:boston}}; uniformize=false, seed=123, kwargs...)
 
     seed!(seed)
 
@@ -17,13 +17,28 @@ function load_data(::Type{Dataset{:boston}}; seed=123, kwargs...)
     deval = df[eval_idx, :]
     dtest = df[test_idx, :]
 
-    @info nrow(df)
-    @info nrow(dtrain)
-    @info nrow(deval)
-    @info nrow(dtest)
-
     target_name = "MEDV"
     feature_names = setdiff(names(df), [target_name])
+
+    if uniformize
+
+        transform!(dtrain, feature_names .=> ByRow(Float64) .=> feature_names)
+        transform!(deval, feature_names .=> ByRow(Float64) .=> feature_names)
+        transform!(dtest, feature_names .=> ByRow(Float64) .=> feature_names)
+
+        ops = uniformer(
+            dtrain;
+            vars_in=feature_names,
+            vars_out=feature_names,
+            nbins=255,
+            min=-1,
+            max=1,
+        )
+
+        transform!(dtrain, ops)
+        transform!(deval, ops)
+        transform!(dtest, ops)
+    end
 
     data = Dict(
         :dtrain => dtrain,

@@ -1,4 +1,4 @@
-function load_data(::Type{Dataset{:year}}; kwargs...)
+function load_data(::Type{Dataset{:year}}; uniformize=false, kwargs...)
 
     path = "share/data/year/year.csv"
     raw = S3.get_object("jeremiedb", path, Dict("response-content-type" => "application/octet-stream"); aws_config)
@@ -13,18 +13,31 @@ function load_data(::Type{Dataset{:year}}; kwargs...)
     raw = S3.get_object("jeremiedb", path, Dict("response-content-type" => "application/octet-stream"); aws_config)
     eval_idx = DataFrame(CSV.File(raw, header=false))[:, 1] .+ 1
 
-    transform!(df_tot, "Column1" => identity => "y_raw")
-    transform!(df_tot, "y_raw" => (x -> (x .- mean(x)) ./ std(x)) => "y_norm")
+    transform!(df_tot, "Column1" => identity => "y")
+    transform!(df_tot, "y" => (x -> (x .- mean(x)) ./ std(x)) => "y_norm")
     select!(df_tot, Not("Column1"))
-    feature_names = setdiff(names(df_tot), ["y_raw", "y_norm", "w"])
+    feature_names = setdiff(names(df_tot), ["y", "y_norm"])
     df_tot.w .= 1.0
-    target_name = "y_raw"
-
-    # transform!(df_tot, feature_names .=> percent_rank .=> feature_names)
+    target_name = "y"
 
     dtrain = df_tot[train_idx, :]
     deval = df_tot[eval_idx, :]
     dtest = df_tot[(end-51630+1):end, :]
+
+    if uniformize
+        ops = uniformer(
+            dtrain;
+            vars_in=feature_names,
+            vars_out=feature_names,
+            nbins=255,
+            min=-1,
+            max=1,
+        )
+
+        transform!(dtrain, ops)
+        transform!(deval, ops)
+        transform!(dtest, ops)
+    end
 
     data = Dict(
         :dtrain => dtrain,

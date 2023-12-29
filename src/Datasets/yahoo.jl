@@ -1,4 +1,4 @@
-function load_data(::Type{Dataset{:yahoo}}; aws_config=AWSConfig(), kwargs...)
+function load_data(::Type{Dataset{:yahoo}}; uniformize=false, aws_config=AWSConfig(), kwargs...)
 
     train_raw = read_libsvm_aws("share/data/yahoo-ltrc/set1.train.txt"; has_query=true, aws_config)
     eval_raw = read_libsvm_aws("share/data/yahoo-ltrc/set1.valid.txt"; has_query=true, aws_config)
@@ -49,6 +49,21 @@ function load_data(::Type{Dataset{:yahoo}}; aws_config=AWSConfig(), kwargs...)
 
     feature_names = setdiff(names(dtrain), ["q", "y", "y_scale"])
     target_name = "y"
+
+    if uniformize
+        ops = uniformer(
+            dtrain;
+            vars_in=feature_names,
+            vars_out=feature_names,
+            nbins=255,
+            min=-1,
+            max=1,
+        )
+
+        transform!(dtrain, ops)
+        transform!(deval, ops)
+        transform!(dtest, ops)
+    end
 
     data = Dict(
         :dtrain => dtrain,

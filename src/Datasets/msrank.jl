@@ -1,4 +1,4 @@
-function load_data(::Type{Dataset{:msrank}}; aws_config=AWSConfig(), uniformize=false, kwargs...)
+function load_data(::Type{Dataset{:msrank}}; uniformize=false, aws_config=AWSConfig(), kwargs...)
 
     train_raw = read_libsvm_aws("share/data/msrank/train.txt"; has_query=true, aws_config)
     eval_raw = read_libsvm_aws("share/data/msrank/vali.txt"; has_query=true, aws_config)
@@ -24,9 +24,9 @@ function load_data(::Type{Dataset{:msrank}}; aws_config=AWSConfig(), uniformize=
 
     if uniformize
         ops = uniformer(
-            data[:dtrain];
-            vars_in=data[:feature_names],
-            vars_out=data[:feature_names],
+            dtrain;
+            vars_in=feature_names,
+            vars_out=feature_names,
             nbins=255,
             min=-1,
             max=1,

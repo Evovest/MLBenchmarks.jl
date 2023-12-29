@@ -14,7 +14,7 @@ import LightGBM
 import CatBoost
 
 data_name = "boston"
-data = load_data(Symbol(data_name))
+data = load_data(Symbol(data_name); uniformize=true)
 result_vars = [:model_type, :train_time, :best_nround, :mse, :gini]
 hyper_size = 16
 
@@ -33,12 +33,12 @@ _std = std(dtrain[!, target_name])
 dtrain.target_norm = (dtrain[!, target_name] .- _mean) ./ _std
 deval.target_norm = (deval[!, target_name] .- _mean) ./ _std
 
-hyper_list = MLBenchmarks.get_hyper_neurotrees(; loss="mse", metric="mse", tree_type="stack", device="gpu", nrounds=500, lr=1e-2, num_trees=[16, 32, 64], stack_size=[1, 2, 3], boosting_size=1, depth=[3, 4, 5], hidden_size=[8, 16, 32], early_stopping_rounds=2, batchsize)
+hyper_list = MLBenchmarks.get_hyper_neurotrees(; loss="mse", metric="mse", tree_type="stack", device="gpu", nrounds=500, lr=1e-2, num_trees=[16, 32, 64], stack_size=[1, 2, 3], boosting_size=1, depth=[3, 4, 5], hidden_size=[8, 16, 32], early_stopping_rounds=3, batchsize)
 hyper_list = sample(hyper_list, min(hyper_size, length(hyper_list)), replace=false)
 
 results = Dict{Symbol,Any}[]
 for (i, hyper) in enumerate(hyper_list)
-    @info "iter $i"
+    @info "Loop $i"
     config = NeuroTrees.NeuroTreeRegressor(; hyper...)
     train_time = @elapsed m, logger = NeuroTrees.fit(config, dtrain; deval, feature_names, target_name="target_norm", metric=hyper[:metric], early_stopping_rounds=hyper[:early_stopping_rounds], print_every_n=10, return_logger=true)
     dinfer = NeuroTrees.get_df_loader_infer(dtest; feature_names, batchsize=config.batchsize, device=config.device)
