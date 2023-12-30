@@ -14,8 +14,10 @@ import XGBoost
 import LightGBM
 import CatBoost
 
-data_name = "higgs"
-data = load_data(Symbol(data_name); uniformize=true, aws_config)
+uniformize = true
+
+data_name = uniformize ? "higgs/norm" : "higgs/raw"
+data = load_data(:higgs; uniformize, aws_config)
 result_vars = [:model_type, :train_time, :best_nround, :logloss, :accuracy]
 hyper_size = 16
 
@@ -59,7 +61,7 @@ _std = std(dtrain[!, target_name])
 dtrain.target_norm = (dtrain[!, target_name] .- _mean) ./ _std
 deval.target_norm = (deval[!, target_name] .- _mean) ./ _std
 
-hyper_list = MLBenchmarks.get_hyper_neurotrees(; loss="logloss", metric="logloss", tree_type="stack", device="gpu", nrounds=1, lr=1e-3, num_trees=[16, 32, 64], stack_size=[1, 2, 3], boosting_size=1, depth=[3, 4, 5], hidden_size=[8, 16, 32], early_stopping_rounds=3, batchsize)
+hyper_list = MLBenchmarks.get_hyper_neurotrees(; loss="logloss", metric="logloss", tree_type="stack", device="gpu", nrounds=1, lr=1e-3, num_trees=[64, 128, 256], stack_size=[1, 2, 3], boosting_size=1, depth=[3, 4, 5], hidden_size=[8, 16, 32], early_stopping_rounds=3, batchsize)
 hyper_list = sample(hyper_list, hyper_size, replace=false)
 
 results = Dict{Symbol,Any}[]

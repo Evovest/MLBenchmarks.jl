@@ -1,5 +1,5 @@
 using MLBenchmarks
-using MLBenchmarks: mse, mae, logloss, accuracy, gini
+import MLBenchmarks: mse, mae, logloss, accuracy, gini, ndcg
 
 using DataFrames
 using CSV
@@ -13,8 +13,10 @@ import XGBoost
 import LightGBM
 import CatBoost
 
-data_name = "boston"
-data = load_data(Symbol(data_name); uniformize=true)
+uniformize = true
+
+data_name = "boston/norm"
+data = load_data(:boston; uniformize)
 result_vars = [:model_type, :train_time, :best_nround, :mse, :gini]
 hyper_size = 16
 
@@ -33,7 +35,7 @@ _std = std(dtrain[!, target_name])
 dtrain.target_norm = (dtrain[!, target_name] .- _mean) ./ _std
 deval.target_norm = (deval[!, target_name] .- _mean) ./ _std
 
-hyper_list = MLBenchmarks.get_hyper_neurotrees(; loss="mse", metric="mse", tree_type="stack", device="gpu", nrounds=500, lr=1e-2, num_trees=[16, 32, 64], stack_size=[1, 2, 3], boosting_size=1, depth=[3, 4, 5], hidden_size=[8, 16, 32], early_stopping_rounds=3, batchsize)
+hyper_list = MLBenchmarks.get_hyper_neurotrees(; loss="mse", metric="mse", tree_type="stack", device="gpu", nrounds=500, lr=1e-2, num_trees=[16, 32, 64], stack_size=[1, 2], boosting_size=1, depth=[3, 4, 5], hidden_size=[8, 16, 32], early_stopping_rounds=3, batchsize)
 hyper_list = sample(hyper_list, min(hyper_size, length(hyper_list)), replace=false)
 
 results = Dict{Symbol,Any}[]

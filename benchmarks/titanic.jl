@@ -1,5 +1,5 @@
 using MLBenchmarks
-using MLBenchmarks: mse, mae, logloss, accuracy
+import MLBenchmarks: mse, mae, logloss, accuracy, gini, ndcg
 
 using DataFrames
 using CSV
@@ -13,8 +13,10 @@ import XGBoost
 import LightGBM
 import CatBoost
 
-data_name = "titanic"
-data = load_data(Symbol(data_name); uniformize=true)
+uniformize = true
+
+data_name = uniformize ? "titanic/norm" : "titanic/raw"
+data = load_data(:titanic; uniformize)
 result_vars = [:model_type, :train_time, :best_nround, :logloss, :accuracy]
 hyper_size = 16
 
@@ -28,7 +30,7 @@ feature_names = data[:feature_names]
 target_name = data[:target_name]
 batchsize = min(4096, ceil(Int, 0.5 * nrow(dtrain)))
 
-hyper_list = MLBenchmarks.get_hyper_neurotrees(; loss="logloss", metric="logloss", tree_type="stack", device="gpu", nrounds=500, lr=3e-3, num_trees=[16, 32, 64], stack_size=[1, 2, 3], boosting_size=1, depth=[3, 4, 5], hidden_size=[8, 16, 32], early_stopping_rounds=3, batchsize)
+hyper_list = MLBenchmarks.get_hyper_neurotrees(; loss="logloss", metric="logloss", tree_type="stack", device="gpu", nrounds=500, lr=3e-3, num_trees=[16, 32, 64], stack_size=[1, 2], boosting_size=1, depth=[3, 4, 5], hidden_size=[8, 16, 32], early_stopping_rounds=3, batchsize)
 hyper_list = sample(hyper_list, hyper_size, replace=false)
 
 results = Dict{Symbol,Any}[]
