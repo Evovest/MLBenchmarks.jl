@@ -1,4 +1,4 @@
-function load_data(::Type{Dataset{:year}}; uniformize=false, kwargs...)
+function load_data(::Type{Dataset{:year}}; uniformize=false, aws_config=AWSConfig(), kwargs...)
 
     path = "share/data/year/year.csv"
     raw = S3.get_object("jeremiedb", path, Dict("response-content-type" => "application/octet-stream"); aws_config)
