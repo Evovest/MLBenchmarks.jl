@@ -1,0 +1,17 @@
+model_type,train_time,best_nround,logloss,accuracy,num_class,eval_metric,colsample_bytree,max_depth,lambda,eta,objective,tree_method,subsample,num_round,early_stopping_rounds,max_bin
+xgboost,272.682413613,774,0.4731673,0.768446,0,logloss,0.7,10,1,0.2,reg:logistic,hist,1.0,5000,10,128
+xgboost,626.421070399,2879,0.47598004,0.766178,0,logloss,0.9,6,10,0.2,reg:logistic,hist,1.0,5000,10,128
+xgboost,142.915806285,388,0.4849741,0.760222,0,logloss,0.7,10,1,0.2,reg:logistic,hist,0.4,5000,10,128
+xgboost,268.420434362,750,0.47910446,0.764672,0,logloss,0.5,10,0,0.2,reg:logistic,hist,0.8,5000,10,128
+xgboost,186.530887293,510,0.48059687,0.763644,0,logloss,0.7,10,0,0.2,reg:logistic,hist,0.6,5000,10,128
+xgboost,316.918898204,845,0.47379652,0.768394,0,logloss,0.7,10,0,0.2,reg:logistic,hist,1.0,5000,10,128
+xgboost,313.834966799,917,0.4702833,0.770316,0,logloss,0.9,10,10,0.2,reg:logistic,hist,1.0,5000,10,128
+xgboost,284.612425698,981,0.48128456,0.762758,0,logloss,0.9,8,10,0.2,reg:logistic,hist,0.4,5000,10,128
+xgboost,494.074173682,2174,0.4844038,0.761092,0,logloss,0.7,6,1,0.2,reg:logistic,hist,0.4,5000,10,128
+xgboost,372.850765237,1346,0.47322354,0.768196,0,logloss,1.0,8,1,0.2,reg:logistic,hist,1.0,5000,10,128
+xgboost,477.760472744,2102,0.4822604,0.762388,0,logloss,0.7,6,0,0.2,reg:logistic,hist,0.6,5000,10,128
+xgboost,382.689927031,1183,0.4748195,0.767318,0,logloss,0.9,8,10,0.2,reg:logistic,hist,0.8,5000,10,128
+xgboost,113.057624135,302,0.48521063,0.760166,0,logloss,1.0,10,0,0.2,reg:logistic,hist,0.4,5000,10,128
+xgboost,375.322288651,1651,0.48440906,0.760858,0,logloss,0.9,6,1,0.2,reg:logistic,hist,0.4,5000,10,128
+xgboost,213.820183183,731,0.4827242,0.76191,0,logloss,1.0,8,1,0.2,reg:logistic,hist,0.4,5000,10,128
+xgboost,439.94200457,1889,0.48390397,0.760528,0,logloss,1.0,6,0,0.2,reg:logistic,hist,0.4,5000,10,128
