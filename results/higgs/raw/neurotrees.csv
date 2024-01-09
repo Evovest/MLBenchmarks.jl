@@ -1,0 +1,16 @@
+model_type,train_time,best_nround,logloss,accuracy,ntrees,tree_type,metric,batchsize,nrounds,hidden_size,wd,loss,device,early_stopping_rounds,lr,depth,stack_size
+neurotrees,8243.463299275,12,0.46873543,0.770684,256,stack,logloss,2048,200,16,0.0,logloss,gpu,3,0.002,4,3
+neurotrees,3838.851420561,12,0.46862763,0.771028,256,stack,logloss,2048,200,8,0.0,logloss,gpu,3,0.002,4,2
+neurotrees,9680.583386277,74,0.45455134,0.779498,64,stack,logloss,2048,200,32,0.0,logloss,gpu,3,0.002,3,3
+neurotrees,10769.109859864,17,0.46802425,0.77132,128,stack,logloss,2048,200,32,0.0,logloss,gpu,3,0.002,5,2
+neurotrees,15805.058254859,9,0.46745956,0.772122,256,stack,logloss,2048,200,16,0.0,logloss,gpu,3,0.002,5,3
+neurotrees,1736.233214302,23,0.47369227,0.767538,64,stack,logloss,2048,200,32,0.0,logloss,gpu,3,0.002,5,1
+neurotrees,5506.58208819,19,0.4842547,0.759596,256,stack,logloss,2048,200,8,0.0,logloss,gpu,3,0.002,5,1
+neurotrees,10399.36932771,16,0.4687867,0.770798,128,stack,logloss,2048,200,8,0.0,logloss,gpu,3,0.002,5,3
+neurotrees,885.7561023,30,0.47739843,0.764856,64,stack,logloss,2048,200,8,0.0,logloss,gpu,3,0.002,4,1
+neurotrees,6965.518287247,33,0.462968,0.77417,256,stack,logloss,2048,200,32,0.0,logloss,gpu,3,0.002,3,2
+neurotrees,11350.577628043,14,0.46742332,0.77217,128,stack,logloss,2048,200,16,0.0,logloss,gpu,3,0.002,5,3
+neurotrees,8604.373911677,29,0.46781513,0.771454,64,stack,logloss,2048,200,32,0.0,logloss,gpu,3,0.002,5,2
+neurotrees,1864.982882419,54,0.46960506,0.769958,64,stack,logloss,2048,200,8,0.0,logloss,gpu,3,0.002,3,2
+neurotrees,3307.509267496,20,0.4762869,0.765958,64,stack,logloss,2048,200,32,0.0,logloss,gpu,3,0.002,4,2
+neurotrees,2448.535079946,48,0.47630915,0.765578,128,stack,logloss,2048,200,32,0.0,logloss,gpu,3,0.002,4,1

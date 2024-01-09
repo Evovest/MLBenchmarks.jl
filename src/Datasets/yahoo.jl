@@ -1,4 +1,4 @@
-function load_data(::Type{Dataset{:yahoo}}; uniformize=false, aws_config=AWSConfig(), kwargs...)
+function load_data(::Type{Dataset{:yahoo}}; uniformize=false, incl_null_flag=true, aws_config=AWSConfig(), kwargs...)
 
     train_raw = read_libsvm_aws("share/data/yahoo-ltrc/set1.train.txt"; has_query=true, aws_config)
     eval_raw = read_libsvm_aws("share/data/yahoo-ltrc/set1.valid.txt"; has_query=true, aws_config)

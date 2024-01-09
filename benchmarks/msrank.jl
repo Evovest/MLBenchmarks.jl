@@ -62,7 +62,7 @@ _std = std(dtrain[!, target_name])
 dtrain.target_norm = (dtrain[!, target_name] .- _mean) ./ _std
 deval.target_norm = (deval[!, target_name] .- _mean) ./ _std
 
-hyper_list = MLBenchmarks.get_hyper_neurotrees(; loss="mse", metric="mse", tree_type="stack", device="gpu", nrounds=200, early_stopping_rounds=3, lr=3e-4, ntrees=[32, 64, 128], stack_size=[1], depth=[3, 4, 5], hidden_size=[8, 16, 32], batchsize)
+hyper_list = MLBenchmarks.get_hyper_neurotrees(; loss="mse", metric="mse", tree_type="stack", device="gpu", nrounds=200, early_stopping_rounds=2, lr=1e-3, ntrees=[64, 128, 256], stack_size=[1, 2], depth=[3, 4, 5], hidden_size=[8, 16, 24, 32], batchsize)
 hyper_list = sample(hyper_list, hyper_size, replace=false)
 
 results = Dict{Symbol,Any}[]
