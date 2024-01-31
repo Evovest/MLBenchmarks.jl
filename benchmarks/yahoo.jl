@@ -14,10 +14,11 @@ import XGBoost
 import LightGBM
 import CatBoost
 
-uniformize = true
+uniformize = false
+incl_null_flag = false
 
-data_name = uniformize ? "yahoo/norm" : "yahoo/raw"
-data = load_data(:yahoo; uniformize, aws_config)
+data_name = incl_null_flag ? "yahoo/null" : "yahoo/raw"
+data = load_data(:yahoo; uniformize, incl_null_flag, aws_config)
 result_vars = [:model_type, :train_time, :best_nround, :mse, :ndcg]
 hyper_size = 16
 
@@ -62,7 +63,7 @@ _std = std(dtrain[!, target_name])
 dtrain.target_norm = (dtrain[!, target_name] .- _mean) ./ _std
 deval.target_norm = (deval[!, target_name] .- _mean) ./ _std
 
-hyper_list = MLBenchmarks.get_hyper_neurotrees(; loss="mse", metric="mse", tree_type="stack", device="gpu", nrounds=200, early_stopping_rounds=2, lr=3e-4, ntrees=[64, 128, 256], stack_size=[1, 2], depth=[3, 4, 5], hidden_size=[8, 16, 24, 32], batchsize)
+hyper_list = MLBenchmarks.get_hyper_neurotrees(; loss="mse", metric="mse", tree_type="stack", device="gpu", nrounds=200, early_stopping_rounds=2, lr=[3e-4], ntrees=[64, 128, 256], stack_size=[1], depth=[3, 4, 5], hidden_size=[16, 32, 64], actA="identity", init_scale=0, batchsize)
 hyper_list = sample(hyper_list, hyper_size, replace=false)
 
 results = Dict{Symbol,Any}[]
@@ -103,8 +104,8 @@ for (i, hyper) in enumerate(hyper_list)
     _mse = mse(p_test, dtest[:, target_name])
     ndcg_df = DataFrame(p=p_test, y=data[:dtest][!, target_name], q=data[:dtest][!, "q"])
     ndcg_df = combine(groupby(ndcg_df, "q"), ["p", "y"] => ndcg => "ndcg")
-    _ndcg = mean(ndcg_df.ndcg)/
-    res = Dict(:model_type => "evotrees", :train_time => train_time, :best_nround => logger[:best_iter], :mse => _mse, :ndcg => _ndcg, hyper...)
+    _ndcg = mean(ndcg_df.ndcg) /
+            res = Dict(:model_type => "evotrees", :train_time => train_time, :best_nround => logger[:best_iter], :mse => _mse, :ndcg => _ndcg, hyper...)
     push!(results, res)
 end
 results_df = DataFrame(results)
