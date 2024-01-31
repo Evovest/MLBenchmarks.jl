@@ -1,0 +1,17 @@
+model_type,train_time,best_nround,logloss,accuracy,ntrees,tree_type,metric,batchsize,nrounds,hidden_size,wd,actA,loss,init_scale,device,early_stopping_rounds,lr,depth,stack_size
+neurotrees,1545.339497574,25,0.46603537,0.771954,128,stack,logloss,2048,200,8,0.0,identity,logloss,0,gpu,2,0.01,3,2
+neurotrees,417.496116421,35,0.4807239,0.762798,64,stack,logloss,2048,200,16,0.0,identity,logloss,0,gpu,2,0.01,3,1
+neurotrees,828.616837879,4,0.47878367,0.764086,128,stack,logloss,2048,200,8,0.0,identity,logloss,0,gpu,2,0.01,4,2
+neurotrees,304.147007669,25,0.47964308,0.763454,64,stack,logloss,2048,200,24,0.0,identity,logloss,0,gpu,2,0.01,3,1
+neurotrees,1393.280792538,24,0.46063098,0.775636,64,stack,logloss,2048,200,24,0.0,identity,logloss,0,gpu,2,0.01,3,2
+neurotrees,1572.816768378,6,0.48149675,0.762082,128,stack,logloss,2048,200,24,0.0,identity,logloss,0,gpu,2,0.01,4,2
+neurotrees,1219.784023524,4,0.49226317,0.755082,64,stack,logloss,2048,200,24,0.0,identity,logloss,0,gpu,2,0.01,4,3
+neurotrees,717.202242387,2,0.49342984,0.754062,64,stack,logloss,2048,200,16,0.0,identity,logloss,0,gpu,2,0.01,4,3
+neurotrees,4726.97958023,24,0.4559775,0.778668,128,stack,logloss,2048,200,24,0.0,identity,logloss,0,gpu,2,0.01,3,3
+neurotrees,2239.829589676,24,0.47931466,0.76391,256,stack,logloss,2048,200,8,0.0,identity,logloss,0,gpu,2,0.01,4,1
+neurotrees,7016.6516717,6,0.51502764,0.74129,256,stack,logloss,2048,200,32,0.0,identity,logloss,0,gpu,2,0.01,4,3
+neurotrees,1918.332715956,5,0.48707926,0.758626,64,stack,logloss,2048,200,32,0.0,identity,logloss,0,gpu,2,0.01,4,3
+neurotrees,2590.202109787,6,0.4769453,0.764842,256,stack,logloss,2048,200,16,0.0,identity,logloss,0,gpu,2,0.01,4,2
+neurotrees,1715.504455236,32,0.46222726,0.774394,64,stack,logloss,2048,200,16,0.0,identity,logloss,0,gpu,2,0.01,3,2
+neurotrees,1559.217483803,4,0.47759238,0.765254,256,stack,logloss,2048,200,8,0.0,identity,logloss,0,gpu,2,0.01,4,2
+neurotrees,2686.857820611,26,0.4658419,0.77207,128,stack,logloss,2048,200,8,0.0,identity,logloss,0,gpu,2,0.01,3,3

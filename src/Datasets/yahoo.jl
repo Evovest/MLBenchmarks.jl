@@ -1,4 +1,4 @@
-function load_data(::Type{Dataset{:yahoo}}; uniformize=false, aws_config=AWSConfig(), kwargs...)
+function load_data(::Type{Dataset{:yahoo}}; uniformize=false, incl_null_flag=true, aws_config=AWSConfig(), kwargs...)
 
     train_raw = read_libsvm_aws("share/data/yahoo-ltrc/set1.train.txt"; has_query=true, aws_config)
     eval_raw = read_libsvm_aws("share/data/yahoo-ltrc/set1.valid.txt"; has_query=true, aws_config)
@@ -17,18 +17,6 @@ function load_data(::Type{Dataset{:yahoo}}; uniformize=false, aws_config=AWSConf
     x_eval = eval_raw[:x][:, .!drop_cols]
     x_test = test_raw[:x][:, .!drop_cols]
 
-    x_train_miss = x_train .== 0
-    x_eval_miss = x_eval .== 0
-    x_test_miss = x_test .== 0
-
-    x_train[x_train.==0] .= 0.5
-    x_eval[x_eval.==0] .= 0.5
-    x_test[x_test.==0] .= 0.5
-
-    x_train = hcat(x_train, x_train_miss)
-    x_eval = hcat(x_eval, x_eval_miss)
-    x_test = hcat(x_test, x_test_miss)
-
     #####################################
     # create DataFrames
     #####################################
@@ -46,6 +34,21 @@ function load_data(::Type{Dataset{:yahoo}}; uniformize=false, aws_config=AWSConf
     dtest.q .= test_raw[:q]
     dtest.y .= test_raw[:y]
     dtest.y_scale .= test_raw[:y] ./ 4
+
+    if incl_null_flag
+        _feature_names = setdiff(names(dtrain), ["q", "y", "y_scale"])
+        _feature_names_miss = _feature_names .* "_miss"
+
+        transform!(dtrain, _feature_names .=> (x -> ifelse.(x .== 0, 0, 1)) .=> _feature_names_miss)
+        transform!(dtrain, _feature_names .=> (x -> ifelse.(x .== 0, 0.5, x)) .=> _feature_names)
+
+        transform!(deval, _feature_names .=> (x -> ifelse.(x .== 0, 0, 1)) .=> _feature_names_miss)
+        transform!(deval, _feature_names .=> (x -> ifelse.(x .== 0, 0.5, x)) .=> _feature_names)
+
+        transform!(dtest, _feature_names .=> (x -> ifelse.(x .== 0, 0, 1)) .=> _feature_names_miss)
+        transform!(dtest, _feature_names .=> (x -> ifelse.(x .== 0, 0.5, x)) .=> _feature_names)
+
+    end
 
     feature_names = setdiff(names(dtrain), ["q", "y", "y_scale"])
     target_name = "y"

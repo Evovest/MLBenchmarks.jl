@@ -2,23 +2,24 @@ function get_hyper_neurotrees(;
     loss="mse",
     metric="mse",
     device="gpu",
-    tree_type="base",
+    tree_type="stack",
     early_stopping_rounds=5,
-    nrounds=500,
+    nrounds=200,
     lr=1e-3,
     wd=0.0,
-    num_trees=32,
-    depth=5,
-    batchsize=4096,
-    stack_size=0.5,
-    hidden_size=8,
-    boosting_size=1,
+    ntrees=64,
+    depth=4,
+    actA=["identity"],
+    init_scale=1,
+    batchsize=2048,
+    stack_size=1,
+    hidden_size=1,
 )
 
     # tunable = [:eta, :max_depth, :subsample, :colsample_bytree, :lambda, :max_bin]
     hyper_list = Dict{Symbol,Any}[]
 
-    for _lr in lr, _wd in wd, _num_trees in num_trees, _depth in depth, _stack_size in stack_size, _hidden_size in hidden_size, _boosting_size in boosting_size
+    for _lr in lr, _wd in wd, _ntrees in ntrees, _depth in depth, _stack_size in stack_size, _hidden_size in hidden_size, _actA in actA, _init_scale in init_scale
 
         hyper = Dict(
             :loss => loss,
@@ -29,11 +30,12 @@ function get_hyper_neurotrees(;
             :nrounds => nrounds,
             :lr => _lr,
             :wd => _wd,
-            :num_trees => _num_trees,
+            :ntrees => _ntrees,
             :depth => _depth,
+            :actA => _actA,
+            :init_scale => _init_scale,
             :stack_size => _stack_size,
             :hidden_size => _hidden_size,
-            :boosting_size => _boosting_size,
             :batchsize => batchsize
         )
 

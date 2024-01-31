@@ -3,7 +3,7 @@ function get_hyper_lgbm(;
     metric="rmse",
     num_iterations=100,
     min_data_in_leaf=20,
-    num_class=1,
+    num_class=0,
     early_stopping_round=5,
     learning_rate=0.3,
     num_leaves=128,

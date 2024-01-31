@@ -1,0 +1,17 @@
+model_type,train_time,best_nround,logloss,accuracy,gamma,L2,tree_type,metric,max_depth,lambda,min_weight,eta,rowsample,nbins,nrounds,loss,colsample,early_stopping_rounds
+evotrees,616.080946375,672,0.47134694,0.769246,0,10,binary,logloss,11,0,1,0.2,1.0,128,5000,logloss,0.9,10
+evotrees,530.031389636,1747,0.4818265,0.762386,0,0,binary,logloss,7,0,1,0.2,0.6,128,5000,logloss,1.0,10
+evotrees,305.436593725,434,0.4791342,0.764564,0,1,binary,logloss,11,0,1,0.2,0.6,128,5000,logloss,0.9,10
+evotrees,597.379736236,754,0.47479525,0.767668,0,1,binary,logloss,11,0,1,0.2,0.8,128,5000,logloss,0.9,10
+evotrees,851.284276035,2484,0.47790006,0.76534,0,10,binary,logloss,7,0,1,0.2,0.8,128,5000,logloss,0.9,10
+evotrees,237.109269102,617,0.48259482,0.761576,0,10,binary,logloss,9,0,1,0.2,0.4,128,5000,logloss,1.0,10
+evotrees,745.302844227,2096,0.4791655,0.76421,0,0,binary,logloss,7,0,1,0.2,0.8,128,5000,logloss,1.0,10
+evotrees,904.294186426,2616,0.47752613,0.765424,0,1,binary,logloss,7,0,1,0.2,0.8,128,5000,logloss,1.0,10
+evotrees,602.062288124,2271,0.48204893,0.762238,0,0,binary,logloss,7,0,1,0.2,0.8,128,5000,logloss,0.5,10
+evotrees,802.988966199,2944,0.47769365,0.765244,0,10,binary,logloss,7,0,1,0.2,0.8,128,5000,logloss,0.7,10
+evotrees,183.321298779,647,0.4886964,0.757828,0,0,binary,logloss,9,0,1,0.2,0.4,128,5000,logloss,0.5,10
+evotrees,417.656940722,639,0.47587156,0.766238,0,1,binary,logloss,11,0,1,0.2,0.8,128,5000,logloss,0.7,10
+evotrees,634.665221428,1330,0.47508413,0.7673,0,0,binary,logloss,9,0,1,0.2,1.0,128,5000,logloss,0.7,10
+evotrees,257.051351942,368,0.48220992,0.762884,0,0,binary,logloss,11,0,1,0.2,0.6,128,5000,logloss,0.9,10
+evotrees,451.243732853,992,0.47857025,0.764538,0,1,binary,logloss,9,0,1,0.2,0.6,128,5000,logloss,0.9,10
+evotrees,370.578949049,816,0.48060948,0.763268,0,0,binary,logloss,9,0,1,0.2,0.6,128,5000,logloss,0.9,10

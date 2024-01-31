@@ -8,10 +8,10 @@ function load_data(::Type{Dataset{:higgs}}; uniformize=false, aws_config=AWSConf
     target_name = "y"
 
     df_tot.y = Int.(df_tot.y)
-    dtrain = df_tot[1:end-500_000, :]
-    deval = df_tot[end-500_000+1:end, :]
-    dtest = df_tot[end-500_000+1:end, :]
-
+    dtrain = df_tot[1:end-1_000_000, :];
+    deval = df_tot[end-1_000_000+1:end-500_000, :];
+    dtest = df_tot[end-500_000+1:end, :];
+    
     if uniformize
         ops = uniformer(
             dtrain;
