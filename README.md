@@ -192,7 +192,7 @@ For each dataset and algo, the following methodology is followed:
 
 | **model\_type** | **train\_time** | **logloss** | **accuracy** |
 |:---------------:|:---------------:|:-----------:|:------------:|
-| neurotrees      | 10900.0         | 0.456       | 0.779        |
+| neurotrees      | 4730.0          | **0.456**   | **0.779**    |
 | evotrees        | 616.0           | 0.471       | 0.769        |
 | xgboost         | 314.0           | 0.470       | 0.770        |
 | lightgbm        | 465.0           | 0.470       | 0.771        |
