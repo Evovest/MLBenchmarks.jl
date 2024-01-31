@@ -1158,7 +1158,7 @@ version = "1.2.0"
 
 [[deps.NeuroTrees]]
 deps = ["BSON", "CUDA", "ChainRulesCore", "DataFrames", "Flux", "KernelAbstractions", "LoopVectorization", "MLJModelInterface", "MLUtils", "Optimisers", "Random", "ReadLIBSVM", "Statistics", "StatsBase", "Tullio", "cuDNN"]
-git-tree-sha1 = "b59b4a8385220cddd9e03e3abcfd704e300edebe"
+git-tree-sha1 = "623663a13ee46dbd499731861054b339dfa368bb"
 repo-rev = "basic"
 repo-url = "git@github.com:Evovest/NeuroTrees.jl.git"
 uuid = "5ef3a56d-fa54-484e-9d85-8397f70dbe61"

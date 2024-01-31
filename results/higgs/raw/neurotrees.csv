@@ -7,7 +7,7 @@ neurotrees,1393.280792538,24,0.46063098,0.775636,64,stack,logloss,2048,200,24,0.
 neurotrees,1572.816768378,6,0.48149675,0.762082,128,stack,logloss,2048,200,24,0.0,identity,logloss,0,gpu,2,0.01,4,2
 neurotrees,1219.784023524,4,0.49226317,0.755082,64,stack,logloss,2048,200,24,0.0,identity,logloss,0,gpu,2,0.01,4,3
 neurotrees,717.202242387,2,0.49342984,0.754062,64,stack,logloss,2048,200,16,0.0,identity,logloss,0,gpu,2,0.01,4,3
-neurotrees,10876.528962691,27,0.45588407,0.779058,256,stack,logloss,2048,200,32,0.0,identity,logloss,0,gpu,2,0.01,3,3
+neurotrees,4726.97958023,24,0.4559775,0.778668,128,stack,logloss,2048,200,24,0.0,identity,logloss,0,gpu,2,0.01,3,3
 neurotrees,2239.829589676,24,0.47931466,0.76391,256,stack,logloss,2048,200,8,0.0,identity,logloss,0,gpu,2,0.01,4,1
 neurotrees,7016.6516717,6,0.51502764,0.74129,256,stack,logloss,2048,200,32,0.0,identity,logloss,0,gpu,2,0.01,4,3
 neurotrees,1918.332715956,5,0.48707926,0.758626,64,stack,logloss,2048,200,32,0.0,identity,logloss,0,gpu,2,0.01,4,3
