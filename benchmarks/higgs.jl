@@ -19,7 +19,7 @@ uniformize = false
 data_name = uniformize ? "higgs/norm" : "higgs/raw"
 data = load_data(:higgs; uniformize, aws_config)
 result_vars = [:model_type, :train_time, :best_nround, :logloss, :accuracy]
-hyper_size = 16
+hyper_size = 8
 
 #############################
 # EDA
@@ -56,7 +56,7 @@ feature_names = data[:feature_names]
 target_name = data[:target_name]
 batchsize = min(2048, nrow(dtrain))
 
-hyper_list = MLBenchmarks.get_hyper_neurotrees(; loss="logloss", metric="logloss", tree_type="stack", device="gpu", nrounds=200, early_stopping_rounds=2, lr=1e-2, ntrees=[64, 128, 256], stack_size=[1, 2, 3], depth=[3, 4], hidden_size=[8, 16, 24, 32], init_scale=0, batchsize)
+hyper_list = MLBenchmarks.get_hyper_neurotrees(; loss="logloss", metric="logloss", tree_type="stack", device="gpu", nrounds=200, early_stopping_rounds=2, lr=1e-2, ntrees=[64, 128, 256], stack_size=[2, 3], depth=[3], hidden_size=[16, 24, 32], init_scale=0.1, batchsize)
 hyper_list = sample(hyper_list, hyper_size, replace=false)
 
 results = Dict{Symbol,Any}[]
@@ -73,7 +73,7 @@ for (i, hyper) in enumerate(hyper_list)
 end
 results_df = DataFrame(results)
 select!(results_df, result_vars, Not(result_vars))
-CSV.write(joinpath("results", data_name, "neurotrees.csv"), results_df)
+CSV.write(joinpath("results", data_name, "neurotrees1.csv"), results_df)
 
 ################################
 # EvoTrees
