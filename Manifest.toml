@@ -6,9 +6,9 @@ project_hash = "cd54d64cee787a4d1dbd0c59e6349eab90671dec"
 
 [[deps.AWS]]
 deps = ["Base64", "Compat", "Dates", "Downloads", "GitHub", "HTTP", "IniFile", "JSON", "MbedTLS", "Mocking", "OrderedCollections", "Random", "SHA", "Sockets", "URIs", "UUIDs", "XMLDict"]
-git-tree-sha1 = "9efa8450bf5d15f50739c9c20210ab48e70dcf5a"
+git-tree-sha1 = "538251564e8e41a9bf740f71d1e2edb8be56c55c"
 uuid = "fbe9abb3-538b-5e4e-ba9e-bc94f4f92ebc"
-version = "1.90.3"
+version = "1.90.4"
 
 [[deps.AbstractFFTs]]
 deps = ["LinearAlgebra"]
@@ -69,9 +69,9 @@ version = "7.7.0"
 
 [[deps.Arrow]]
 deps = ["ArrowTypes", "BitIntegers", "CodecLz4", "CodecZstd", "ConcurrentUtilities", "DataAPI", "Dates", "EnumX", "LoggingExtras", "Mmap", "PooledArrays", "SentinelArrays", "Tables", "TimeZones", "TranscodingStreams", "UUIDs"]
-git-tree-sha1 = "cd893c29839c524ca2c5944b8e05f26e299df105"
+git-tree-sha1 = "29faa9835f77dee04b2833b2c9ee415223b3ebbd"
 uuid = "69666777-d1a9-59fb-9406-91d4454c9d45"
-version = "2.7.0"
+version = "2.7.1"
 
 [[deps.ArrowTypes]]
 deps = ["Sockets", "UUIDs"]
@@ -234,9 +234,9 @@ weakdeps = ["JSON", "RecipesBase", "SentinelArrays", "StructTypes"]
 
 [[deps.ChainRules]]
 deps = ["Adapt", "ChainRulesCore", "Compat", "Distributed", "GPUArraysCore", "IrrationalConstants", "LinearAlgebra", "Random", "RealDot", "SparseArrays", "SparseInverseSubset", "Statistics", "StructArrays", "SuiteSparse"]
-git-tree-sha1 = "b308c249f38637cc5022c079fe5e19701a160395"
+git-tree-sha1 = "213f001d1233fd3b8ef007f50c8cab29061917d8"
 uuid = "082447d4-558c-5d27-93f4-14fc19e9eca2"
-version = "1.60.0"
+version = "1.61.0"
 
 [[deps.ChainRulesCore]]
 deps = ["Compat", "LinearAlgebra"]
@@ -274,9 +274,9 @@ version = "0.5.2"
 
 [[deps.CodecLz4]]
 deps = ["Lz4_jll", "TranscodingStreams"]
-git-tree-sha1 = "8bf4f9e2ee52b5e217451a7cd9171fcd4e16ae23"
+git-tree-sha1 = "de4c9bf20ef40ec41c6b3a7af2ffb3c852d315a8"
 uuid = "5ba52731-8f18-5e0d-9241-30f10d1ec561"
-version = "0.4.1"
+version = "0.4.2"
 
 [[deps.CodecZlib]]
 deps = ["TranscodingStreams", "Zlib_jll"]
@@ -1158,7 +1158,7 @@ version = "1.2.0"
 
 [[deps.NeuroTrees]]
 deps = ["BSON", "CUDA", "ChainRulesCore", "DataFrames", "Flux", "KernelAbstractions", "LoopVectorization", "MLJModelInterface", "MLUtils", "Optimisers", "Random", "ReadLIBSVM", "Statistics", "StatsBase", "Tullio", "cuDNN"]
-git-tree-sha1 = "86928e2f29b09f863aee89e904c598ba640849fb"
+git-tree-sha1 = "f839dce6f536817e233394cc77237201a596d9b4"
 repo-rev = "basic"
 repo-url = "git@github.com:Evovest/NeuroTrees.jl.git"
 uuid = "5ef3a56d-fa54-484e-9d85-8397f70dbe61"
@@ -1675,9 +1675,9 @@ uuid = "a759f4b9-e2f1-59dc-863e-4aeb61b1ea8f"
 version = "0.5.23"
 
 [[deps.TranscodingStreams]]
-git-tree-sha1 = "1fbeaaca45801b4ba17c251dd8603ef24801dd84"
+git-tree-sha1 = "54194d92959d8ebaa8e26227dbe3cdefcdcd594f"
 uuid = "3bb67fe8-82b1-5028-8e26-92a6c54297fa"
-version = "0.10.2"
+version = "0.10.3"
 weakdeps = ["Random", "Test"]
 
     [deps.TranscodingStreams.extensions]

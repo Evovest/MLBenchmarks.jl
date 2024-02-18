@@ -54,9 +54,9 @@ deval = data[:deval]
 dtest = data[:dtest]
 feature_names = data[:feature_names]
 target_name = data[:target_name]
-batchsize = min(2048, nrow(dtrain))
+batchsize = min(1024, nrow(dtrain))
 
-hyper_list = MLBenchmarks.get_hyper_neurotrees(; loss="logloss", metric="logloss", tree_type="stack", device="gpu", nrounds=200, early_stopping_rounds=2, lr=1e-2, ntrees=[64, 128, 256], stack_size=[2, 3], depth=[3], hidden_size=[16, 24, 32], init_scale=0.1, batchsize)
+hyper_list = MLBenchmarks.get_hyper_neurotrees(; loss="logloss", metric="logloss", tree_type="stack", device="gpu", nrounds=200, early_stopping_rounds=5, lr=5e-3, ntrees=[32, 64, 128, 256], stack_size=[2, 3], depth=[3], hidden_size=[16, 24, 32], init_scale=1.0, batchsize)
 hyper_list = sample(hyper_list, hyper_size, replace=false)
 
 results = Dict{Symbol,Any}[]
@@ -73,7 +73,7 @@ for (i, hyper) in enumerate(hyper_list)
 end
 results_df = DataFrame(results)
 select!(results_df, result_vars, Not(result_vars))
-CSV.write(joinpath("results", data_name, "neurotrees1.csv"), results_df)
+CSV.write(joinpath("results", data_name, "neurotrees2.csv"), results_df)
 
 ################################
 # EvoTrees
@@ -84,7 +84,7 @@ dtest = data[:dtest]
 feature_names = data[:feature_names]
 target_name = data[:target_name]
 
-hyper_list = MLBenchmarks.get_hyper_evotrees(loss="logloss", metric="logloss", nrounds=5000, early_stopping_rounds=10, eta=0.2, max_depth=7:2:11, rowsample=[0.4, 0.6, 0.8, 1.0], colsample=[0.5, 0.7, 0.9, 1.0], L2=[0, 1, 10])
+hyper_list = MLBenchmarks.get_hyper_evotrees(loss="logloss", metric="logloss", nrounds=12000, early_stopping_rounds=50, eta=0.1, max_depth=7:2:11, rowsample=[0.4, 0.6, 0.8, 1.0], colsample=[0.5, 0.7, 0.9, 1.0], L2=[0, 1, 10])
 hyper_list = sample(hyper_list, hyper_size, replace=false)
 
 results = Dict{Symbol,Any}[]
@@ -108,7 +108,7 @@ dtrain = XGBoost.DMatrix(data[:dtrain][:, data[:feature_names]], data[:dtrain][:
 deval = XGBoost.DMatrix(data[:deval][:, data[:feature_names]], data[:deval][:, data[:target_name]])
 dtest = XGBoost.DMatrix(data[:dtest][:, data[:feature_names]])
 
-hyper_list = MLBenchmarks.get_hyper_xgboost(objective="reg:logistic", eval_metric="logloss", num_round=5000, early_stopping_rounds=10, eta=0.2, max_depth=6:2:10, subsample=[0.4, 0.6, 0.8, 1.0], colsample_bytree=[0.5, 0.7, 0.9, 1.0], lambda=[0, 1, 10])
+hyper_list = MLBenchmarks.get_hyper_xgboost(objective="reg:logistic", eval_metric="logloss", num_round=12000, early_stopping_rounds=50, eta=0.1, max_depth=6:2:10, subsample=[0.4, 0.6, 0.8, 1.0], colsample_bytree=[0.5, 0.7, 0.9, 1.0], lambda=[0, 1, 10])
 hyper_list = sample(hyper_list, hyper_size, replace=false)
 
 results = Dict{Symbol,Any}[]
@@ -131,7 +131,7 @@ dtrain, ytrain = Matrix(data[:dtrain][:, data[:feature_names]]), data[:dtrain][:
 deval, yeval = Matrix(data[:deval][:, data[:feature_names]]), data[:deval][:, data[:target_name]]
 dtest = Matrix(data[:dtest][:, data[:feature_names]])
 
-hyper_list = MLBenchmarks.get_hyper_lgbm(objective="cross_entropy", metric=["logloss"], num_iterations=5000, early_stopping_round=10, learning_rate=0.2, num_leaves=[128, 512, 2048], bagging_fraction=[0.3, 0.6, 0.9], feature_fraction=[0.5, 0.7, 0.9, 1.0], lambda_l2=[0, 1, 10])
+hyper_list = MLBenchmarks.get_hyper_lgbm(objective="cross_entropy", metric=["logloss"], num_iterations=12000, early_stopping_round=50, learning_rate=0.1, num_leaves=[128, 512, 2048], bagging_fraction=[0.3, 0.6, 0.9], feature_fraction=[0.5, 0.7, 0.9, 1.0], lambda_l2=[0, 1, 10])
 hyper_list = sample(hyper_list, hyper_size, replace=false)
 
 results = Dict{Symbol,Any}[]
@@ -157,7 +157,7 @@ dtrain = CatBoost.Pool(data[:dtrain][:, data[:feature_names]], label=PyList(data
 deval = CatBoost.Pool(data[:deval][:, data[:feature_names]], label=PyList(data[:deval][:, data[:target_name]]))
 dtest = CatBoost.Pool(data[:dtest][:, data[:feature_names]])
 
-hyper_list = MLBenchmarks.get_hyper_catboost(objective="Logloss", eval_metric="Logloss", iterations=5000, early_stopping_rounds=10, learning_rate=0.3, max_depth=6:2:10, subsample=[0.3, 0.6, 0.9], rsm=[0.5, 0.7, 0.9, 1.0], reg_lambda=[0, 1, 10])
+hyper_list = MLBenchmarks.get_hyper_catboost(objective="Logloss", eval_metric="Logloss", iterations=12000, early_stopping_rounds=50, learning_rate=0.1, max_depth=6:2:10, subsample=[0.3, 0.6, 0.9], rsm=[0.5, 0.7, 0.9, 1.0], reg_lambda=[0, 1, 10])
 hyper_list = sample(hyper_list, hyper_size, replace=false)
 
 results = Dict{Symbol,Any}[]
