@@ -14,7 +14,7 @@ import XGBoost
 import LightGBM
 import CatBoost
 
-uniformize = true
+uniformize = false
 
 data_name = uniformize ? "msrank/norm" : "msrank/raw"
 data = load_data(:msrank; uniformize, aws_config)
@@ -81,7 +81,7 @@ for (i, hyper) in enumerate(hyper_list)
 end
 results_df = DataFrame(results)
 select!(results_df, result_vars, Not(result_vars))
-CSV.write(joinpath("results", data_name, "neurotrees.csv"), results_df)
+CSV.write(joinpath("results", data_name, "neurotrees2.csv"), results_df)
 
 ################################
 # EvoTrees
