@@ -56,7 +56,7 @@ feature_names = data[:feature_names]
 target_name = data[:target_name]
 batchsize = min(2048, nrow(dtrain))
 
-hyper_list = MLBenchmarks.get_hyper_neurotrees(; loss="logloss", metric="logloss", tree_type="stack", device="gpu", nrounds=200, early_stopping_rounds=5, lr=5e-3, ntrees=[32, 64, 128, 256], stack_size=[2, 3], depth=[3], hidden_size=[16, 24, 32], init_scale=1.0, batchsize)
+hyper_list = MLBenchmarks.get_hyper_neurotrees(; loss="logloss", metric="logloss", tree_type="stack", device="gpu", nrounds=200, early_stopping_rounds=5, lr=5e-3, ntrees=[32, 64, 128, 256], stack_size=[2, 3], depth=[3], hidden_size=[16, 24, 32], init_scale=0.0, batchsize)
 hyper_list = sample(hyper_list, hyper_size, replace=false)
 
 results = Dict{Symbol,Any}[]
@@ -73,7 +73,7 @@ for (i, hyper) in enumerate(hyper_list)
 end
 results_df = DataFrame(results)
 select!(results_df, result_vars, Not(result_vars))
-CSV.write(joinpath("results", data_name, "neurotrees2.csv"), results_df)
+CSV.write(joinpath("results", data_name, "neurotrees.csv"), results_df)
 
 ################################
 # EvoTrees
