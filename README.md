@@ -17,11 +17,11 @@ For each dataset and algo, the following methodology is followed:
 The following selection of common tabular datasets is covered:
 
 - [Year](https://archive.ics.uci.edu/dataset/203/yearpredictionmsd): min squared error regression
-- [MSRank](https://www.microsoft.com/en-us/research/project/mslr/): ranking problem using logistic regression 
-- [YahooRank](https://webscope.sandbox.yahoo.com/): ranking problem using logistic regression
-- [Higgs](https://archive.ics.uci.edu/dataset/280/higgs): 2-class classification using logistic regression
-- [Boston](https://archive.ics.uci.edu/dataset/203/yearpredictionmsd): min squared error regression
-- [Titanic](https://archive.ics.uci.edu/dataset/203/yearpredictionmsd): min squared error regression
+- [MSRank](https://www.microsoft.com/en-us/research/project/mslr/): ranking problem with min squared error regression 
+- [YahooRank](https://webscope.sandbox.yahoo.com/): ranking problem with min squared error regression
+- [Higgs](https://archive.ics.uci.edu/dataset/280/higgs): 2-level classification with logistic regression
+- [Boston Housing](https://juliaml.github.io/MLDatasets.jl/stable/datasets/misc/#MLDatasets.BostonHousing): min squared error regression
+- [Titanic](https://juliaml.github.io/MLDatasets.jl/stable/datasets/misc/#MLDatasets.Titanic): 2-level classification with logistic regression
 
 ## Algorithms
 
