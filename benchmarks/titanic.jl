@@ -8,7 +8,7 @@ using Statistics: mean, std
 using StatsBase: sample
 using OrderedCollections
 
-import NeuroTrees
+import NeuroTreeModels
 import EvoTrees
 import XGBoost
 import LightGBM
@@ -31,7 +31,7 @@ feature_names = data[:feature_names]
 target_name = data[:target_name]
 batchsize = min(2048, nrow(dtrain))
 
-hyper_list = MLBenchmarks.get_hyper_neurotrees(; loss="logloss", metric="logloss", tree_type="stack", device="gpu", nrounds=200, early_stopping_rounds=2, lr=3e-2, ntrees=[16, 32, 64], stack_size=[1, 2], depth=[3, 4, 5], hidden_size=[8, 16, 32], init_scale=0.0, batchsize)
+hyper_list = MLBenchmarks.get_hyper_neurotrees(; loss="logloss", metric="logloss", device="gpu", nrounds=200, early_stopping_rounds=2, lr=3e-2, ntrees=[16, 32, 64], stack_size=[1, 2], depth=[3, 4, 5], hidden_size=[8, 16, 32], init_scale=0.0, batchsize)
 hyper_list = sample(hyper_list, hyper_size, replace=false)
 
 results = Dict{Symbol,Any}[]
@@ -39,8 +39,7 @@ for (i, hyper) in enumerate(hyper_list)
     @info "Loop $i"
     config = NeuroTrees.NeuroTreeRegressor(; hyper...)
     train_time = @elapsed m, logger = NeuroTrees.fit(config, dtrain; deval, feature_names, target_name, metric=hyper[:metric], early_stopping_rounds=hyper[:early_stopping_rounds], print_every_n=10, return_logger=true)
-    dinfer = NeuroTrees.get_df_loader_infer(dtest; feature_names, batchsize=config.batchsize, device=config.device)
-    p_test = NeuroTrees.infer(m, dinfer)
+    p_test = m(dtest)
     _logloss = logloss(p_test, data[:dtest][:, data[:target_name]])
     _accuracy = accuracy(p_test, data[:dtest][:, data[:target_name]])
     res = Dict(:model_type => "neurotrees", :train_time => train_time, :best_nround => logger[:best_iter], :logloss => _logloss, :accuracy => _accuracy, hyper...)
