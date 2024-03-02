@@ -42,8 +42,8 @@ hyper_list = sample(hyper_list, min(hyper_size, length(hyper_list)), replace=fal
 results = Dict{Symbol,Any}[]
 for (i, hyper) in enumerate(hyper_list)
     @info "Loop $i"
-    config = NeuroTreeRegressor(; hyper...)
-    train_time = @elapsed m, logger = NeuroTrees.fit(config, dtrain; deval, feature_names, target_name="target_norm", metric=hyper[:metric], early_stopping_rounds=hyper[:early_stopping_rounds], print_every_n=10, return_logger=true)
+    config = NeuroTreeModels.NeuroTreeRegressor(; hyper...)
+    train_time = @elapsed m, logger = NeuroTreeModels.fit(config, dtrain; deval, feature_names, target_name="target_norm", metric=hyper[:metric], early_stopping_rounds=hyper[:early_stopping_rounds], print_every_n=10, return_logger=true)
     p_test = m(dtest) .* _std .+ _mean
     _mse = mse(p_test, data[:dtest][:, data[:target_name]])
     _gini = gini(p_test, data[:dtest][:, data[:target_name]])

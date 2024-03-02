@@ -69,8 +69,8 @@ hyper_list = sample(hyper_list, hyper_size, replace=false)
 results = Dict{Symbol,Any}[]
 for (i, hyper) in enumerate(hyper_list)
     @info "Loop $i"
-    config = NeuroTrees.NeuroTreeRegressor(; hyper...)
-    train_time = @elapsed m, logger = NeuroTrees.fit(config, dtrain; deval, feature_names, target_name="target_norm", metric=hyper[:metric], early_stopping_rounds=hyper[:early_stopping_rounds], print_every_n=10, return_logger=true)
+    config = NeuroTreeModels.NeuroTreeRegressor(; hyper...)
+    train_time = @elapsed m, logger = NeuroTreeModels.fit(config, dtrain; deval, feature_names, target_name="target_norm", metric=hyper[:metric], early_stopping_rounds=hyper[:early_stopping_rounds], print_every_n=10, return_logger=true)
     p_test = m(dtest) .* _std .+ _mean
     _mse = mse(p_test, data[:dtest][:, data[:target_name]])
     ndcg_df = DataFrame(p=p_test, y=data[:dtest][!, target_name], q=data[:dtest][!, "q"])

@@ -62,14 +62,15 @@ _std = std(dtrain[!, target_name])
 dtrain.target_norm = (dtrain[!, target_name] .- _mean) ./ _std
 deval.target_norm = (deval[!, target_name] .- _mean) ./ _std
 
-hyper_list = MLBenchmarks.get_hyper_neurotrees(; loss="mse", metric="mse", device="gpu", nrounds=200, early_stopping_rounds=2, lr=1e-3, ntrees=[32, 64, 128, 256], stack_size=[1, 2], depth=[3, 4, 5], hidden_size=[8, 16, 32, 64], init_scale=0.0, batchsize)
+# hyper_list = MLBenchmarks.get_hyper_neurotrees(; loss="mse", metric="mse", device="gpu", nrounds=200, early_stopping_rounds=2, lr=3e-4, ntrees=[16, 32, 64, 128], stack_size=[2], depth=[3, 4, 5], hidden_size=[4, 8, 16], init_scale=0.0, batchsize)
+hyper_list = MLBenchmarks.get_hyper_neurotrees(; loss="mse", metric="mse", device="gpu", nrounds=200, early_stopping_rounds=2, lr=1e-3, ntrees=[32, 64, 128, 256], stack_size=[2], depth=[3, 4, 5], hidden_size=[8, 16, 32], init_scale=0.0, batchsize)
 hyper_list = sample(hyper_list, hyper_size, replace=false)
 
 results = Dict{Symbol,Any}[]
 for (i, hyper) in enumerate(hyper_list)
     @info "Loop $i"
-    config = NeuroTrees.NeuroTreeRegressor(; hyper...)
-    train_time = @elapsed m, logger = NeuroTrees.fit(config, dtrain; deval, feature_names, target_name="target_norm", metric=hyper[:metric], early_stopping_rounds=hyper[:early_stopping_rounds], print_every_n=10, return_logger=true)
+    config = NeuroTreeModels.NeuroTreeRegressor(; hyper...)
+    train_time = @elapsed m, logger = NeuroTreeModels.fit(config, dtrain; deval, feature_names, target_name="target_norm", metric=hyper[:metric], early_stopping_rounds=hyper[:early_stopping_rounds], print_every_n=10, return_logger=true)
     p_test = m(dtest) .* _std .+ _mean
     _mse = mse(p_test, data[:dtest][:, data[:target_name]])
     ndcg_df = DataFrame(p=p_test, y=data[:dtest][!, target_name], q=data[:dtest][!, "q"])
@@ -80,7 +81,7 @@ for (i, hyper) in enumerate(hyper_list)
 end
 results_df = DataFrame(results)
 select!(results_df, result_vars, Not(result_vars))
-CSV.write(joinpath("results", data_name, "neurotrees2.csv"), results_df)
+CSV.write(joinpath("results", data_name, "neurotrees.csv"), results_df)
 
 ################################
 # EvoTrees
