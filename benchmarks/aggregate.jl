@@ -20,10 +20,10 @@ data_names = [
     "higgs/raw"
 ]
 
-data_name = data_names[6]
+data_name = data_names[3]
 
-# metric_vars = ["mse", "gini"]
-metric_vars = ["logloss", "accuracy"]
+metric_vars = ["mse", "gini"]
+# metric_vars = ["logloss", "accuracy"]
 # metric_vars = ["mse", "ndcg"]
 metric_var = first(metric_vars)
 # var_names = ["model_type", "train_time", "best_nround", metric_vars...]
