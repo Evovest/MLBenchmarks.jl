@@ -30,24 +30,25 @@ dtest = data[:dtest]
 feature_names = data[:feature_names]
 target_name = data[:target_name]
 batchsize = min(2048, nrow(dtrain))
+device = :gpu
 
 _mean = mean(dtrain[!, target_name])
 _std = std(dtrain[!, target_name])
 dtrain.target_norm = (dtrain[!, target_name] .- _mean) ./ _std
 deval.target_norm = (deval[!, target_name] .- _mean) ./ _std
 
-hyper_list = MLBenchmarks.get_hyper_neurotrees(; loss="mse", metric="mse", device="gpu", nrounds=200, early_stopping_rounds=2, lr=3e-2, ntrees=[16, 32, 64], stack_size=[1], depth=[3, 4, 5], hidden_size=[8, 16, 32], init_scale=0.0, batchsize)
+hyper_list = MLBenchmarks.get_hyper_neurotrees(; loss=:mse, metric=:mse, nrounds=200, early_stopping_rounds=2, lr=3e-2, ntrees=[16, 32, 64], stack_size=[1], depth=[3, 4, 5], hidden_size=[8, 16, 32], init_scale=0.1, batchsize)
 hyper_list = sample(hyper_list, min(hyper_size, length(hyper_list)), replace=false)
 
 results = Dict{Symbol,Any}[]
 for (i, hyper) in enumerate(hyper_list)
     @info "Loop $i"
     config = NeuroTreeModels.NeuroTreeRegressor(; hyper...)
-    train_time = @elapsed m, logger = NeuroTreeModels.fit(config, dtrain; deval, feature_names, target_name="target_norm", metric=hyper[:metric], early_stopping_rounds=hyper[:early_stopping_rounds], print_every_n=10, return_logger=true)
+    train_time = @elapsed m = NeuroTreeModels.fit(config, dtrain; deval, feature_names, target_name="target_norm", metric=hyper[:metric], early_stopping_rounds=hyper[:early_stopping_rounds], print_every_n=10, device)
     p_test = m(dtest) .* _std .+ _mean
     _mse = mse(p_test, data[:dtest][:, data[:target_name]])
     _gini = gini(p_test, data[:dtest][:, data[:target_name]])
-    res = Dict(:model_type => "neurotrees", :train_time => train_time, :best_nround => logger[:best_iter], :mse => _mse, :gini => _gini, hyper...)
+    res = Dict(:model_type => "neurotrees", :train_time => train_time, :best_nround => m.info[:logger][:best_iter], :mse => _mse, :gini => _gini, hyper...)
     push!(results, res)
 end
 results_df = DataFrame(results)
@@ -87,7 +88,7 @@ dtrain = XGBoost.DMatrix(data[:dtrain][:, data[:feature_names]], data[:dtrain][:
 deval = XGBoost.DMatrix(data[:deval][:, data[:feature_names]], data[:deval][:, data[:target_name]])
 dtest = XGBoost.DMatrix(data[:dtest][:, data[:feature_names]])
 
-hyper_list = MLBenchmarks.get_hyper_xgboost(objective="reg:squarederror", eval_metric="rmse", num_round=1000, early_stopping_rounds=10, eta=0.1, max_depth=4:2:10, subsample=[0.4, 0.6, 0.8, 1.0], colsample_bytree=[0.4, 0.6, 0.8, 1.0], lambda=[0, 1, 10])
+hyper_list = MLBenchmarks.get_hyper_xgboost(objective="reg:squarederror", eval_metric="rmse", num_round=1000, early_stopping_rounds=10, eta=0.05, max_depth=4:2:10, subsample=[0.4, 0.6, 0.8, 1.0], colsample_bytree=[0.4, 0.6, 0.8, 1.0], lambda=[0, 1, 10])
 hyper_list = sample(hyper_list, hyper_size, replace=false)
 
 results = Dict{Symbol,Any}[]
@@ -110,7 +111,7 @@ dtrain, ytrain = Matrix(data[:dtrain][:, data[:feature_names]]), data[:dtrain][:
 deval, yeval = Matrix(data[:deval][:, data[:feature_names]]), data[:deval][:, data[:target_name]]
 dtest = Matrix(data[:dtest][:, data[:feature_names]])
 
-hyper_list = MLBenchmarks.get_hyper_lgbm(objective="mse", metric=["mse"], num_iterations=1000, early_stopping_round=10, learning_rate=0.1, num_leaves=[32, 128, 512, 2048], bagging_fraction=[0.3, 0.6, 0.9], feature_fraction=[0.5, 0.9], lambda_l2=[0, 1, 10])
+hyper_list = MLBenchmarks.get_hyper_lgbm(objective="mse", metric=["mse"], num_iterations=1000, early_stopping_round=10, learning_rate=0.05, num_leaves=[32, 128, 512, 2048], bagging_fraction=[0.3, 0.6, 0.9], feature_fraction=[0.5, 0.9], lambda_l2=[0, 1, 10])
 hyper_list = sample(hyper_list, hyper_size, replace=false)
 
 results = Dict{Symbol,Any}[]
@@ -136,7 +137,7 @@ dtrain = CatBoost.Pool(data[:dtrain][:, data[:feature_names]], label=PyList(data
 deval = CatBoost.Pool(data[:deval][:, data[:feature_names]], label=PyList(data[:deval][:, data[:target_name]]))
 dtest = CatBoost.Pool(data[:dtest][:, data[:feature_names]])
 
-hyper_list = MLBenchmarks.get_hyper_catboost(objective="RMSE", eval_metric="RMSE", iterations=1000, early_stopping_rounds=10, learning_rate=0.1, max_depth=4:2:10, subsample=[0.3, 0.6, 0.9], rsm=[0.5, 0.9], reg_lambda=[0, 1, 10])
+hyper_list = MLBenchmarks.get_hyper_catboost(objective="RMSE", eval_metric="RMSE", iterations=1000, early_stopping_rounds=10, learning_rate=0.05, max_depth=4:2:10, subsample=[0.3, 0.6, 0.9], rsm=[0.5, 0.9], reg_lambda=[0, 1, 10])
 hyper_list = sample(hyper_list, hyper_size, replace=false)
 
 model = CatBoost.CatBoostRegressor(; hyper_list[1]...)
