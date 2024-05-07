@@ -55,15 +55,16 @@ dtest = data[:dtest]
 feature_names = data[:feature_names]
 target_name = data[:target_name]
 batchsize = min(2048, nrow(dtrain))
+device = :gpu
 
-hyper_list = MLBenchmarks.get_hyper_neurotrees(; loss="logloss", metric="logloss", device="gpu", nrounds=200, early_stopping_rounds=5, lr=5e-3, ntrees=[32, 64, 128, 256], stack_size=[2, 3], depth=[3], hidden_size=[16, 24, 32], init_scale=0.0, batchsize)
+hyper_list = MLBenchmarks.get_hyper_neurotrees(; loss=:logloss, metric=:logloss, nrounds=200, early_stopping_rounds=5, lr=5e-3, ntrees=[32, 64, 128, 256], stack_size=[2, 3], depth=[3], hidden_size=[16, 24, 32], init_scale=0.0, batchsize)
 hyper_list = sample(hyper_list, hyper_size, replace=false)
 
 results = Dict{Symbol,Any}[]
 for (i, hyper) in enumerate(hyper_list)
     @info "Loop $i"
     config = NeuroTreeModels.NeuroTreeRegressor(; hyper...)
-    train_time = @elapsed m, logger = NeuroTreeModels.fit(config, dtrain; deval, feature_names, target_name, metric=hyper[:metric], early_stopping_rounds=hyper[:early_stopping_rounds], print_every_n=10, return_logger=true)
+    train_time = @elapsed m = NeuroTreeModels.fit(config, dtrain; deval, feature_names, target_name, metric=hyper[:metric], early_stopping_rounds=hyper[:early_stopping_rounds], print_every_n=10, device)
     p_test = m(dtest)
     _logloss = logloss(p_test, data[:dtest][:, data[:target_name]])
     _accuracy = accuracy(p_test, data[:dtest][:, data[:target_name]])
@@ -93,7 +94,7 @@ for (i, hyper) in enumerate(hyper_list)
     p_test = EvoTrees.predict(m, dtest)
     _logloss = logloss(p_test, data[:dtest][:, data[:target_name]])
     _accuracy = accuracy(p_test, data[:dtest][:, data[:target_name]])
-    res = Dict(:model_type => "evotrees", :train_time => train_time, :best_nround => logger[:best_iter], :logloss => _logloss, :accuracy => _accuracy, hyper...)
+    res = Dict(:model_type => "evotrees", :train_time => train_time, :best_nround => m.info[:logger][:best_iter], :logloss => _logloss, :accuracy => _accuracy, hyper...)
     push!(results, res)
 end
 results_df = DataFrame(results)
