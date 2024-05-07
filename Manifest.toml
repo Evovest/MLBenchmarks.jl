@@ -38,15 +38,9 @@ weakdeps = ["StaticArrays"]
 
 [[deps.AliasTables]]
 deps = ["Random"]
-<<<<<<< HEAD
 git-tree-sha1 = "82b912bb5215792fd33df26f407d064d3602af98"
 uuid = "66dad0bd-aa9a-41b7-9441-69ab47430ed8"
 version = "1.1.2"
-=======
-git-tree-sha1 = "07591db28451b3e45f4c0088a2d5e986ae5aa92d"
-uuid = "66dad0bd-aa9a-41b7-9441-69ab47430ed8"
-version = "1.1.1"
->>>>>>> dev
 
 [[deps.ArgCheck]]
 git-tree-sha1 = "a3a402a35a2f7e0b87828ccabbd5ebfbebe356b4"
@@ -535,15 +529,9 @@ uuid = "7b1f6079-737a-58dc-b8bc-7a2ca5c1b5ee"
 
 [[deps.FillArrays]]
 deps = ["LinearAlgebra"]
-<<<<<<< HEAD
 git-tree-sha1 = "0653c0a2396a6da5bc4766c43041ef5fd3efbe57"
 uuid = "1a297f60-69ca-5386-bcde-b61e274b549b"
 version = "1.11.0"
-=======
-git-tree-sha1 = "57f08d5665e76397e96b168f9acc12ab17c84a68"
-uuid = "1a297f60-69ca-5386-bcde-b61e274b549b"
-version = "1.10.2"
->>>>>>> dev
 weakdeps = ["PDMats", "SparseArrays", "Statistics"]
 
     [deps.FillArrays.extensions]
@@ -952,15 +940,9 @@ version = "0.4.4"
 
 [[deps.MPICH_jll]]
 deps = ["Artifacts", "CompilerSupportLibraries_jll", "Hwloc_jll", "JLLWrappers", "LazyArtifacts", "Libdl", "MPIPreferences", "TOML"]
-<<<<<<< HEAD
 git-tree-sha1 = "4099bb6809ac109bfc17d521dad33763bcf026b7"
 uuid = "7cb0a576-ebde-5e09-9194-50597f1243b4"
 version = "4.2.1+1"
-=======
-git-tree-sha1 = "d8a7bf80c88326ebc98b7d38437208c3a0f20725"
-uuid = "7cb0a576-ebde-5e09-9194-50597f1243b4"
-version = "4.2.1+0"
->>>>>>> dev
 
 [[deps.MPIPreferences]]
 deps = ["Libdl", "Preferences"]
@@ -970,15 +952,9 @@ version = "0.1.11"
 
 [[deps.MPItrampoline_jll]]
 deps = ["Artifacts", "CompilerSupportLibraries_jll", "JLLWrappers", "LazyArtifacts", "Libdl", "MPIPreferences", "TOML"]
-<<<<<<< HEAD
 git-tree-sha1 = "ce0ca3dd147c43de175c5aff161315a424f4b8ac"
 uuid = "f1f71cc9-e9ae-5b93-9b94-4fe0e1ad3748"
 version = "5.3.3+1"
-=======
-git-tree-sha1 = "3f884417b47a96d87e7c6219f8f7b30ce67f4f2c"
-uuid = "f1f71cc9-e9ae-5b93-9b94-4fe0e1ad3748"
-version = "5.3.3+0"
->>>>>>> dev
 
 [[deps.MacroTools]]
 deps = ["Markdown", "Random"]
@@ -1115,13 +1091,9 @@ version = "1.2.0"
 
 [[deps.NeuroTreeModels]]
 deps = ["CUDA", "CategoricalArrays", "ChainRulesCore", "DataFrames", "Flux", "MLJModelInterface", "MLUtils", "Optimisers", "Random", "Statistics", "StatsBase", "Tables", "cuDNN"]
-<<<<<<< HEAD
 git-tree-sha1 = "85c70232d602df9eece18ddc335e08a6abcbf1c4"
 repo-rev = "multihead"
 repo-url = "https://github.com/Evovest/NeuroTreeModels.jl.git"
-=======
-git-tree-sha1 = "e5acc0352038ad388317cf48df01498d14dcb6a6"
->>>>>>> dev
 uuid = "1db4e0a5-a364-4b0c-897c-2bd5a4a3a1f2"
 version = "1.3.0"
 
@@ -1191,15 +1163,12 @@ git-tree-sha1 = "949347156c25054de2db3b166c52ac4728cbad65"
 uuid = "90014a1f-27ba-587c-ab20-58faa44d9150"
 version = "0.11.31"
 
-<<<<<<< HEAD
 [[deps.PackageExtensionCompat]]
 git-tree-sha1 = "fb28e33b8a95c4cee25ce296c817d89cc2e53518"
 uuid = "65ce6f38-6b18-4e1d-a461-8949797d7930"
 version = "1.0.2"
 weakdeps = ["Requires", "TOML"]
 
-=======
->>>>>>> dev
 [[deps.PaddedViews]]
 deps = ["OffsetArrays"]
 git-tree-sha1 = "0fac6313486baae819364c52b4f483450a9d793f"
@@ -1219,17 +1188,10 @@ uuid = "7b2266bf-644c-5ea3-82d8-af4bbd25a884"
 version = "1.2.1"
 
 [[deps.Pickle]]
-<<<<<<< HEAD
 deps = ["BFloat16s", "DataStructures", "InternedStrings", "Serialization", "SparseArrays", "StridedViews", "StringEncodings", "ZipFile"]
 git-tree-sha1 = "8f1651db873eda63f6759a2564d6be5292a38097"
 uuid = "fbb45041-c46e-462f-888f-7c521cafbc2c"
 version = "0.3.4"
-=======
-deps = ["DataStructures", "InternedStrings", "Serialization", "SparseArrays", "Strided", "StringEncodings", "ZipFile"]
-git-tree-sha1 = "e6a34eb1dc0c498f0774bbfbbbeff2de101f4235"
-uuid = "fbb45041-c46e-462f-888f-7c521cafbc2c"
-version = "0.3.2"
->>>>>>> dev
 
 [[deps.Pidfile]]
 deps = ["FileWatching", "Test"]
@@ -1289,15 +1251,9 @@ version = "0.1.4"
 
 [[deps.PythonCall]]
 deps = ["CondaPkg", "Dates", "Libdl", "MacroTools", "Markdown", "Pkg", "REPL", "Requires", "Serialization", "Tables", "UnsafePointers"]
-<<<<<<< HEAD
 git-tree-sha1 = "8de9e6cbabc9bcad4f325bd9f2f1e83361e5037d"
 uuid = "6099a3de-0909-46bc-b1f4-468b9a2dfc0d"
 version = "0.9.20"
-=======
-git-tree-sha1 = "0fe6664f742903eab8929586af78e10a51b33577"
-uuid = "6099a3de-0909-46bc-b1f4-468b9a2dfc0d"
-version = "0.9.19"
->>>>>>> dev
 
 [[deps.QuadGK]]
 deps = ["DataStructures", "LinearAlgebra"]
@@ -1623,15 +1579,9 @@ uuid = "a759f4b9-e2f1-59dc-863e-4aeb61b1ea8f"
 version = "0.5.23"
 
 [[deps.TranscodingStreams]]
-<<<<<<< HEAD
 git-tree-sha1 = "5d54d076465da49d6746c647022f3b3674e64156"
 uuid = "3bb67fe8-82b1-5028-8e26-92a6c54297fa"
 version = "0.10.8"
-=======
-git-tree-sha1 = "71509f04d045ec714c4748c785a59045c3736349"
-uuid = "3bb67fe8-82b1-5028-8e26-92a6c54297fa"
-version = "0.10.7"
->>>>>>> dev
 weakdeps = ["Random", "Test"]
 
     [deps.TranscodingStreams.extensions]
