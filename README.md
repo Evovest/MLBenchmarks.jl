@@ -37,31 +37,31 @@ Comparison is performed against the following algos (implementation in link) con
 
 | **model\_type** | **train\_time** | **mse** | **gini** |
 |:---------------:|:---------------:|:-------:|:--------:|
-| neurotrees      | 12.8            | 18.9    | **0.947**|
-| evotrees        | 0.206           | 19.7    | 0.927    |
-| xgboost         | 0.0648          | 19.4    | 0.935    |
-| lightgbm        | 0.865           | 25.4    | 0.926    |
-| catboost        | 0.0511          | **13.9**| 0.946    |
+| neurotrees      | 19.7            | **19.6**| **0.943**|
+| evotrees        | 0.179           | 20.5    | 0.934    |
+| xgboost         | 0.0688          | 23.7    | 0.934    |
+| lightgbm        | 0.418           | 20.7    | 0.938    |
+| catboost        | 0.738           | 20.6    | 0.934    |
 
 ### Titanic
 
 | **model\_type** | **train\_time** | **logloss** | **accuracy** |
 |:---------------:|:---------------:|:-----------:|:------------:|
-| neurotrees      | 7.58            | 0.407       | 0.828        |
-| evotrees        | 0.673           | 0.382       | 0.828        |
-| xgboost         | 0.0379          | **0.375**   | 0.821        |
-| lightgbm        | 0.615           | 0.390       | **0.836**    |
-| catboost        | 0.0326          | 0.388       | **0.836**    |
+| neurotrees      | 7.95            | 0.445       | 0.821        |
+| evotrees        | 0.11            | 0.405       | 0.821        |
+| xgboost         | 0.0512          | 0.412       | 0.799        |
+| lightgbm        | 0.128           | **0.388**   | 0.828        |
+| catboost        | 0.264           | 0.393       | **0.843**    |
 
 ### Year
 
 | **model\_type** | **train\_time** | **mse** | **gini** |
 |:---------------:|:---------------:|:-------:|:--------:|
-| neurotrees      | 280.0           | **76.4**| **0.652**|
-| evotrees        | 18.6            | 80.1    | 0.627    |
-| xgboost         | 17.2            | 80.2    | 0.626    |
-| lightgbm        | 8.11            | 80.3    | 0.624    |
-| catboost        | 80.0            | 79.2    | 0.635    |
+| neurotrees      | 308.0           | **76.8**| **0.651**|
+| evotrees        | 71.9            | 80.4    | 0.626    |
+| xgboost         | 33.8            | 82.0    | 0.614    |
+| lightgbm        | 15.2            | 79.4    | 0.633    |
+| catboost        | 127.0           | 80.2    | 0.630    |
 
 ### MSRank
 
