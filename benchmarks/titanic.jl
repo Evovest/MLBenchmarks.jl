@@ -21,6 +21,9 @@ data = load_data(:titanic; uniformize)
 result_vars = [:model_type, :train_time, :best_nround, :logloss, :accuracy]
 hyper_size = 16
 
+preds = Dict{String,Vector}()
+results_test = Dict{Symbol,Any}[]
+
 ################################
 # NeuroTrees
 ################################
@@ -30,25 +33,37 @@ dtest = data[:dtest]
 feature_names = data[:feature_names]
 target_name = data[:target_name]
 batchsize = min(2048, nrow(dtrain))
-device = :gpu
+device = :cpu
 
 hyper_list = MLBenchmarks.get_hyper_neurotrees(; loss=:logloss, metric=:logloss, nrounds=200, early_stopping_rounds=2, lr=3e-2, ntrees=[16, 32, 64], stack_size=[1, 2], depth=[3, 4, 5], hidden_size=[8, 16, 32], init_scale=0.0, batchsize)
 hyper_list = sample(hyper_list, hyper_size, replace=false)
 
 results = Dict{Symbol,Any}[]
+models = Vector()
 for (i, hyper) in enumerate(hyper_list)
     @info "Loop $i"
     config = NeuroTreeModels.NeuroTreeRegressor(; hyper...)
     train_time = @elapsed m = NeuroTreeModels.fit(config, dtrain; deval, feature_names, target_name, metric=hyper[:metric], early_stopping_rounds=hyper[:early_stopping_rounds], print_every_n=10, device)
-    p_test = m(dtest)
-    _logloss = logloss(p_test, data[:dtest][:, data[:target_name]])
-    _accuracy = accuracy(p_test, data[:dtest][:, data[:target_name]])
+    push!(models, m)
+    p_eval = m(deval)
+    _logloss = logloss(p_eval, data[:deval][:, data[:target_name]])
+    _accuracy = accuracy(p_eval, data[:deval][:, data[:target_name]])
     res = Dict(:model_type => "neurotrees", :train_time => train_time, :best_nround => m.info[:logger][:best_iter], :logloss => _logloss, :accuracy => _accuracy, hyper...)
     push!(results, res)
 end
 results_df = DataFrame(results)
 select!(results_df, result_vars, Not(result_vars))
 CSV.write(joinpath("results", data_name, "neurotrees.csv"), results_df)
+
+best_hyper = findmin(results_df.logloss)[2]
+m = models[best_hyper]
+p_test = m(dtest)
+_logloss = logloss(p_test, data[:dtest][:, data[:target_name]])
+_accuracy = accuracy(p_test, data[:dtest][:, data[:target_name]])
+_results_test = copy(results[best_hyper])
+push!(_results_test, :logloss => _logloss, :accuracy => _accuracy)
+push!(results_test, _results_test)
+push!(preds, "neurotrees" => p_test)
 
 ################################
 # EvoTrees
@@ -63,18 +78,30 @@ hyper_list = MLBenchmarks.get_hyper_evotrees(loss="logloss", metric="logloss", n
 hyper_list = sample(hyper_list, hyper_size, replace=false)
 
 results = Dict{Symbol,Any}[]
+models = Vector()
 for (i, hyper) in enumerate(hyper_list)
     config = EvoTrees.EvoTreeRegressor(; hyper...)
     train_time = @elapsed m, logger = EvoTrees.fit_evotree(config, dtrain; deval, fnames=feature_names, target_name, metric=hyper[:metric], early_stopping_rounds=hyper[:early_stopping_rounds], print_every_n=10, return_logger=true)
-    p_test = EvoTrees.predict(m, dtest)
-    _logloss = logloss(p_test, data[:dtest][:, data[:target_name]])
-    _accuracy = accuracy(p_test, data[:dtest][:, data[:target_name]])
+    push!(models, m)
+    p_eval = EvoTrees.predict(m, deval)
+    _logloss = logloss(p_eval, data[:deval][:, data[:target_name]])
+    _accuracy = accuracy(p_eval, data[:deval][:, data[:target_name]])
     res = Dict(:model_type => "evotrees", :train_time => train_time, :best_nround => logger[:best_iter], :logloss => _logloss, :accuracy => _accuracy, hyper...)
     push!(results, res)
 end
 results_df = DataFrame(results)
 select!(results_df, result_vars, Not(result_vars))
 CSV.write(joinpath("results", data_name, "evotrees.csv"), results_df)
+
+best_hyper = findmin(results_df.logloss)[2]
+m = models[best_hyper]
+p_test = EvoTrees.predict(m, dtest)
+_logloss = logloss(p_test, data[:dtest][:, data[:target_name]])
+_accuracy = accuracy(p_test, data[:dtest][:, data[:target_name]])
+_results_test = copy(results[best_hyper])
+push!(_results_test, :logloss => _logloss, :accuracy => _accuracy)
+push!(results_test, _results_test)
+push!(preds, "evotrees" => p_test)
 
 ################################
 # XGBoost
@@ -87,17 +114,29 @@ hyper_list = MLBenchmarks.get_hyper_xgboost(objective="reg:logistic", eval_metri
 hyper_list = sample(hyper_list, hyper_size, replace=false)
 
 results = Dict{Symbol,Any}[]
+models = Vector()
 for (i, hyper) in enumerate(hyper_list)
-    train_time = @elapsed bst = XGBoost.xgboost(dtrain, watchlist=OrderedDict(["eval" => deval]); hyper...)
-    p_test = XGBoost.predict(bst, dtest)
-    _logloss = logloss(p_test, data[:dtest][:, data[:target_name]])
-    _accuracy = accuracy(p_test, data[:dtest][:, data[:target_name]])
-    res = Dict(:model_type => "xgboost", :train_time => train_time, :best_nround => bst.best_iteration, :logloss => _logloss, :accuracy => _accuracy, hyper...)
+    train_time = @elapsed m = XGBoost.xgboost(dtrain, watchlist=OrderedDict(["eval" => deval]); hyper...)
+    push!(models, m)
+    p_eval = XGBoost.predict(m, deval)
+    _logloss = logloss(p_eval, data[:deval][:, data[:target_name]])
+    _accuracy = accuracy(p_eval, data[:deval][:, data[:target_name]])
+    res = Dict(:model_type => "xgboost", :train_time => train_time, :best_nround => m.best_iteration, :logloss => _logloss, :accuracy => _accuracy, hyper...)
     push!(results, res)
 end
 results_df = DataFrame(results)
 select!(results_df, result_vars, Not(result_vars))
 CSV.write(joinpath("results", data_name, "xgboost.csv"), results_df)
+
+best_hyper = findmin(results_df.logloss)[2]
+m = models[best_hyper]
+p_test = XGBoost.predict(m, dtest)
+_logloss = logloss(p_test, data[:dtest][:, data[:target_name]])
+_accuracy = accuracy(p_test, data[:dtest][:, data[:target_name]])
+_results_test = copy(results[best_hyper])
+push!(_results_test, :logloss => _logloss, :accuracy => _accuracy)
+push!(results_test, _results_test)
+push!(preds, "xgboost" => p_test)
 
 ################################
 # LightGBM
@@ -110,12 +149,14 @@ hyper_list = MLBenchmarks.get_hyper_lgbm(objective="cross_entropy", metric=["cro
 hyper_list = sample(hyper_list, hyper_size, replace=false)
 
 results = Dict{Symbol,Any}[]
+models = Vector()
 for (i, hyper) in enumerate(hyper_list)
-    estimator = LightGBM.LGBMRegression(; hyper...)
-    train_time = @elapsed res = LightGBM.fit!(estimator, dtrain, ytrain, (deval, yeval))
-    p_test = vec(LightGBM.predict(estimator, dtest))
-    _logloss = logloss(p_test, data[:dtest][:, data[:target_name]])
-    _accuracy = accuracy(p_test, data[:dtest][:, data[:target_name]])
+    m = LightGBM.LGBMRegression(; hyper...)
+    train_time = @elapsed res = LightGBM.fit!(m, dtrain, ytrain, (deval, yeval))
+    push!(models, m)
+    p_eval = vec(LightGBM.predict(m, deval))
+    _logloss = logloss(p_eval, data[:deval][:, data[:target_name]])
+    _accuracy = accuracy(p_eval, data[:deval][:, data[:target_name]])
     res = Dict(:model_type => "lightgbm", :train_time => train_time, :best_nround => res["best_iter"], :logloss => _logloss, :accuracy => _accuracy, hyper...)
     push!(results, res)
 end
@@ -123,6 +164,15 @@ results_df = DataFrame(results)
 select!(results_df, result_vars, Not(result_vars))
 CSV.write(joinpath("results", data_name, "lightgbm.csv"), results_df)
 
+best_hyper = findmin(results_df.logloss)[2]
+m = models[best_hyper]
+p_test = vec(LightGBM.predict(m, dtest))
+_logloss = logloss(p_test, data[:dtest][:, data[:target_name]])
+_accuracy = accuracy(p_test, data[:dtest][:, data[:target_name]])
+_results_test = copy(results[best_hyper])
+push!(_results_test, :logloss => _logloss, :accuracy => _accuracy)
+push!(results_test, _results_test)
+push!(preds, "lightgbm" => p_test)
 
 ################################
 # CatBoost
@@ -136,15 +186,50 @@ hyper_list = MLBenchmarks.get_hyper_catboost(objective="Logloss", eval_metric="L
 hyper_list = sample(hyper_list, hyper_size, replace=false)
 
 results = Dict{Symbol,Any}[]
+models = Vector()
 for (i, hyper) in enumerate(hyper_list)
-    model = CatBoost.CatBoostClassifier(; hyper...)
-    train_time = @elapsed res = CatBoost.fit!(model, dtrain; eval_set=deval)
-    p_test = CatBoost.predict(model, dtest; prediction_type="Probability")[:, 2]
-    _logloss = logloss(p_test, data[:dtest][:, data[:target_name]])
-    _accuracy = accuracy(p_test, data[:dtest][:, data[:target_name]])
+    m = CatBoost.CatBoostClassifier(; hyper...)
+    train_time = @elapsed res = CatBoost.fit!(m, dtrain; eval_set=deval)
+    push!(models, m)
+    p_eval = CatBoost.predict(m, deval; prediction_type="Probability")[:, 2]
+    _logloss = logloss(p_eval, data[:deval][:, data[:target_name]])
+    _accuracy = accuracy(p_eval, data[:deval][:, data[:target_name]])
     res = Dict(:model_type => "catboost", :train_time => train_time, :best_nround => pyconvert(Int, res.best_iteration_), :logloss => _logloss, :accuracy => _accuracy, hyper...)
     push!(results, res)
 end
 results_df = DataFrame(results)
 select!(results_df, result_vars, Not(result_vars))
 CSV.write(joinpath("results", data_name, "catboost.csv"), results_df)
+
+best_hyper = findmin(results_df.logloss)[2]
+m = models[best_hyper]
+p_test = CatBoost.predict(m, dtest; prediction_type="Probability")[:, 2]
+_logloss = logloss(p_test, data[:dtest][:, data[:target_name]])
+_accuracy = accuracy(p_test, data[:dtest][:, data[:target_name]])
+_results_test = copy(results[best_hyper])
+push!(_results_test, :logloss => _logloss, :accuracy => _accuracy)
+push!(results_test, _results_test)
+push!(preds, "catboost" => p_test)
+
+################################
+# aggregate test results
+################################
+df = map(results_test) do x
+    DataFrame(x)[!, [:model_type, :train_time, :logloss, :accuracy]]
+end
+df = vcat(df...)
+CSV.write(joinpath("results", data_name, "summary.csv"), df)
+
+################################
+# correlations
+################################
+using Statistics: cor
+using PlotlyLight
+using PlotlyKaleido
+PlotlyKaleido.start()
+
+preds_df = DataFrame(preds)[!, ["neurotrees", "evotrees", "xgboost", "lightgbm", "catboost"]]
+cors = cor(Matrix(preds_df))
+p = plot.heatmap(; z=cors, x=names(preds_df), y=names(preds_df), colorscale="Viridis")
+PlotlyKaleido.savefig((; data=p.data, p.layout, p.config), joinpath("results", data_name, "corr.png"))
+PlotlyKaleido.kill_kaleido()
