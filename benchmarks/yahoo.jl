@@ -188,44 +188,44 @@ push!(preds, "xgboost" => p_test)
 ################################
 # LightGBM
 ################################
-# dtrain, ytrain = Matrix(data[:dtrain][:, data[:feature_names]]), data[:dtrain][:, data[:target_name]]
-# deval, yeval = Matrix(data[:deval][:, data[:feature_names]]), data[:deval][:, data[:target_name]]
-# dtest = Matrix(data[:dtest][:, data[:feature_names]])
-# target_name = data[:target_name]
+dtrain, ytrain = Matrix(data[:dtrain][:, data[:feature_names]]), data[:dtrain][:, data[:target_name]]
+deval, yeval = Matrix(data[:deval][:, data[:feature_names]]), data[:deval][:, data[:target_name]]
+dtest = Matrix(data[:dtest][:, data[:feature_names]])
+target_name = data[:target_name]
 
-# hyper_list = MLBenchmarks.get_hyper_lgbm(objective="mse", metric=["mse"], num_iterations=500, early_stopping_round=10, learning_rate=0.05, num_leaves=[32, 128, 512, 2048], bagging_fraction=[0.3, 0.6, 0.9], feature_fraction=[0.5, 0.9], lambda_l2=[0, 1, 10])
-# hyper_list = sample(hyper_list, hyper_size, replace=false)
+hyper_list = MLBenchmarks.get_hyper_lgbm(objective="mse", metric=["mse"], num_iterations=5000, early_stopping_round=10, learning_rate=0.05, num_leaves=[32, 128, 512, 2048], bagging_fraction=[0.3, 0.6, 0.9], feature_fraction=[0.5, 0.9], lambda_l2=[0, 1, 10])
+hyper_list = sample(hyper_list, hyper_size, replace=false)
 
-# results = Dict{Symbol,Any}[]
-# models = Vector()
+results = Dict{Symbol,Any}[]
+models = Vector()
 
-# for (i, hyper) in enumerate(hyper_list)
-#     m = LightGBM.LGBMRegression(; hyper...)
-#     train_time = @elapsed res = LightGBM.fit!(m, dtrain, ytrain, (deval, yeval))
-#     push!(models, m)
-#     p_eval = vec(LightGBM.predict(m, deval))
-#     _mse = mse(p_eval, data[:deval][:, data[:target_name]])
-#     ndcg_df = DataFrame(p=p_eval, y=data[:deval][!, target_name], q=data[:deval][!, "q"])
-#     ndcg_df = combine(groupby(ndcg_df, "q"), ["p", "y"] => ndcg => "ndcg")
-#     _ndcg = mean(ndcg_df.ndcg)
-#     res = Dict(:model_type => "lightgbm", :train_time => train_time, :best_nround => res["best_iter"], :mse => _mse, :ndcg => _ndcg, hyper...)
-#     push!(results, res)
-# end
-# results_df = DataFrame(results)
-# select!(results_df, result_vars, Not(result_vars))
-# CSV.write(joinpath("results", data_name, "lightgbm.csv"), results_df)
+for (i, hyper) in enumerate(hyper_list)
+    m = LightGBM.LGBMRegression(; hyper...)
+    train_time = @elapsed res = LightGBM.fit!(m, dtrain, ytrain, (deval, yeval))
+    push!(models, m)
+    p_eval = vec(LightGBM.predict(m, deval))
+    _mse = mse(p_eval, data[:deval][:, data[:target_name]])
+    ndcg_df = DataFrame(p=p_eval, y=data[:deval][!, target_name], q=data[:deval][!, "q"])
+    ndcg_df = combine(groupby(ndcg_df, "q"), ["p", "y"] => ndcg => "ndcg")
+    _ndcg = mean(ndcg_df.ndcg)
+    res = Dict(:model_type => "lightgbm", :train_time => train_time, :best_nround => res["best_iter"], :mse => _mse, :ndcg => _ndcg, hyper...)
+    push!(results, res)
+end
+results_df = DataFrame(results)
+select!(results_df, result_vars, Not(result_vars))
+CSV.write(joinpath("results", data_name, "lightgbm.csv"), results_df)
 
-# best_hyper = findmin(results_df.mse)[2]
-# m = models[best_hyper]
-# p_test = vec(LightGBM.predict(m, dtest))
-# _mse = mse(p_test, data[:dtest][:, data[:target_name]])
-# ndcg_df = DataFrame(p=p_test, y=data[:dtest][!, target_name], q=data[:dtest][!, "q"])
-# ndcg_df = combine(groupby(ndcg_df, "q"), ["p", "y"] => ndcg => "ndcg")
-# _ndcg = mean(ndcg_df.ndcg)
-# _results_test = copy(results[best_hyper])
-# push!(_results_test, :mse => _mse, :ndcg => _ndcg)
-# push!(results_test, _results_test)
-# push!(preds, "lightgbm" => p_test)
+best_hyper = findmin(results_df.mse)[2]
+m = models[best_hyper]
+p_test = vec(LightGBM.predict(m, dtest))
+_mse = mse(p_test, data[:dtest][:, data[:target_name]])
+ndcg_df = DataFrame(p=p_test, y=data[:dtest][!, target_name], q=data[:dtest][!, "q"])
+ndcg_df = combine(groupby(ndcg_df, "q"), ["p", "y"] => ndcg => "ndcg")
+_ndcg = mean(ndcg_df.ndcg)
+_results_test = copy(results[best_hyper])
+push!(_results_test, :mse => _mse, :ndcg => _ndcg)
+push!(results_test, _results_test)
+push!(preds, "lightgbm" => p_test)
 
 ################################
 # CatBoost

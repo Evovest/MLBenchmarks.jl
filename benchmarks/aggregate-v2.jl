@@ -20,4 +20,4 @@ var_nums = setdiff(names(df), ["model_type"])
 select!(df, :model_type, var_nums .=> (x -> round.(x, sigdigits=3)) .=> var_nums)
 
 @info data_name
-pretty_table(df; backend=Val(:markdown), show_subheader=false, alignment = :c)
+pretty_table(df; backend=Val(:markdown), show_subheader=false, alignment=:c)

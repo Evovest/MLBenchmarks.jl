@@ -787,9 +787,9 @@ version = "0.2.4"
 
 [[deps.KernelAbstractions]]
 deps = ["Adapt", "Atomix", "InteractiveUtils", "LinearAlgebra", "MacroTools", "PrecompileTools", "Requires", "SparseArrays", "StaticArrays", "UUIDs", "UnsafeAtomics", "UnsafeAtomicsLLVM"]
-git-tree-sha1 = "8e5a339882cc401688d79b811d923a38ba77d50a"
+git-tree-sha1 = "b8fcefe4418e4a7a2c3aaac883fecddd8efbe286"
 uuid = "63c18a36-062a-441e-b654-da1e3ab1ce7c"
-version = "0.9.20"
+version = "0.9.21"
 
     [deps.KernelAbstractions.extensions]
     EnzymeExt = "EnzymeCore"
@@ -873,7 +873,9 @@ version = "1.17.0+0"
 
 [[deps.LightGBM]]
 deps = ["Dates", "Libdl", "LightGBM_jll", "MLJModelInterface", "SparseArrays", "Statistics"]
-git-tree-sha1 = "0f18d5a471856cead7a930cf17cc50d88e08843d"
+git-tree-sha1 = "f9d1678e0b1f8f68c9a17e10a979cf4e8bd19b2e"
+repo-rev = "master"
+repo-url = "https://github.com/jeremiedb/LightGBM.jl"
 uuid = "7acf609c-83a4-11e9-1ffb-b912bcd3b04a"
 version = "0.7.1"
 

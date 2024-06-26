@@ -7,6 +7,7 @@ using CSV
 using Statistics: mean, std
 using StatsBase: sample
 using OrderedCollections
+using Random: seed!
 
 import NeuroTreeModels
 import EvoTrees
@@ -184,9 +185,9 @@ push!(preds, "xgboost" => p_test)
 ################################
 # LightGBM
 ################################
-dtrain, ytrain = Matrix(data[:dtrain][:, data[:feature_names]]), data[:dtrain][:, data[:target_name]]
-deval, yeval = Matrix(data[:deval][:, data[:feature_names]]), data[:deval][:, data[:target_name]]
-dtest = Matrix(data[:dtest][:, data[:feature_names]])
+dtrain, ytrain = Matrix{Float32}(data[:dtrain][:, data[:feature_names]]), data[:dtrain][:, data[:target_name]]
+deval, yeval = Matrix{Float32}(data[:deval][:, data[:feature_names]]), data[:deval][:, data[:target_name]]
+dtest = Matrix{Float32}(data[:dtest][:, data[:feature_names]])
 
 hyper_list = MLBenchmarks.get_hyper_lgbm(objective="mse", metric=["mse"], num_iterations=5000, early_stopping_round=10, learning_rate=0.05, num_leaves=[32, 128, 512, 2048], bagging_fraction=[0.3, 0.6, 0.9], feature_fraction=[0.5, 0.9], lambda_l2=[0, 1, 10])
 hyper_list = sample(hyper_list, hyper_size, replace=false)
