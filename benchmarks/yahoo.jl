@@ -14,10 +14,14 @@ import XGBoost
 import LightGBM
 import CatBoost
 
-uniformize = false
-incl_null_flag = false
+using Random: seed!
+seed!(123)
 
-data_name = incl_null_flag ? "yahoo/null" : "yahoo/raw"
+uniformize = false
+incl_null_flag = true
+
+data_name = uniformize ? "yahoo/norm" : "yahoo/raw"
+data_name *= incl_null_flag ? "/with-null" : "/no-null"
 data = load_data(:yahoo; uniformize, incl_null_flag, aws_config)
 result_vars = [:model_type, :train_time, :best_nround, :mse, :ndcg]
 hyper_size = 16
@@ -73,6 +77,13 @@ hyper_list = sample(hyper_list, hyper_size, replace=false)
 
 results = Dict{Symbol,Any}[]
 models = Vector()
+
+# warmup
+hyper = copy(first(hyper_list))
+hyper[:nrounds] = 1
+config = NeuroTreeModels.NeuroTreeRegressor(; hyper...)
+NeuroTreeModels.fit(config, dtrain; deval, feature_names, target_name="target_norm", metric=hyper[:metric], early_stopping_rounds=hyper[:early_stopping_rounds], print_every_n=10, device)
+
 for (i, hyper) in enumerate(hyper_list)
     @info "Loop $i"
     config = NeuroTreeModels.NeuroTreeRegressor(; hyper...)
@@ -117,6 +128,13 @@ hyper_list = sample(hyper_list, hyper_size, replace=false)
 
 results = Dict{Symbol,Any}[]
 models = Vector()
+
+# warmup
+hyper = copy(first(hyper_list))
+hyper[:nrounds] = 1
+config = EvoTrees.EvoTreeRegressor(; hyper...)
+EvoTrees.fit_evotree(config, dtrain; deval, fnames=feature_names, target_name, metric=hyper[:metric], early_stopping_rounds=hyper[:early_stopping_rounds], print_every_n=10, return_logger=true)
+
 for (i, hyper) in enumerate(hyper_list)
     config = EvoTrees.EvoTreeRegressor(; hyper...)
     train_time = @elapsed m, logger = EvoTrees.fit_evotree(config, dtrain; deval, fnames=feature_names, target_name, metric=hyper[:metric], early_stopping_rounds=hyper[:early_stopping_rounds], print_every_n=10, return_logger=true)
@@ -286,8 +304,7 @@ using PlotlyLight
 using PlotlyKaleido
 PlotlyKaleido.start()
 
-# preds_df = DataFrame(preds)[!, ["neurotrees", "evotrees", "xgboost", "lightgbm", "catboost"]]
-preds_df = DataFrame(preds)[!, ["neurotrees", "evotrees", "xgboost", "catboost"]]
+preds_df = DataFrame(preds)[!, ["neurotrees", "evotrees", "xgboost", "lightgbm", "catboost"]]
 cors = cor(Matrix(preds_df))
 p = plot.heatmap(; z=cors, x=names(preds_df), y=names(preds_df), colorscale="Viridis")
 PlotlyKaleido.savefig((; data=p.data, p.layout, p.config), joinpath("results", data_name, "corr.png"))

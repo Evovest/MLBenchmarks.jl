@@ -7,13 +7,15 @@ using CSV
 using Statistics: mean, std
 using StatsBase: sample
 using OrderedCollections
-using Random: seed!
 
 import NeuroTreeModels
 import EvoTrees
 import XGBoost
 import LightGBM
 import CatBoost
+
+using Random: seed!
+seed!(123)
 
 uniformize = false
 
@@ -72,6 +74,13 @@ hyper_list = sample(hyper_list, hyper_size, replace=false)
 
 results = Dict{Symbol,Any}[]
 models = Vector()
+
+# warmup
+hyper = copy(first(hyper_list))
+hyper[:nrounds] = 1
+config = NeuroTreeModels.NeuroTreeRegressor(; hyper...)
+NeuroTreeModels.fit(config, dtrain; deval, feature_names, target_name="target_norm", metric=hyper[:metric], early_stopping_rounds=hyper[:early_stopping_rounds], print_every_n=10, device)
+
 for (i, hyper) in enumerate(hyper_list)
     @info "Loop $i"
     config = NeuroTreeModels.NeuroTreeRegressor(; hyper...)
@@ -115,6 +124,13 @@ hyper_list = sample(hyper_list, hyper_size, replace=false)
 
 results = Dict{Symbol,Any}[]
 models = Vector()
+
+# warmup
+hyper = copy(first(hyper_list))
+hyper[:nrounds] = 1
+config = EvoTrees.EvoTreeRegressor(; hyper...)
+EvoTrees.fit_evotree(config, dtrain; deval, fnames=feature_names, target_name, metric=hyper[:metric], early_stopping_rounds=hyper[:early_stopping_rounds], print_every_n=10, return_logger=true)
+
 for (i, hyper) in enumerate(hyper_list)
     config = EvoTrees.EvoTreeRegressor(; hyper...)
     train_time = @elapsed m, logger = EvoTrees.fit_evotree(config, dtrain; deval, fnames=feature_names, target_name, metric=hyper[:metric], early_stopping_rounds=hyper[:early_stopping_rounds], print_every_n=10, return_logger=true)
@@ -280,8 +296,7 @@ using PlotlyLight
 using PlotlyKaleido
 PlotlyKaleido.start()
 
-# preds_df = DataFrame(preds)[!, ["neurotrees", "evotrees", "xgboost", "lightgbm", "catboost"]]
-preds_df = DataFrame(preds)[!, ["neurotrees", "evotrees", "xgboost", "catboost"]]
+preds_df = DataFrame(preds)[!, ["neurotrees", "evotrees", "xgboost", "lightgbm", "catboost"]]
 cors = cor(Matrix(preds_df))
 p = plot.heatmap(; z=cors, x=names(preds_df), y=names(preds_df), colorscale="Viridis")
 PlotlyKaleido.savefig((; data=p.data, p.layout, p.config), joinpath("results", data_name, "corr.png"))
