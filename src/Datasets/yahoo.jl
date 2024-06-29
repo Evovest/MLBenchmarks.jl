@@ -35,8 +35,9 @@ function load_data(::Type{Dataset{:yahoo}}; uniformize=false, incl_null_flag=tru
     dtest.y .= test_raw[:y]
     dtest.y_scale .= test_raw[:y] ./ 4
 
+    _feature_names = setdiff(names(dtrain), ["q", "y", "y_scale"])
+
     if incl_null_flag
-        _feature_names = setdiff(names(dtrain), ["q", "y", "y_scale"])
         _feature_names_miss = _feature_names .* "_miss"
 
         transform!(dtrain, _feature_names .=> (x -> ifelse.(x .== 0, 0, 1)) .=> _feature_names_miss)
@@ -56,8 +57,8 @@ function load_data(::Type{Dataset{:yahoo}}; uniformize=false, incl_null_flag=tru
     if uniformize
         ops = uniformer(
             dtrain;
-            vars_in=feature_names,
-            vars_out=feature_names,
+            vars_in=_feature_names,
+            vars_out=_feature_names,
             nbins=255,
             min=-1,
             max=1,

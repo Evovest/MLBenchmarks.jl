@@ -18,7 +18,7 @@ using Random: seed!
 seed!(123)
 
 uniformize = false
-incl_null_flag = true
+incl_null_flag = false
 
 data_name = uniformize ? "yahoo/norm" : "yahoo/raw"
 data_name *= incl_null_flag ? "/with-null" : "/no-null"
