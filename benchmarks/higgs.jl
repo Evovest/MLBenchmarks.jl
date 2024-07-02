@@ -113,6 +113,7 @@ hyper_list = MLBenchmarks.get_hyper_evotrees(loss="logloss", metric="logloss", n
 hyper_list = sample(hyper_list, hyper_size, replace=false)
 
 results = Dict{Symbol,Any}[]
+models = Vector()
 
 # warmup
 hyper = copy(first(hyper_list))
