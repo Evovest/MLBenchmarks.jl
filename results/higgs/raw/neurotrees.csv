@@ -1,2 +1,9 @@
 model_type,train_time,best_nround,logloss,accuracy,ntrees,metric,batchsize,nrounds,hidden_size,wd,actA,loss,init_scale,device,early_stopping_rounds,lr,depth,stack_size
-neurotrees,640.022486088,2,0.4920127,0.754376,256,logloss,2048,2,16,0.0,identity,logloss,0.0,gpu,5,0.005,3,3
+neurotrees,21141.75922192,61,0.4577042,0.777556,256,logloss,2048,200,16,0.0,identity,logloss,0.0,gpu,5,0.005,3,3
+neurotrees,5314.807071575,62,0.45790258,0.77736,32,logloss,2048,200,32,0.0,identity,logloss,0.0,gpu,5,0.005,3,3
+neurotrees,7249.125727317,63,0.45335606,0.779992,128,logloss,2048,200,24,0.0,identity,logloss,0.0,gpu,5,0.005,3,2
+neurotrees,9228.415293333,62,0.45346844,0.779734,64,logloss,2048,200,32,0.0,identity,logloss,0.0,gpu,5,0.005,3,3
+neurotrees,2756.745906567,46,0.46060988,0.775566,32,logloss,2048,200,24,0.0,identity,logloss,0.0,gpu,5,0.005,3,3
+neurotrees,22686.532210501,69,0.45390314,0.780178,256,logloss,2048,200,24,0.0,identity,logloss,0.0,gpu,5,0.005,3,3
+neurotrees,15864.645752584,78,0.4528585,0.780636,128,logloss,2048,200,24,0.0,identity,logloss,0.0,gpu,5,0.005,3,3
+neurotrees,6520.42885866,69,0.45598063,0.778384,128,logloss,2048,200,16,0.0,identity,logloss,0.0,gpu,5,0.005,3,2

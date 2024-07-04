@@ -1,2 +1,9 @@
 model_type,train_time,best_nround,logloss,accuracy,feature_fraction,metric,max_depth,learning_rate,min_data_in_leaf,objective,num_iterations,early_stopping_round,lambda_l2,num_leaves,max_bin,bagging_fraction
-lightgbm,61.757069111,0,0.4922574935272174,0.755522,0.9,"[""logloss""]",-1,0.1,20,cross_entropy,120,50,0,512,128,0.3
+lightgbm,964.093935263,0,0.4657797581511538,0.773134,0.9,"[""logloss""]",-1,0.1,20,cross_entropy,12000,50,1,128,128,0.3
+lightgbm,993.174249133,0,0.46438461840221745,0.774488,1.0,"[""logloss""]",-1,0.1,20,cross_entropy,12000,50,10,128,128,0.3
+lightgbm,3199.048205274,0,0.4918621938956193,0.781604,0.7,"[""logloss""]",-1,0.1,20,cross_entropy,12000,50,10,2048,128,0.9
+lightgbm,1191.905221301,0,0.4666155586331049,0.776924,0.9,"[""logloss""]",-1,0.1,20,cross_entropy,12000,50,0,512,128,0.9
+lightgbm,2858.800817443,0,0.5133541099109561,0.781198,0.7,"[""logloss""]",-1,0.1,20,cross_entropy,12000,50,1,2048,128,0.9
+lightgbm,3194.626116222,0,0.491862244092166,0.781604,0.7,"[""logloss""]",-1,0.1,20,cross_entropy,12000,50,10,2048,128,0.3
+lightgbm,2669.858163616,0,0.5264135900622614,0.779446,0.7,"[""logloss""]",-1,0.1,20,cross_entropy,12000,50,0,2048,128,0.3
+lightgbm,1227.338342229,0,0.4659957724037843,0.775738,0.5,"[""logloss""]",-1,0.1,20,cross_entropy,12000,50,1,512,128,0.9

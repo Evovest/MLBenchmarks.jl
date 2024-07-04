@@ -1,2 +1,9 @@
 model_type,train_time,best_nround,logloss,accuracy,gamma,L2,tree_type,metric,max_depth,lambda,min_weight,eta,rowsample,nbins,nrounds,loss,colsample,early_stopping_rounds
-evotrees,39.930319737,120,0.52246,0.73542,0,10,binary,logloss,7,0,1,0.1,0.4,128,120,logloss,0.9,50
+evotrees,1434.638562421,5202,0.4794667,0.764508,0,0,binary,logloss,7,0,1,0.1,0.4,128,12000,logloss,1.0,50
+evotrees,1424.71047256,4411,0.47429103,0.767598,0,0,binary,logloss,9,0,1,0.1,0.6,128,12000,logloss,0.5,50
+evotrees,4215.698205188,11040,0.4719817,0.769556,0,1,binary,logloss,7,0,1,0.1,0.8,128,12000,logloss,1.0,50
+evotrees,2708.040956203,3890,0.46529076,0.773932,0,10,binary,logloss,11,0,1,0.1,0.8,128,12000,logloss,0.7,50
+evotrees,1613.889029746,6139,0.47809005,0.76474,0,10,binary,logloss,7,0,1,0.1,0.4,128,12000,logloss,0.9,50
+evotrees,4514.735203453,12000,0.47211355,0.769456,0,0,binary,logloss,7,0,1,0.1,0.8,128,12000,logloss,1.0,50
+evotrees,2929.521691853,12000,0.47417253,0.767286,0,10,binary,logloss,7,0,1,0.1,0.8,128,12000,logloss,0.5,50
+evotrees,3059.878259828,5213,0.46868426,0.771388,0,1,binary,logloss,9,0,1,0.1,0.8,128,12000,logloss,1.0,50
