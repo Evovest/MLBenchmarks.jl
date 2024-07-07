@@ -8,11 +8,11 @@ data_names = [
     "titanic/raw",
     "year/raw",
     "msrank/raw",
-    "yahoo/raw",
+    "yahoo/raw/no-null",
     "higgs/raw"
 ]
 
-data_name = data_names[2]
+data_name = data_names[6]
 
 path = joinpath(@__DIR__, "..", "results", "$data_name", "summary.csv")
 df = CSV.read(path, DataFrame)

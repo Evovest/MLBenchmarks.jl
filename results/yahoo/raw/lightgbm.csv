@@ -1,3 +1,0 @@
-model_type,train_time,best_nround,mse,ndcg,feature_fraction,metric,max_depth,learning_rate,min_data_in_leaf,objective,num_iterations,early_stopping_round,lambda_l2,num_leaves,max_bin,bagging_fraction
-lightgbm,19.09741703,151,0.6105586861531656,0.7791013212705126,0.5,"[""mse""]",-1,0.05,20,mse,5000,10,10,32,128,0.3
-lightgbm,20.363787256,178,0.6100399741036887,0.7791635031966018,0.9,"[""mse""]",-1,0.05,20,mse,5000,10,1,32,128,0.9

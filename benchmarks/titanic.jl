@@ -38,7 +38,7 @@ target_name = data[:target_name]
 batchsize = min(2048, nrow(dtrain))
 device = :cpu
 
-hyper_list = MLBenchmarks.get_hyper_neurotrees(; loss=:logloss, metric=:logloss, nrounds=200, early_stopping_rounds=2, lr=3e-2, ntrees=[16, 32, 64], stack_size=[1, 2], depth=[3, 4, 5], hidden_size=[8, 16, 32], init_scale=0.0, batchsize)
+hyper_list = MLBenchmarks.get_hyper_neurotrees(; loss=:logloss, metric=:logloss, nrounds=200, early_stopping_rounds=2, lr=3e-2, ntrees=[16, 32, 64], stack_size=[1], depth=[3, 4, 5], hidden_size=[8, 16, 32], init_scale=0.0, batchsize)
 hyper_list = sample(hyper_list, hyper_size, replace=false)
 
 results = Dict{Symbol,Any}[]

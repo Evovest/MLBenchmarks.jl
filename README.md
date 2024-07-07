@@ -37,11 +37,11 @@ Comparison is performed against the following algos (implementation in link) con
 
 | **model\_type** | **train\_time** | **mse** | **gini** |
 |:---------------:|:---------------:|:-------:|:--------:|
-| neurotrees      | 19.7            | **19.6**| **0.943**|
-| evotrees        | 0.179           | 20.5    | 0.934    |
-| xgboost         | 0.0688          | 23.7    | 0.934    |
-| lightgbm        | 0.418           | 20.7    | 0.938    |
-| catboost        | 0.738           | 20.6    | 0.934    |
+| neurotrees      | 16.6            | **13.2**|**0.951** |
+| evotrees        | 0.392           | 23.5    | 0.932    |
+| xgboost         | 0.103           | 21.6    | 0.931    |
+| lightgbm        | 0.406           | 26.7    | 0.931    |
+| catboost        | 0.127           | 14.9    | 0.944    |
 
 ### Titanic
 
@@ -67,31 +67,31 @@ Comparison is performed against the following algos (implementation in link) con
 
 | **model\_type** | **train\_time** | **mse** | **ndcg** |
 |:---------------:|:---------------:|:-------:|:--------:|
-| neurotrees      | 39.1            | 0.578   | 0.462    |
-| evotrees        | 37.0            | 0.554   | **0.504**|
-| xgboost         | 12.5            | 0.554   | 0.503    |
-| lightgbm        | 37.5            |**0.553**| 0.503    |
-| catboost        | 15.1            | 0.558   | 0.497    |
+| neurotrees      | 85.1            | 0.577   | 0.467    |
+| evotrees        | 39.8            | 0.554   | 0.505    |
+| xgboost         | 19.4            | 0.554   | 0.501    |
+| lightgbm        | 38.5            |**0.553**| **0.507**|
+| catboost        | 112.0           |**0.553**| 0.504    |
 
 ### Yahoo
 
 | **model\_type** | **train\_time** | **mse** | **ndcg** |
 |:---------------:|:---------------:|:-------:|:--------:|
-| neurotrees      | 417.0           | 0.584   | 0.781    |
-| evotrees        | 687.0           | 0.545   | 0.797    |
-| xgboost         | 120.0           | 0.547   | **0.798**|
-| lightgbm        | 244.0           |**0.540**| 0.796    |
-| catboost        | 161.0           | 0.561   | 0.794    |
+| neurotrees      | 299.0           | 0.583   | 0.781    |
+| evotrees        | 442.0           | 0.545   | 0.797    |
+| xgboost         | 129.0           | 0.544   | 0.797    |
+| lightgbm        | 215.0           |**0.539**| **0.798**|
+| catboost        | 241.0           | 0.555   | 0.796    |
 
 ### Higgs
 
 | **model\_type** | **train\_time** | **logloss** | **accuracy** |
 |:---------------:|:---------------:|:-----------:|:------------:|
-| neurotrees      | 12300.0         | **0.452**   | **0.781**    |
-| evotrees        | 2620.0          | 0.464       | 0.776        |
-| xgboost         | 1390.0          | 0.462       | 0.776        |
-| lightgbm        | 1330.0          | 0.461       | 0.779        |
-| catboost        | 7180.0          | 0.464       | 0.775        |
+| neurotrees      | 15900.0         | **0.453**   | **0.781**    |
+| evotrees        | 2710.0          | 0.465       | 0.775        |
+| xgboost         | 1390.0          | 0.464       | 0.776        |
+| lightgbm        | 993.0           | 0.464       | 0.774        |
+| catboost        | 8020.0          | 0.463       | 0.776        |
 
 ## References
 
