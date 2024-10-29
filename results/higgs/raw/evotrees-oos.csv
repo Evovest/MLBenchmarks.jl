@@ -1,0 +1,9 @@
+model_type,train_time,best_nround,logloss,accuracy,gamma,L2,tree_type,metric,max_depth,lambda,min_weight,eta,rowsample,nbins,nrounds,loss,colsample,early_stopping_rounds
+evotrees,6340.431241247,6730,0.47141668,0.769132,0,10,binary,logloss,11,0,1,0.1,0.8,128,12000,logloss,0.9,50
+evotrees,3825.519602073,11993,0.48128024,0.762516,0,1,binary,logloss,7,0,1,0.1,0.8,128,12000,logloss,0.7,50
+evotrees,4203.177341938,8532,0.47590777,0.766018,0,1,binary,logloss,9,0,1,0.1,0.8,128,12000,logloss,0.7,50
+evotrees,3680.97706674,7947,0.478657,0.764334,0,1,binary,logloss,9,0,1,0.1,0.4,128,12000,logloss,1.0,50
+evotrees,3671.284397104,11993,0.48209867,0.761898,0,1,binary,logloss,7,0,1,0.1,0.4,128,12000,logloss,1.0,50
+evotrees,6287.174577956,8283,0.471568,0.769116,0,10,binary,logloss,11,0,1,0.1,1.0,128,12000,logloss,0.5,50
+evotrees,5944.135547204,11999,0.47504473,0.766758,0,10,binary,logloss,9,0,1,0.1,1.0,128,12000,logloss,0.5,50
+evotrees,2090.433791001,5718,0.481354,0.762652,0,0,binary,logloss,9,0,1,0.1,0.4,128,12000,logloss,0.7,50
