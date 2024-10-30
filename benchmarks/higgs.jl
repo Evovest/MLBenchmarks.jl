@@ -133,7 +133,7 @@ for (i, hyper) in enumerate(hyper_list)
 end
 results_df = DataFrame(results)
 select!(results_df, result_vars, Not(result_vars))
-CSV.write(joinpath("results", data_name, "evotrees.csv"), results_df)
+CSV.write(joinpath("results", data_name, "evotrees-oblivious.csv"), results_df)
 
 best_hyper = findmin(results_df.logloss)[2]
 m = models[best_hyper]

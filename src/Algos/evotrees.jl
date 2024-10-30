@@ -1,7 +1,7 @@
 function get_hyper_evotrees(;
     loss="mse",
     metric="mse",
-    tree_type="binary",
+    tree_type="oblivious",
     nrounds=500,
     early_stopping_rounds=5,
     eta=0.1,

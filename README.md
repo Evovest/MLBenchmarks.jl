@@ -4,30 +4,24 @@ This repo provides Julia based benchmarks for ML algo on tabular data.
 It was developed to support both [NeuroTreeModels.jl](https://github.com/Evovest/NeuroTreeModels.jl) and [EvoTrees.jl](https://github.com/Evovest/EvoTrees.jl) projects.
 
 
-## OOS-branch
+## Oblivious
 
-This branch tested the performance of EvoTrees [`oos-pred`](https://github.com/Evovest/EvoTrees.jl/tree/oos-pred) to assess the potential of using distinct histograms for tree construction and predictions.
-Ie, for each tree, the subsample is further split evenly between a `tree construction` and a `leaf prediction` histogram. 
-This was designed as a regularization measure as the prediction assigned to each leaf comes from an independent subsample. 
-As the results show however, such approach seems to only have potential on smaller dataset. 
-For larger dataset, we can imagine that for most splits, the relatively large number of observations likely result in mostly consistent values associated with the leaf. 
-The potential therefore appears limited given the already existing regularization mechanisms like the learning-rate (eta) and L1/L2/lambda,
-There may be value for small dataset, or highly volatile ones. 
+This branch tests the performance of EvoTrees `oblivious` tree type option.
 
-| **model** | **metric** | **ref** | **oos** |
-|:---------:|:----------:|:-------:|:-------:|
-| boston    | mse        | 6.3     | 6.58    |
-| boston    | gini       | 0.945   | 0.952   |
-| titanic   | logloss    | 0.341   | 0.348   |
-| titanic   | accuracy   | 0.872   | 0.872   |
-| year      | mse        | 74.9    | 76.7    |
-| year      | gini       | 0.662   | 0.654   |
-| msrank    | mse        | 0.55    | 0.55    |
-| msrank    | ndcg       | 0.511   | 0.512   |
-| yahoo     | mse        | 0.565   | 0.578   |
-| yahoo     | ndcg       | 0.795   | 0.792   |
-| higgs     | logloss    | 0.465   | 0.471   |
-| higgs     | accuracy   | 0.774   | 0.769   |
+| **model** | **metric** | **ref** | **oblivious** |
+|:---------:|:----------:|:-------:|:-------------:|
+| boston    | mse        | 6.3     | 7.02          |
+| boston    | gini       | 0.945   | 0.944         |
+| titanic   | logloss    | 0.341   | 0.352         |
+| titanic   | accuracy   | 0.872   | 0.857         |
+| year      | mse        | 74.9    | 75.6          |
+| year      | gini       | 0.662   | 0.663         |
+| msrank    | mse        | 0.55    | 0.553         |
+| msrank    | ndcg       | 0.511   | 0.508         |
+| yahoo     | mse        | 0.565   | 0.586         |
+| yahoo     | ndcg       | 0.795   | 0.789         |
+| higgs     | logloss    | 0.465   | 0.468         |
+| higgs     | accuracy   | 0.774   | 0.772         |
 
 ## Methodology
 
