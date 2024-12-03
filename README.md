@@ -4,7 +4,7 @@ This repo provides Julia based benchmarks for ML algo on tabular data.
 It was developed to support both [NeuroTreeModels.jl](https://github.com/Evovest/NeuroTreeModels.jl) and [EvoTrees.jl](https://github.com/Evovest/EvoTrees.jl) projects.
 
 
-## Oblivious
+## Credibility-based losses
 
 This branch tests the performance of various EvoTrees `cred` loss types.
 
