@@ -6,22 +6,18 @@ It was developed to support both [NeuroTreeModels.jl](https://github.com/Evovest
 
 ## Oblivious
 
-This branch tests the performance of EvoTrees `oblivious` tree type option.
+This branch tests the performance of various EvoTrees `cred` loss types.
 
-| **model** | **metric** | **ref** | **oblivious** |
-|:---------:|:----------:|:-------:|:-------------:|
-| boston    | mse        | 6.3     | 7.02          |
-| boston    | gini       | 0.945   | 0.944         |
-| titanic   | logloss    | 0.341   | 0.352         |
-| titanic   | accuracy   | 0.872   | 0.857         |
-| year      | mse        | 74.9    | 75.6          |
-| year      | gini       | 0.662   | 0.663         |
-| msrank    | mse        | 0.55    | 0.553         |
-| msrank    | ndcg       | 0.511   | 0.508         |
-| yahoo     | mse        | 0.565   | 0.586         |
-| yahoo     | ndcg       | 0.795   | 0.789         |
-| higgs     | logloss    | 0.465   | 0.468         |
-| higgs     | accuracy   | 0.774   | 0.772         |
+| **model** | **metric** | **ref** | **credV1A** | **credV2A** | **credV1B** | **credV2B** |
+|:---------:|:----------:|:-------:|:-----------:|:-----------:|:-----------:|:-----------:|
+| boston    | mse        | 6.3     | 6.18        | 6.01        | 6.47        | 6.18        |
+| boston    | gini       | 0.945   | 0.948       | 0.953       | 0.949       | 0.944       |
+| year      | mse        | 74.9    | 78.3        | 74.3        | 77.6        | 76.9        |
+| year      | gini       | 0.662   | 0.645       | 0.667       | 0.653       | 0.651       |
+| msrank    | mse        | 0.55    | 0.56        | 0.55        | 0.552       | 0.552       |
+| msrank    | ndcg       | 0.511   | 0.499       | 0.509       | 0.509       | 0.509       |
+| yahoo     | mse        | 0.565   | 0.587       | 0.569       | missing     | missing     |
+| yahoo     | ndcg       | 0.795   | 0.787       | 0.793       | missing     | missing     |
 
 ## Methodology
 

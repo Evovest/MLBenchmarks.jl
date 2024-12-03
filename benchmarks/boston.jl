@@ -89,7 +89,8 @@ dtest = data[:dtest]
 feature_names = data[:feature_names]
 target_name = data[:target_name]
 
-hyper_list = MLBenchmarks.get_hyper_evotrees(loss="mse", metric="mse", nrounds=1000, early_stopping_rounds=10, eta=0.05, max_depth=5:2:11, rowsample=[0.4, 0.6, 0.8, 1.0], colsample=[0.4, 0.6, 0.8, 1.0], L2=[0, 1, 10])
+loss = "credV2B" 
+hyper_list = MLBenchmarks.get_hyper_evotrees(; loss, metric="mse", nrounds=1000, early_stopping_rounds=10, eta=0.05, max_depth=5:2:11, rowsample=[0.4, 0.6, 0.8, 1.0], colsample=[0.4, 0.6, 0.8, 1.0], L2=[0, 1, 10])
 hyper_list = sample(hyper_list, hyper_size, replace=false)
 
 results = Dict{Symbol,Any}[]
@@ -113,7 +114,7 @@ for (i, hyper) in enumerate(hyper_list)
 end
 results_df = DataFrame(results)
 select!(results_df, result_vars, Not(result_vars))
-CSV.write(joinpath("results", data_name, "evotrees-oblivious.csv"), results_df)
+CSV.write(joinpath("results", data_name, "evotrees-$loss.csv"), results_df)
 
 best_hyper = findmin(results_df.mse)[2]
 m = models[best_hyper]
