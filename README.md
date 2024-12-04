@@ -16,8 +16,8 @@ This branch tests the performance of various EvoTrees `cred` loss types.
 | year      | gini       | 0.662   | 0.645       | 0.667       | 0.653       | 0.651       |
 | msrank    | mse        | 0.55    | 0.56        | 0.55        | 0.552       | 0.552       |
 | msrank    | ndcg       | 0.511   | 0.499       | 0.509       | 0.509       | 0.509       |
-| yahoo     | mse        | 0.565   | 0.587       | 0.569       | missing     | missing     |
-| yahoo     | ndcg       | 0.795   | 0.787       | 0.793       | missing     | missing     |
+| yahoo     | mse        | 0.565   | 0.587       | 0.569       | 0.57        | 0.571       |
+| yahoo     | ndcg       | 0.795   | 0.787       | 0.793       | 0.792       | 0.792       |
 
 ## Methodology
 
