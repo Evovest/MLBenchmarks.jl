@@ -6,18 +6,19 @@ It was developed to support both [NeuroTreeModels.jl](https://github.com/Evovest
 
 ## Credibility-based losses
 
-This branch tests the performance of various EvoTrees `cred` loss types.
+This branch tests the performance of various EvoTrees `cred` loss types. `cred2` branch uses non-shrinked leaf predictions (not multiplied by *Z*)
+
 
 | **model** | **metric** | **ref** | **credV1A** | **credV2A** | **credV1B** | **credV2B** |
 |:---------:|:----------:|:-------:|:-----------:|:-----------:|:-----------:|:-----------:|
-| boston    | mse        | 6.3     | 6.18        | 6.01        | 6.47        | 6.18        |
-| boston    | gini       | 0.945   | 0.948       | 0.953       | 0.949       | 0.944       |
-| year      | mse        | 74.9    | 78.3        | 74.3        | 77.6        | 76.9        |
-| year      | gini       | 0.662   | 0.645       | 0.667       | 0.653       | 0.651       |
-| msrank    | mse        | 0.55    | 0.56        | 0.55        | 0.552       | 0.552       |
-| msrank    | ndcg       | 0.511   | 0.499       | 0.509       | 0.509       | 0.509       |
-| yahoo     | mse        | 0.565   | 0.587       | 0.569       | 0.57        | 0.571       |
-| yahoo     | ndcg       | 0.795   | 0.787       | 0.793       | 0.792       | 0.792       |
+| boston    | mse        | 6.3     | 6.01        | 5.86        | 6.53        | 6.18        |
+| boston    | gini       | 0.945   | 0.955       | 0.949       | 0.944       | 0.949       |
+| year      | mse        | 74.9    | 77.5        | 75.3        | 74.3        | 74.3        |
+| year      | gini       | 0.662   | 0.65        | 0.66        | 0.664       | 0.665       |
+| msrank    | mse        | 0.55    | 0.554       | 0.55        | 0.553       | 0.552       |
+| msrank    | ndcg       | 0.511   | 0.506       | 0.51        | 0.506       | 0.509       |
+| yahoo     | mse        | 0.565   | 0.588       | 0.568       | 0.574       | 0.571       |
+| yahoo     | ndcg       | 0.795   | 0.787       | 0.795       | 0.793       | 0.791       |
 
 ## Methodology
 
