@@ -90,8 +90,8 @@ dtest = data[:dtest]
 feature_names = data[:feature_names]
 target_name = data[:target_name]
 
-loss = "credV2A" 
-hyper_list = MLBenchmarks.get_hyper_evotrees(; loss, metric="mse", nrounds=6000, early_stopping_rounds=10, eta=0.1, max_depth=5:2:11, rowsample=[0.4, 0.6, 0.8, 1.0], colsample=[0.4, 0.6, 0.8, 1.0], L2=[0, 1, 10])
+loss = "cred_var"
+hyper_list = MLBenchmarks.get_hyper_evotrees(; loss, metric="mse", nrounds=6000, early_stopping_rounds=10, eta=0.1, max_depth=5:2:11, rowsample=[0.4, 0.6, 0.8, 1.0], colsample=[0.4, 0.6, 0.8, 1.0], lambda=[0, 1], L2=[0])
 hyper_list = sample(hyper_list, hyper_size, replace=false)
 
 results = Dict{Symbol,Any}[]
@@ -101,16 +101,16 @@ models = Vector()
 hyper = copy(first(hyper_list))
 hyper[:nrounds] = 1
 config = EvoTrees.EvoTreeRegressor(; hyper...)
-EvoTrees.fit_evotree(config, dtrain; deval, fnames=feature_names, target_name, metric=hyper[:metric], early_stopping_rounds=hyper[:early_stopping_rounds], print_every_n=100, return_logger=true)
+EvoTrees.fit_evotree(config, dtrain; deval, feature_names, target_name, print_every_n=1)
 
 for (i, hyper) in enumerate(hyper_list)
     config = EvoTrees.EvoTreeRegressor(; hyper...)
-    train_time = @elapsed m, logger = EvoTrees.fit_evotree(config, dtrain; deval, fnames=feature_names, target_name, metric=hyper[:metric], early_stopping_rounds=hyper[:early_stopping_rounds], print_every_n=100, return_logger=true)
+    train_time = @elapsed m = EvoTrees.fit_evotree(config, dtrain; deval, feature_names, target_name, print_every_n=100)
     push!(models, m)
     p_eval = EvoTrees.predict(m, deval)
     _mse = mse(p_eval, data[:deval][:, data[:target_name]])
     _gini = gini(p_eval, data[:deval][:, data[:target_name]])
-    res = Dict(:model_type => "evotrees", :train_time => train_time, :best_nround => logger[:best_iter], :mse => _mse, :gini => _gini, hyper...)
+    res = Dict(:model_type => "evotrees", :train_time => train_time, :best_nround => m.info[:logger][:best_iter], :mse => _mse, :gini => _gini, hyper...)
     push!(results, res)
 end
 results_df = DataFrame(results)

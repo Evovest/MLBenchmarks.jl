@@ -100,11 +100,11 @@ models = Vector()
 hyper = copy(first(hyper_list))
 hyper[:nrounds] = 1
 config = EvoTrees.EvoTreeRegressor(; hyper...)
-EvoTrees.fit_evotree(config, dtrain; deval, fnames=feature_names, target_name, print_every_n=10)
+EvoTrees.fit_evotree(config, dtrain; deval, feature_names, target_name, print_every_n=10)
 
 for (i, hyper) in enumerate(hyper_list)
     config = EvoTrees.EvoTreeRegressor(; hyper...)
-    train_time = @elapsed m = EvoTrees.fit_evotree(config, dtrain; deval, fnames=feature_names, target_name, print_every_n=10)
+    train_time = @elapsed m = EvoTrees.fit_evotree(config, dtrain; deval, feature_names, target_name, print_every_n=10)
     push!(models, m)
     p_eval = EvoTrees.predict(m, deval)
     _mse = mse(p_eval, data[:deval][:, data[:target_name]])
