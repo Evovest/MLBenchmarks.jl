@@ -8,6 +8,7 @@ function get_hyper_catboost(;
     subsample=0.5,
     rsm=0.5,
     reg_lambda=1,
+    border_count=64
 )
 
     # tunable = [:eta, :max_depth, :subsample, :colsample_bytree, :lambda, :max_bin]
@@ -25,6 +26,7 @@ function get_hyper_catboost(;
             :subsample => _subsample,
             :rsm => _rsm,
             :reg_lambda => _reg_lambda,
+            :border_count => border_count,
         )
 
         push!(hyper_list, hyper)

@@ -1,18 +1,18 @@
 function get_hyper_evotrees(;
-    loss="mse",
-    metric="mse",
-    tree_type="binary",
+    loss=:mse,
+    metric=:mse,
+    tree_type=:binary,
     nrounds=500,
     early_stopping_rounds=5,
     eta=0.1,
-    L2=1,
+    L2=1.0,
     lambda=0,
     gamma=0,
     min_weight=1,
     max_depth=6,
     rowsample=0.5,
     colsample=0.5,
-    nbins=128,
+    nbins=32,
 )
 
     # tunable = [:eta, :max_depth, :subsample, :colsample_bytree, :lambda, :max_bin]
@@ -23,7 +23,7 @@ function get_hyper_evotrees(;
         hyper = Dict(
             :loss => loss,
             :metric => metric,
-            :tree_type => tree_type, # hist/gpu_hist
+            :tree_type => tree_type,
             :nrounds => nrounds,
             :early_stopping_rounds => early_stopping_rounds,
             :eta => _eta,

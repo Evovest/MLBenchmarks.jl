@@ -82,12 +82,12 @@ models = Vector()
 hyper = copy(first(hyper_list))
 hyper[:nrounds] = 1
 config = NeuroTreeModels.NeuroTreeRegressor(; hyper...)
-NeuroTreeModels.fit(config, dtrain; deval, feature_names, target_name="target_norm", metric=hyper[:metric], early_stopping_rounds=hyper[:early_stopping_rounds], print_every_n=10, device)
+NeuroTreeModels.fit(config, dtrain; deval, feature_names, target_name="target_norm", print_every_n=10)
 
 for (i, hyper) in enumerate(hyper_list)
     @info "Loop $i"
     config = NeuroTreeModels.NeuroTreeRegressor(; hyper...)
-    train_time = @elapsed m = NeuroTreeModels.fit(config, dtrain; deval, feature_names, target_name="target_norm", metric=hyper[:metric], early_stopping_rounds=hyper[:early_stopping_rounds], print_every_n=10, device)
+    train_time = @elapsed m = NeuroTreeModels.fit(config, dtrain; deval, feature_names, target_name="target_norm", print_every_n=10)
     push!(models, m)
     p_eval = m(deval) .* _std .+ _mean
     _mse = mse(p_eval, data[:deval][:, data[:target_name]])
@@ -122,7 +122,7 @@ dtest = data[:dtest]
 feature_names = data[:feature_names]
 target_name = data[:target_name]
 
-hyper_list = MLBenchmarks.get_hyper_evotrees(loss="mse", metric="mse", nrounds=5000, early_stopping_rounds=10, eta=0.05, max_depth=5:2:11, rowsample=[0.4, 0.6, 0.8, 1.0], colsample=[0.4, 0.6, 0.8, 1.0], L2=[0, 1, 10])
+hyper_list = MLBenchmarks.get_hyper_evotrees(loss=:mse, metric=:mse, nrounds=5000, early_stopping_rounds=10, eta=0.05, max_depth=5:2:11, rowsample=[0.4, 0.6, 0.8, 1.0], colsample=[0.4, 0.6, 0.8, 1.0], L2=[0, 1, 10])
 hyper_list = sample(hyper_list, hyper_size, replace=false)
 # hyper_list = hyper_list[1:1]
 
@@ -133,18 +133,18 @@ models = Vector()
 hyper = copy(first(hyper_list))
 hyper[:nrounds] = 1
 config = EvoTrees.EvoTreeRegressor(; hyper...)
-EvoTrees.fit_evotree(config, dtrain; deval, fnames=feature_names, target_name, metric=hyper[:metric], early_stopping_rounds=hyper[:early_stopping_rounds], print_every_n=10, return_logger=true)
+EvoTrees.fit(config, dtrain; deval, feature_names, target_name, print_every_n=100)
 
 for (i, hyper) in enumerate(hyper_list)
     config = EvoTrees.EvoTreeRegressor(; hyper...)
-    train_time = @elapsed m, logger = EvoTrees.fit_evotree(config, dtrain; deval, fnames=feature_names, target_name, metric=hyper[:metric], early_stopping_rounds=hyper[:early_stopping_rounds], print_every_n=10, return_logger=true)
+    train_time = @elapsed m = EvoTrees.fit(config, dtrain; deval, feature_names, target_name, print_every_n=100)
     push!(models, m)
     p_eval = EvoTrees.predict(m, deval)
     _mse = mse(p_eval, data[:deval][:, data[:target_name]])
     ndcg_df = DataFrame(p=p_eval, y=data[:deval][!, target_name], q=data[:deval][!, "q"])
     ndcg_df = combine(groupby(ndcg_df, "q"), ["p", "y"] => ndcg => "ndcg")
     _ndcg = mean(ndcg_df.ndcg)
-    res = Dict(:model_type => "evotrees", :train_time => train_time, :best_nround => logger[:best_iter], :mse => _mse, :ndcg => _ndcg, hyper...)
+    res = Dict(:model_type => "evotrees", :train_time => train_time, :best_nround => m.info[:logger][:best_iter], :mse => _mse, :ndcg => _ndcg, hyper...)
     push!(results, res)
 end
 results_df = DataFrame(results)
@@ -211,7 +211,7 @@ deval, yeval = Matrix(data[:deval][:, data[:feature_names]]), data[:deval][:, da
 dtest = Matrix(data[:dtest][:, data[:feature_names]])
 target_name = data[:target_name]
 
-hyper_list = MLBenchmarks.get_hyper_lgbm(objective="mse", metric=["mse"], num_iterations=5000, early_stopping_round=10, learning_rate=0.05, num_leaves=[32, 128, 512, 2048], bagging_fraction=[0.3, 0.6, 0.9], feature_fraction=[0.5, 0.9], lambda_l2=[0, 1, 10])
+hyper_list = MLBenchmarks.get_hyper_lgbm(objective="mse", metric=["mse"], num_iterations=5000, early_stopping_round=10, learning_rate=0.05, num_leaves=[32, 128, 512, 2048], bagging_fraction=[0.4, 0.6, 0.8, 1.0], feature_fraction=[0.4, 0.6, 0.8, 1.0], lambda_l2=[0, 1, 10])
 hyper_list = sample(hyper_list, hyper_size, replace=false)
 
 results = Dict{Symbol,Any}[]
@@ -254,7 +254,7 @@ deval = CatBoost.Pool(data[:deval][:, data[:feature_names]], label=PyList(data[:
 dtest = CatBoost.Pool(data[:dtest][:, data[:feature_names]])
 target_name = data[:target_name]
 
-hyper_list = MLBenchmarks.get_hyper_catboost(objective="RMSE", eval_metric="RMSE", iterations=5000, early_stopping_rounds=10, learning_rate=0.05, max_depth=4:2:10, subsample=[0.3, 0.6, 0.9], rsm=[0.5, 0.9], reg_lambda=[0, 1, 10])
+hyper_list = MLBenchmarks.get_hyper_catboost(objective="RMSE", eval_metric="RMSE", iterations=5000, early_stopping_rounds=10, learning_rate=0.05, max_depth=4:2:10, subsample=[0.4, 0.6, 0.8, 1.0], rsm=[0.4, 0.6, 0.8, 1.0], reg_lambda=[0, 1, 10])
 hyper_list = sample(hyper_list, hyper_size, replace=false)
 
 results = Dict{Symbol,Any}[]
