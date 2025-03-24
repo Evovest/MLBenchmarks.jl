@@ -13,6 +13,7 @@ function get_hyper_neurotrees(;
     batchsize=2048,
     stack_size=1,
     hidden_size=1,
+    MLE_tree_split=true
 )
 
     # tunable = [:eta, :max_depth, :subsample, :colsample_bytree, :lambda, :max_bin]
@@ -34,6 +35,7 @@ function get_hyper_neurotrees(;
             :init_scale => _init_scale,
             :stack_size => _stack_size,
             :hidden_size => _hidden_size,
+            :MLE_tree_split => MLE_tree_split,
             :batchsize => batchsize
         )
 

@@ -1,0 +1,17 @@
+model_type,train_time,best_nround,mse,gini,stack_size,ntrees,metric,batchsize,nrounds,hidden_size,wd,actA,loss,init_scale,device,early_stopping_rounds,hyper_id,MLE_tree_split,lr,depth
+neurotrees-gaussian,12.215742245,110,14.07526015715268,0.9543945799257875,1,64,gaussian_mle,354,200,32,0.0,identity,gaussian_mle,0.0,gpu,2,1,true,0.01,4
+neurotrees-gaussian,11.970462501,108,14.027570130519731,0.9550517823847586,1,32,gaussian_mle,354,200,32,0.0,identity,gaussian_mle,0.0,gpu,2,2,true,0.01,5
+neurotrees-gaussian,13.530428324,124,13.058013416335804,0.9556129889789363,1,32,gaussian_mle,354,200,16,0.0,identity,gaussian_mle,0.0,gpu,2,3,true,0.01,3
+neurotrees-gaussian,12.736486918,116,13.48035981532277,0.9551625468441358,1,32,gaussian_mle,354,200,32,0.0,identity,gaussian_mle,0.0,gpu,2,4,true,0.01,4
+neurotrees-gaussian,12.629831817,111,13.646474378934238,0.9571784600047996,1,64,gaussian_mle,354,200,16,0.0,identity,gaussian_mle,0.0,gpu,2,5,true,0.01,5
+neurotrees-gaussian,11.457001162,105,15.034656351347286,0.9524968155217932,1,16,gaussian_mle,354,200,8,0.0,identity,gaussian_mle,0.0,gpu,2,6,true,0.01,4
+neurotrees-gaussian,11.601237928,109,14.866626854424629,0.953611844412856,1,16,gaussian_mle,354,200,8,0.0,identity,gaussian_mle,0.0,gpu,2,7,true,0.01,3
+neurotrees-gaussian,11.341067602,107,14.238585112014395,0.9560191253299859,1,16,gaussian_mle,354,200,32,0.0,identity,gaussian_mle,0.0,gpu,2,8,true,0.01,4
+neurotrees-gaussian,12.323543604,117,13.867182194824998,0.9537299931695248,1,64,gaussian_mle,354,200,32,0.0,identity,gaussian_mle,0.0,gpu,2,9,true,0.01,3
+neurotrees-gaussian,11.552239978,109,14.357014201049756,0.9546677989255847,1,16,gaussian_mle,354,200,16,0.0,identity,gaussian_mle,0.0,gpu,2,10,true,0.01,4
+neurotrees-gaussian,11.926283273,114,14.129121219006645,0.9542985840609942,1,64,gaussian_mle,354,200,16,0.0,identity,gaussian_mle,0.0,gpu,2,11,true,0.01,3
+neurotrees-gaussian,11.679219595,110,13.95304947394285,0.9533903154941016,1,32,gaussian_mle,354,200,16,0.0,identity,gaussian_mle,0.0,gpu,2,12,true,0.01,4
+neurotrees-gaussian,12.459024054,113,13.319529274846488,0.9595783566246378,1,64,gaussian_mle,354,200,32,0.0,identity,gaussian_mle,0.0,gpu,2,13,true,0.01,5
+neurotrees-gaussian,11.909236575,111,13.049492768816856,0.9576436707341834,1,16,gaussian_mle,354,200,32,0.0,identity,gaussian_mle,0.0,gpu,2,14,true,0.01,5
+neurotrees-gaussian,10.965537432,103,14.630581757112742,0.9523638981705408,1,16,gaussian_mle,354,200,8,0.0,identity,gaussian_mle,0.0,gpu,2,15,true,0.01,5
+neurotrees-gaussian,12.376160463,115,13.376089668065918,0.9572670715723016,1,64,gaussian_mle,354,200,16,0.0,identity,gaussian_mle,0.0,gpu,2,16,true,0.01,4

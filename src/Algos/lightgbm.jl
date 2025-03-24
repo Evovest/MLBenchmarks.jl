@@ -10,7 +10,7 @@ function get_hyper_lgbm(;
     max_depth=-1,
     bagging_fraction=0.9,
     feature_fraction=0.8,
-    max_bin=32,
+    max_bin=64,
     lambda_l2=1,
 )
 
