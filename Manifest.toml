@@ -1238,8 +1238,8 @@ version = "1.2.0"
 
 [[deps.NeuroTreeModels]]
 deps = ["CUDA", "CategoricalArrays", "ChainRulesCore", "DataFrames", "Flux", "MLJModelInterface", "MLUtils", "Optimisers", "Random", "Statistics", "StatsBase", "Tables", "cuDNN"]
-git-tree-sha1 = "4fa12a78f4fbce3079ddc5001678b4727cdaac19"
-repo-rev = "jdb/legacy"
+git-tree-sha1 = "6abf04910dac329a485576f62251f943cca820b1"
+repo-rev = "jdb/legacy-III"
 repo-url = "https://github.com/Evovest/NeuroTreeModels.jl.git"
 uuid = "1db4e0a5-a364-4b0c-897c-2bd5a4a3a1f2"
 version = "1.4.0"
