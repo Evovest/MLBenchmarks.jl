@@ -43,7 +43,7 @@ _std = std(dtrain[!, target_name])
 dtrain.target_norm = (dtrain[!, target_name] .- _mean) ./ _std
 deval.target_norm = (deval[!, target_name] .- _mean) ./ _std
 
-hyper_list = MLBenchmarks.get_hyper_neurotrees(; loss=:mse, metric=:mse, nrounds=200, early_stopping_rounds=2, lr=3e-2, ntrees=[16, 32, 64], stack_size=[1], depth=[3, 4, 5], hidden_size=[8, 16, 32], init_scale=0.0, batchsize)
+hyper_list = MLBenchmarks.get_hyper_neurotrees(; loss=:mse, metric=:mse, nrounds=200, early_stopping_rounds=2, lr=4e-2, ntrees=[16, 32, 64], stack_size=[1], depth=[3, 4, 5], hidden_size=[8, 16, 32], init_scale=0.0, batchsize)
 hyper_list = sample(hyper_list, min(hyper_size, length(hyper_list)), replace=false)
 
 results = Dict{Symbol,Any}[]
@@ -79,60 +79,6 @@ _results_test = copy(results[best_hyper])
 push!(_results_test, :mse => _mse, :gini => _gini)
 push!(results_test, _results_test)
 push!(preds, "neurotrees" => p_test)
-
-
-################################
-# NeuroTrees-Gaussian
-################################
-dtrain = data[:dtrain]
-deval = data[:deval]
-dtest = data[:dtest]
-feature_names = data[:feature_names]
-target_name = data[:target_name]
-batchsize = min(2048, nrow(dtrain))
-device = :cpu
-
-_mean = mean(dtrain[!, target_name])
-_std = std(dtrain[!, target_name])
-dtrain.target_norm = (dtrain[!, target_name] .- _mean) ./ _std
-deval.target_norm = (deval[!, target_name] .- _mean) ./ _std
-
-hyper_list = MLBenchmarks.get_hyper_neurotrees(; loss=:gaussian_mle, metric=:gaussian_mle, nrounds=200, early_stopping_rounds=2, lr=1e-2, ntrees=[16, 32, 64], stack_size=[1], depth=[3, 4, 5], hidden_size=[8, 16, 32], init_scale=0.0, batchsize)
-hyper_list = sample(hyper_list, min(hyper_size, length(hyper_list)), replace=false)
-
-results = Dict{Symbol,Any}[]
-models = Vector()
-
-# warmup
-hyper = copy(first(hyper_list))
-hyper[:nrounds] = 1
-config = NeuroTreeModels.NeuroTreeRegressor(; hyper...)
-NeuroTreeModels.fit(config, dtrain; deval, feature_names, target_name="target_norm", print_every_n=10)
-
-for (i, hyper) in enumerate(hyper_list)
-    @info "Loop $i"
-    config = NeuroTreeModels.NeuroTreeRegressor(; hyper...)
-    train_time = @elapsed m = NeuroTreeModels.fit(config, dtrain; deval, feature_names, target_name="target_norm", print_every_n=10)
-    push!(models, m)
-    p_eval = m(deval)[:, 1] .* _std .+ _mean
-    _mse = mse(p_eval, data[:deval][:, data[:target_name]])
-    _gini = gini(p_eval, data[:deval][:, data[:target_name]])
-    res = Dict(:model_type => "neurotrees-gaussian", :hyper_id => i, :train_time => train_time, :best_nround => m.info[:logger][:best_iter], :mse => _mse, :gini => _gini, hyper...)
-    push!(results, res)
-end
-results_df = DataFrame(results)
-select!(results_df, result_vars, Not(result_vars))
-CSV.write(joinpath("results", data_name, "neurotrees-gaussian.csv"), results_df)
-
-best_hyper = findmin(results_df.mse)[2]
-m = models[best_hyper]
-p_test = m(dtest)[:, 1] .* _std .+ _mean
-_mse = mse(p_test, data[:dtest][:, data[:target_name]])
-_gini = gini(p_test, data[:dtest][:, data[:target_name]])
-_results_test = copy(results[best_hyper])
-push!(_results_test, :mse => _mse, :gini => _gini)
-push!(results_test, _results_test)
-push!(preds, "neurotrees-gaussian" => p_test)
 
 ################################
 # EvoTrees
@@ -304,7 +250,7 @@ using PlotlyLight
 using PlotlyKaleido
 PlotlyKaleido.start()
 
-preds_df = DataFrame(preds)[!, ["neurotrees", "neurotrees-gaussian", "evotrees", "xgboost", "lightgbm", "catboost"]]
+preds_df = DataFrame(preds)[!, ["neurotrees", "evotrees", "xgboost", "lightgbm", "catboost"]]
 cors = cor(Matrix(preds_df))
 p = plot.heatmap(; z=cors, x=names(preds_df), y=names(preds_df), colorscale="Viridis")
 PlotlyKaleido.savefig((; data=p.data, p.layout, p.config), joinpath("results", data_name, "corr.png"))
