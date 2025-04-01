@@ -9,7 +9,7 @@ function get_hyper_neurotrees(;
     ntrees=64,
     depth=4,
     actA=["identity"],
-    init_scale=1,
+    init_scale=0,
     batchsize=2048,
     stack_size=1,
     hidden_size=1,
