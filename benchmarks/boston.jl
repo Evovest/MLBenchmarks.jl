@@ -90,7 +90,7 @@ feature_names = data[:feature_names]
 target_name = data[:target_name]
 
 loss = "cred_std"
-hyper_list = MLBenchmarks.get_hyper_evotrees(; loss, metric="mse", nrounds=1000, early_stopping_rounds=10, eta=0.05, max_depth=5:2:11, rowsample=[0.4, 0.6, 0.8, 1.0], colsample=[0.4, 0.6, 0.8, 1.0], lambda=[0, 1], L2=[0])
+hyper_list = MLBenchmarks.get_hyper_evotrees(; loss, metric="mse", nrounds=1000, early_stopping_rounds=10, eta=0.05, max_depth=5:2:11, rowsample=[0.4, 0.6, 0.8, 1.0], colsample=[0.4, 0.6, 0.8, 1.0], lambda=[0], L2=[0, 1, 10])
 hyper_list = sample(hyper_list, hyper_size, replace=false)
 
 results = Dict{Symbol,Any}[]
