@@ -517,7 +517,7 @@ weakdeps = ["Adapt"]
 
 [[deps.EvoTrees]]
 deps = ["BSON", "CategoricalArrays", "Distributions", "MLJModelInterface", "NetworkLayout", "Random", "RecipesBase", "Statistics", "StatsBase", "Tables"]
-git-tree-sha1 = "030797b7d79b9e933a33c1f57b8993f39678a382"
+git-tree-sha1 = "82385f8c596913ef7c7c7a58468e1d11091b24c4"
 repo-rev = "jdb/bagging"
 repo-url = "https://github.com/Evovest/EvoTrees.jl.git"
 uuid = "f6006082-12f8-11e9-0c9c-0d5d367ab1e5"
