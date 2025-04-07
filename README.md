@@ -10,14 +10,14 @@ This branch tests the performance of various EvoTrees `cred` loss types.
 
 | **model** | **metric** | **ref** | **cred\_var** | **cred\_std** |
 |:---------:|:----------:|:-------:|:-------------:|:-------------:|
-| boston    | mse        | 6.3     | 6.17          | 5.86          |
-| boston    | gini       | 0.945   | 0.949         | 0.949         |
-| year      | mse        | 74.9    | 74.7          | 74.9          |
-| year      | gini       | 0.662   | 0.662         | 0.662         |
-| msrank    | mse        | 0.55    | 0.553         | 0.55          |
-| msrank    | ndcg       | 0.511   | 0.506         | 0.508         |
-| yahoo     | mse        | 0.565   | 0.575         | 0.571         |
-| yahoo     | ndcg       | 0.795   | 0.79          | 0.793         |
+| boston    | mse        | 6.3     | 5.95          | 5.43          |
+| boston    | gini       | 0.945   | 0.947         | 0.952         |
+| year      | mse        | 74.9    | 74.6          | 74.2          |
+| year      | gini       | 0.662   | 0.664         | 0.661         |
+| msrank    | mse        | 0.55    | 0.551         | 0.549         |
+| msrank    | ndcg       | 0.511   | 0.51          | 0.512         |
+| yahoo     | mse        | 0.565   | 0.587         | 0.568         |
+| yahoo     | ndcg       | 0.795   | 0.788         | 0.792         |
 
 ## Methodology
 
