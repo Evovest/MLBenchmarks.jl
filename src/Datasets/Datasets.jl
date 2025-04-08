@@ -15,7 +15,7 @@ import AWS: AWSCredentials, AWSConfig, @service
 
 export load_data
 
-const aws_creds = AWSCredentials(ENV["AWS_ACCESS_KEY_ID_JDB"], ENV["AWS_SECRET_ACCESS_KEY_JDB"])
+const aws_creds = AWSCredentials(ENV["AWS_ACCESS_KEY_ID"], ENV["AWS_SECRET_ACCESS_KEY"])
 const aws_config = AWSConfig(; creds=aws_creds, region="ca-central-1")
 
 const dataset_list = [:year, :higgs, :yahoo, :msrank, :titanic, :boston]
