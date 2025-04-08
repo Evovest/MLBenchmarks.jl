@@ -99,7 +99,7 @@ _std = std(dtrain[!, target_name])
 dtrain.target_norm = (dtrain[!, target_name] .- _mean) ./ _std
 deval.target_norm = (deval[!, target_name] .- _mean) ./ _std
 
-hyper_list = MLBenchmarks.get_hyper_neurotrees(; loss=:gaussian_mle, metric=:gaussian_mle, nrounds=200, early_stopping_rounds=2, lr=1e-3, ntrees=[32, 64, 128], stack_size=[1], depth=[3, 4, 5], hidden_size=[8, 16, 32], init_scale=0.0, batchsize)
+hyper_list = MLBenchmarks.get_hyper_neurotrees(; loss=:gaussian_mle, metric=:gaussian_mle, nrounds=200, early_stopping_rounds=2, lr=1e-3, ntrees=[32, 64, 128], stack_size=[1], depth=[3, 4, 5], hidden_size=[8, 16, 32], init_scale=0.1, batchsize)
 hyper_list = sample(hyper_list, min(hyper_size, length(hyper_list)), replace=false)
 
 results = Dict{Symbol,Any}[]
