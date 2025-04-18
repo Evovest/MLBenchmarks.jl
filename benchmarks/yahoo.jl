@@ -309,4 +309,3 @@ cors = cor(Matrix(preds_df))
 p = plot.heatmap(; z=cors, x=names(preds_df), y=names(preds_df), colorscale="Viridis")
 PlotlyKaleido.savefig((; data=p.data, p.layout, p.config), joinpath("results", data_name, "corr.png"))
 PlotlyKaleido.kill_kaleido()
-
