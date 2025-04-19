@@ -517,7 +517,7 @@ weakdeps = ["Adapt"]
 
 [[deps.EvoTrees]]
 deps = ["BSON", "CategoricalArrays", "Distributions", "MLJModelInterface", "NetworkLayout", "Random", "RecipesBase", "Statistics", "StatsBase", "Tables"]
-git-tree-sha1 = "addf4f023de7d2362e7d534af46aa6cdbca00741"
+git-tree-sha1 = "32bb77aa8f87f170a461e57c51e80e8776e007e0"
 repo-rev = "jdb/bagging"
 repo-url = "https://github.com/Evovest/EvoTrees.jl.git"
 uuid = "f6006082-12f8-11e9-0c9c-0d5d367ab1e5"
@@ -1239,7 +1239,7 @@ version = "1.2.0"
 
 [[deps.NeuroTreeModels]]
 deps = ["CUDA", "CategoricalArrays", "ChainRulesCore", "DataFrames", "Flux", "MLJModelInterface", "MLUtils", "Optimisers", "Random", "Statistics", "StatsBase", "Tables", "cuDNN"]
-git-tree-sha1 = "90cf9b548e5556c433d8227c813321774972f0f7"
+git-tree-sha1 = "2d3a16bddc39efdd48a360a8ffadeaa1ca041785"
 repo-rev = "jdb/dense"
 repo-url = "https://github.com/Evovest/NeuroTreeModels.jl.git"
 uuid = "1db4e0a5-a364-4b0c-897c-2bd5a4a3a1f2"
