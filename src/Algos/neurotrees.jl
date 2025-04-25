@@ -8,7 +8,7 @@ function get_hyper_neurotrees(;
     wd=0.0,
     ntrees=64,
     depth=4,
-    actA=["softplus"],
+    actA=["identity"],
     init_scale=1,
     batchsize=2048,
     stack_size=1,
