@@ -4,20 +4,20 @@ This repo provides Julia based benchmarks for ML algo on tabular data.
 It was developed to support both [NeuroTreeModels.jl](https://github.com/Evovest/NeuroTreeModels.jl) and [EvoTrees.jl](https://github.com/Evovest/EvoTrees.jl) projects.
 
 
-## Credibility-based losses
+## Credibility-based and MAE losses
 
-This branch tests the performance of various EvoTrees `cred` loss types.
+This branch tests the performance of various EvoTrees `cred` loss types and new `mae`.
 
-| **model** | **metric** | **ref** | **cred\_var** | **cred\_std** |
-|:---------:|:----------:|:-------:|:-------------:|:-------------:|
-| boston    | mse        | 6.3     | 5.95          | 5.43          |
-| boston    | gini       | 0.945   | 0.947         | 0.952         |
-| year      | mse        | 74.9    | 74.6          | 74.2          |
-| year      | gini       | 0.662   | 0.664         | 0.661         |
-| msrank    | mse        | 0.55    | 0.551         | 0.549         |
-| msrank    | ndcg       | 0.511   | 0.51          | 0.512         |
-| yahoo     | mse        | 0.565   | 0.587         | 0.568         |
-| yahoo     | ndcg       | 0.795   | 0.788         | 0.792         |
+| **model** | **metric** | **mse** | **mae** | **cred\_var** | **cred\_std** |
+|:---------:|:----------:|:-------:|:-------:|:-------------:|:-------------:|
+| boston    | mse        | 6.3     | 5.71    | 5.95          | 5.43          |
+| boston    | gini       | 0.945   | 0.952   | 0.947         | 0.952         |
+| year      | mse        | 74.9    | 74.3    | 74.6          | 74.2          |
+| year      | gini       | 0.662   | 0.66    | 0.664         | 0.661         |
+| msrank    | mse        | 0.55    | 0.549   | 0.551         | 0.549         |
+| msrank    | ndcg       | 0.511   | 0.51    | 0.509         | 0.51          |
+| yahoo     | mse        | 0.565   | 0.567   | 0.589         | 0.568         |
+| yahoo     | ndcg       | 0.795   | 0.791   | 0.787         | 0.794         |
 
 ## Methodology
 
