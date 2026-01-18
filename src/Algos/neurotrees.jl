@@ -21,6 +21,15 @@ function get_hyper_neurotrees(;
     for _lr in lr, _wd in wd, _ntrees in ntrees, _depth in depth, _stack_size in stack_size, _hidden_size in hidden_size, _actA in actA, _init_scale in init_scale
 
         hyper = Dict(
+            :arch_name => "NeuroTreeConfig",
+            :arch_config => Dict(
+                :depth => _depth,
+                :ntrees => _ntrees,
+                :hidden_size => _hidden_size,
+                :actA => _actA,
+                :init_scale => _init_scale,
+                :stack_size => _stack_size
+            ),
             :loss => loss,
             :metric => metric,
             :device => device,
@@ -28,12 +37,6 @@ function get_hyper_neurotrees(;
             :nrounds => nrounds,
             :lr => _lr,
             :wd => _wd,
-            :ntrees => _ntrees,
-            :depth => _depth,
-            :actA => _actA,
-            :init_scale => _init_scale,
-            :stack_size => _stack_size,
-            :hidden_size => _hidden_size,
             :batchsize => batchsize
         )
 

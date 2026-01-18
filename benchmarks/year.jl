@@ -8,7 +8,7 @@ using Statistics: mean, std
 using StatsBase: sample
 using OrderedCollections
 
-import NeuroTreeModels
+import NeuroTabModels
 import EvoTrees
 import XGBoost
 import LightGBM
@@ -54,12 +54,12 @@ models = Vector()
 hyper = copy(first(hyper_list))
 hyper[:nrounds] = 1
 config = NeuroTreeModels.NeuroTreeRegressor(; hyper...)
-NeuroTreeModels.fit(config, dtrain; deval, feature_names, target_name="target_norm", metric=hyper[:metric], early_stopping_rounds=hyper[:early_stopping_rounds], print_every_n=10, device)
+NeuroTabModels.fit(config, dtrain; deval, feature_names, target_name="target_norm", print_every_n=10)
 
 for (i, hyper) in enumerate(hyper_list)
     @info "Loop $i"
     config = NeuroTreeModels.NeuroTreeRegressor(; hyper...)
-    train_time = @elapsed m = NeuroTreeModels.fit(config, dtrain; deval, feature_names, target_name="target_norm", metric=hyper[:metric], early_stopping_rounds=hyper[:early_stopping_rounds], print_every_n=10, device)
+    train_time = @elapsed m = NeuroTabModels.fit(config, dtrain; deval, feature_names, target_name="target_norm", print_every_n=10)
     push!(models, m)
     p_eval = m(deval) .* _std .+ _mean
     _mse = mse(p_eval, data[:deval][:, data[:target_name]])
