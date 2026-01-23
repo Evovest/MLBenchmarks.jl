@@ -63,7 +63,8 @@ target_name = data[:target_name]
 batchsize = min(2048, nrow(dtrain))
 device = :gpu
 
-hyper_list = MLBenchmarks.get_hyper_neurotrees(; loss=:logloss, metric=:logloss, nrounds=200, early_stopping_rounds=5, lr=5e-3, ntrees=[32, 64, 128, 256], stack_size=[2, 3], depth=[3], hidden_size=[16, 24, 32], init_scale=0.0, batchsize)
+hyper_list = MLBenchmarks.get_hyper_neurotrees(; loss=:logloss, metric=:logloss, tree_type=[:binary], proj_size=1, nrounds=200, early_stopping_rounds=5,
+    lr=5e-3, ntrees=[32, 64, 128, 256], stack_size=[2, 3], depth=[3], hidden_size=[16, 24, 32], init_scale=0.0, batchsize, device)
 hyper_list = sample(hyper_list, hyper_size, replace=false)
 
 results = Dict{Symbol,Any}[]
@@ -119,16 +120,16 @@ models = Vector()
 hyper = copy(first(hyper_list))
 hyper[:nrounds] = 1
 config = EvoTrees.EvoTreeRegressor(; hyper...)
-EvoTrees.fit_evotree(config, dtrain; deval, fnames=feature_names, target_name, metric=hyper[:metric], early_stopping_rounds=hyper[:early_stopping_rounds], print_every_n=10, return_logger=true)
+EvoTrees.fit(config, dtrain; deval, feature_names, target_name, print_every_n=10)
 
 for (i, hyper) in enumerate(hyper_list)
     config = EvoTrees.EvoTreeRegressor(; hyper...)
-    train_time = @elapsed m, logger = EvoTrees.fit_evotree(config, dtrain; deval, fnames=feature_names, target_name, metric=hyper[:metric], early_stopping_rounds=hyper[:early_stopping_rounds], print_every_n=10, return_logger=true)
+    train_time = @elapsed m = EvoTrees.fit(config, dtrain; deval, feature_names, target_name, print_every_n=10)
     push!(models, m)
     p_eval = EvoTrees.predict(m, deval)
     _logloss = logloss(p_eval, data[:deval][:, data[:target_name]])
     _accuracy = accuracy(p_eval, data[:deval][:, data[:target_name]])
-    res = Dict(:model_type => "evotrees", :train_time => train_time, :best_nround => logger[:best_iter], :logloss => _logloss, :accuracy => _accuracy, hyper...)
+    res = Dict(:model_type => "evotrees", :train_time => train_time, :best_nround => m.info[:logger][:best_iter], :logloss => _logloss, :accuracy => _accuracy, hyper...)
     push!(results, res)
 end
 results_df = DataFrame(results)
@@ -194,7 +195,7 @@ results = Dict{Symbol,Any}[]
 models = Vector()
 for (i, hyper) in enumerate(hyper_list)
     m = LightGBM.LGBMRegression(; hyper...)
-    train_time = @elapsed res = LightGBM.fit!(m, dtrain, ytrain, (deval, yeval))
+    train_time = @elapsed res = LightGBM.fit!(m, dtrain, ytrain, (deval, yeval); verbosity=0)
     push!(models, m)
     p_eval = vec(LightGBM.predict(m, deval))
     _logloss = logloss(p_eval, data[:deval][:, data[:target_name]])
