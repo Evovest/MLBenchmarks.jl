@@ -63,6 +63,7 @@ feature_names = data[:feature_names]
 target_name = data[:target_name]
 batchsize = min(2048, nrow(dtrain))
 device = :gpu
+scaler = true
 
 _mean = mean(dtrain[!, target_name])
 _std = std(dtrain[!, target_name])
@@ -70,7 +71,7 @@ dtrain.target_norm = (dtrain[!, target_name] .- _mean) ./ _std
 deval.target_norm = (deval[!, target_name] .- _mean) ./ _std
 
 hyper_list = MLBenchmarks.get_hyper_neurotrees(; loss=:mse, metric=:mse, tree_type=[:binary], proj_size=4, nrounds=200, early_stopping_rounds=2,
-    lr=3e-4, ntrees=[32, 64, 128, 256], stack_size=[1], depth=[3, 4, 5], hidden_size=[8, 16, 32, 64], batchsize, device)
+    lr=1e-3, ntrees=[32, 64, 128, 256], stack_size=[1], depth=[3, 4, 5], hidden_size=[8, 16, 32, 64], batchsize, scaler, device)
 hyper_list = sample(hyper_list, hyper_size, replace=false)
 
 results = Dict{Symbol,Any}[]

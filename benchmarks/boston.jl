@@ -22,7 +22,7 @@ uniformize = false
 data_name = uniformize ? "boston/norm" : "boston/raw"
 data = load_data(:boston; uniformize)
 result_vars = [:model_type, :train_time, :best_nround, :mse, :gini]
-hyper_size = 4
+hyper_size = 16
 
 preds = Dict{String,Vector}()
 results_test = Dict{Symbol,Any}[]
@@ -37,6 +37,7 @@ feature_names = data[:feature_names]
 target_name = data[:target_name]
 batchsize = min(2048, nrow(dtrain))
 device = :gpu
+scaler = true
 
 _mean = mean(dtrain[!, target_name])
 _std = std(dtrain[!, target_name])
@@ -44,7 +45,7 @@ dtrain.target_norm = (dtrain[!, target_name] .- _mean) ./ _std
 deval.target_norm = (deval[!, target_name] .- _mean) ./ _std
 
 hyper_list = MLBenchmarks.get_hyper_neurotrees(; loss=:mse, metric=:mse, tree_type=[:binary], proj_size=1, nrounds=200, early_stopping_rounds=2,
-    lr=2e-2, ntrees=[16, 32, 64], stack_size=[1], depth=[3, 4, 5], hidden_size=[8, 16, 32], init_scale=0.0, batchsize, device)
+    lr=3e-2, ntrees=[16, 32, 64], stack_size=[1], depth=[3, 4, 5], hidden_size=[8, 16, 32], init_scale=1.0, batchsize, scaler, device)
 hyper_list = sample(hyper_list, min(hyper_size, length(hyper_list)), replace=false)
 
 results = Dict{Symbol,Any}[]

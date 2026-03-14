@@ -36,10 +36,11 @@ dtest = data[:dtest]
 feature_names = data[:feature_names]
 target_name = data[:target_name]
 batchsize = min(2048, nrow(dtrain))
-device = :cpu
+device = :gpu
+scaler = true
 
 hyper_list = MLBenchmarks.get_hyper_neurotrees(; loss=:logloss, metric=:logloss, tree_type=[:binary], proj_size=1, nrounds=200, early_stopping_rounds=2, 
-lr=3e-2, ntrees=[16, 32, 64], stack_size=[1], depth=[3, 4, 5], hidden_size=[8, 16, 32], init_scale=0.0, batchsize, device)
+lr=3e-2, ntrees=[16, 32, 64], stack_size=[1], depth=[3, 4, 5], hidden_size=[8, 16, 32], init_scale=1.0, batchsize, scaler, device)
 hyper_list = sample(hyper_list, hyper_size, replace=false)
 
 results = Dict{Symbol,Any}[]
@@ -49,7 +50,7 @@ models = Vector()
 hyper = copy(first(hyper_list))
 hyper[:nrounds] = 1
 config = NeuroTabModels.NeuroTabRegressor(; hyper...)
-NeuroTabModels.fit(config, dtrain; deval, feature_names, target_name, print_every_n=10)
+m = NeuroTabModels.fit(config, dtrain; deval, feature_names, target_name, print_every_n=10)
 
 for (i, hyper) in enumerate(hyper_list)
     @info "Loop $i"
@@ -95,7 +96,7 @@ models = Vector()
 hyper = copy(first(hyper_list))
 hyper[:nrounds] = 1
 config = EvoTrees.EvoTreeRegressor(; hyper...)
-EvoTrees.fit_evotree(config, dtrain; deval, fnames=feature_names, target_name, metric=hyper[:metric], early_stopping_rounds=hyper[:early_stopping_rounds])
+EvoTrees.fit(config, dtrain; deval, feature_names, target_name, print_every_n=10)
 
 for (i, hyper) in enumerate(hyper_list)
     config = EvoTrees.EvoTreeRegressor(; hyper...)

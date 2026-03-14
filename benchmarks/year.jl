@@ -31,11 +31,6 @@ results_test = Dict{Symbol,Any}[]
 ################################
 # NeuroTrees
 ################################
-# log(p4) = [θ1 - β(θ1)] + [θ2 - β(θ2)]
-# log(p5) = [θ1 - β(θ1)] + [-β(θ2)]
-# log(p6) = [-β(θ1)] + [θ3 - β(θ3)]
-# log(p7) = [-β(θ1)] + [-β(θ3)]
-
 dtrain = data[:dtrain]
 deval = data[:deval]
 dtest = data[:dtest]
@@ -43,6 +38,7 @@ feature_names = data[:feature_names]
 target_name = data[:target_name]
 batchsize = min(2048, nrow(dtrain))
 device = :gpu
+scaler = true
 
 _mean = mean(dtrain[!, target_name])
 _std = std(dtrain[!, target_name])
@@ -50,7 +46,7 @@ dtrain.target_norm = (dtrain[!, target_name] .- _mean) ./ _std
 deval.target_norm = (deval[!, target_name] .- _mean) ./ _std
 
 hyper_list = MLBenchmarks.get_hyper_neurotrees(; loss=:mse, metric=:mse, tree_type=[:binary], proj_size=4, nrounds=200, early_stopping_rounds=2,
-    lr=1e-3, ntrees=[32, 64, 128], stack_size=[1], depth=[3, 4, 5], hidden_size=[8, 16, 32], init_scale=0.0, batchsize, device)
+    lr=1e-3, ntrees=[32, 64, 128], stack_size=[1], depth=[3, 4, 5], hidden_size=[8, 16, 32], init_scale=0.0, batchsize, scaler, device)
 hyper_list = sample(hyper_list, hyper_size, replace=false)
 
 results = Dict{Symbol,Any}[]
