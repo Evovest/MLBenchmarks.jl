@@ -1,10 +1,23 @@
 using XGBoost
 using OrderedCollections: OrderedDict
 
+const _XGB_OBJECTIVE_MAP = Dict{Symbol,String}(
+    :mse => "reg:squarederror",
+    :mae => "reg:absoluteerror",
+    :logloss => "binary:logistic",
+)
+
+const _XGB_EVAL_METRIC_MAP = Dict{Symbol,String}(
+    :mse => "rmse",
+    :mae => "mae",
+    :logloss => "logloss",
+    :accuracy => "error",
+)
+
 function get_hyper_xgboost(
     hyper_size;
-    objective="reg:squarederror",
-    eval_metric="rmse",
+    loss=:mse,
+    metric=loss,
     tree_method="hist", # hist/gpu_hist
     num_round=500,
     early_stopping_rounds=5,
@@ -19,12 +32,14 @@ function get_hyper_xgboost(
 
     # tunable = [:eta, :max_depth, :subsample, :colsample_bytree, :lambda, :max_bin]
     hyper_list = Dict{Symbol,Any}[]
+    objective_name = _XGB_OBJECTIVE_MAP[loss]
+    eval_metric_name = _XGB_EVAL_METRIC_MAP[metric]
 
     for _eta in eta, _max_depth in max_depth, _subsample in subsample, _colsample_bytree in colsample_bytree, _lambda in lambda, _max_bin in max_bin
 
         hyper = Dict(
-            :objective => objective,
-            :eval_metric => eval_metric,
+            :objective => objective_name,
+            :eval_metric => eval_metric_name,
             :tree_method => tree_method, # hist/gpu_hist
             :num_round => num_round,
             :early_stopping_rounds => early_stopping_rounds,

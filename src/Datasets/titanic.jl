@@ -1,4 +1,5 @@
 function data_recipe(::Type{Dataset{:titanic}}, df; eval_perc=0.15, test_perc=0.15, seed=123, kwargs...)
+    rng = Xoshiro(seed)
 
     # treat string feature and missing values
     transform!(df, :survived => (x -> levelcode.(x) .- 1) => :survived)
@@ -17,7 +18,7 @@ function data_recipe(::Type{Dataset{:titanic}}, df; eval_perc=0.15, test_perc=0.
     df = df[:, Not(["name", "embarked", "ticket", "cabin", "boat", "home.dest", "body"])]
     disallowmissing!(df)
 
-    idx = randperm(nrow(df))
+    idx = randperm(rng, nrow(df))
     eval_cut = floor(Int, (1 - eval_perc - test_perc) * nrow(df))
     test_cut = floor(Int, (1 - test_perc) * nrow(df))
 
@@ -31,6 +32,7 @@ function data_recipe(::Type{Dataset{:titanic}}, df; eval_perc=0.15, test_perc=0.
     return (;
         loss=:logloss,
         metric=:logloss,
+        metrics=[:logloss, :accuracy],
         dtrain,
         deval,
         dtest,

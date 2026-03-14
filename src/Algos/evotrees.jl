@@ -90,7 +90,7 @@ function run_experiment(
         p_eval = EvoTrees.predict(m, deval)
         p_test = EvoTrees.predict(m, dtest)
 
-        res = Dict{Symbol,Any}(
+        res = OrderedDict{Symbol,Any}(
             :model_type => "evotrees",
             :hyper_id => i,
             :train_time => train_time,

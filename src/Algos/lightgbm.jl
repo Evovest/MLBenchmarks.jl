@@ -1,9 +1,21 @@
 using LightGBM
 
+const _LGBM_OBJECTIVE_MAP = Dict{Symbol,String}(
+    :mse => "regression",
+    :mae => "regression_l1",
+    :logloss => "cross_entropy",
+)
+
+const _LGBM_METRIC_MAP = Dict{Symbol,Vector{String}}(
+    :mse => ["mse"],
+    :mae => ["mae"],
+    :logloss => ["cross_entropy"],
+)
+
 function get_hyper_lgbm(
     hyper_size;
-    objective="regression",
-    metric="rmse",
+    loss=:mse,
+    metric=loss,
     num_iterations=100,
     min_data_in_leaf=20,
     num_class=0,
@@ -19,12 +31,16 @@ function get_hyper_lgbm(
 
     # tunable = [:eta, :max_depth, :subsample, :colsample_bytree, :lambda, :max_bin]
     hyper_list = Dict{Symbol,Any}[]
+    objective_name = _LGBM_OBJECTIVE_MAP[loss]
+    metric_name = _LGBM_METRIC_MAP[metric]
+
+    task = objective_name ∈ ["binary"] ? :classification : :regression
 
     for _learning_rate in learning_rate, _num_leaves in num_leaves, _max_depth in max_depth, _bagging_fraction in bagging_fraction, _feature_fraction in feature_fraction, _lambda_l2 in lambda_l2, _max_bin in max_bin, _min_data_in_leaf in min_data_in_leaf
 
         hyper = Dict(
-            :objective => objective,
-            :metric => metric,
+            :objective => objective_name,
+            :metric => metric_name,
             :num_iterations => num_iterations,
             :early_stopping_round => early_stopping_round,
             :learning_rate => _learning_rate,
@@ -36,6 +52,7 @@ function get_hyper_lgbm(
             :max_bin => _max_bin,
             :min_data_in_leaf => _min_data_in_leaf,
             :num_class => num_class,
+            :task => task,
         )
 
         num_class == 0 ? delete!(hyper, :num_class) : nothing
@@ -65,18 +82,22 @@ function run_experiment(
     # warmup
     hyper = copy(first(hyper_list))
     hyper[:num_iterations] = 1
-    m = LightGBM.LGBMRegression(; hyper...)
+    task = pop!(hyper, :task)
+    learner = task == :classification ? LightGBM.LGBMClassification : LightGBM.LGBMRegression
+    m = learner(; hyper...)
     LightGBM.fit!(m, dtrain, ytrain, (deval, yeval))
 
     for (i, hyper) in enumerate(hyper_list)
         @info "run_experiment(LightGBM) loop $i"
-        m = LightGBM.LGBMRegression(; hyper...)
+        model_hyper = copy(hyper)
+        pop!(model_hyper, :task)
+        m = learner(; model_hyper...)
         train_time = @elapsed fit_result = LightGBM.fit!(m, dtrain, ytrain, (deval, yeval))
 
         p_eval = vec(LightGBM.predict(m, deval))
         p_test = vec(LightGBM.predict(m, dtest))
 
-        res = Dict{Symbol,Any}(
+        res = OrderedDict{Symbol,Any}(
             :model_type => "lightgbm",
             :hyper_id => i,
             :train_time => train_time,

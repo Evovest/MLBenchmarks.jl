@@ -1,10 +1,23 @@
 using CatBoost
 using PythonCall: PyList, pyconvert
 
+const _CAT_OBJECTIVE_MAP = Dict{Symbol,String}(
+    :mse => "RMSE",
+    :mae => "MAE",
+    :logloss => "Logloss",
+)
+
+const _CAT_METRIC_MAP = Dict{Symbol,String}(
+    :mse => "RMSE",
+    :mae => "MAE",
+    :logloss => "Logloss",
+    :accuracy => "Accuracy",
+)
+
 function get_hyper_catboost(
     hyper_size;
-    objective="RMSE",
-    eval_metric="RMSE",
+    loss=:mse,
+    metric=loss,
     iterations=500,
     early_stopping_rounds=5,
     learning_rate=0.1,
@@ -16,12 +29,17 @@ function get_hyper_catboost(
 
     # tunable = [:eta, :max_depth, :subsample, :colsample_bytree, :lambda, :max_bin]
     hyper_list = Dict{Symbol,Any}[]
+    loss_key = loss isa Symbol ? loss : Symbol(lowercase(loss))
+    metric_key = metric isa Symbol ? metric : Symbol(lowercase(metric))
+    objective_name = _CAT_OBJECTIVE_MAP[loss_key]
+    eval_metric_name = _CAT_METRIC_MAP[metric_key]
+    task = objective_name == "Logloss" || occursin("CrossEntropy", objective_name) ? :classification : :regression
 
     for _learning_rate in learning_rate, _max_depth in max_depth, _subsample in subsample, _rsm in rsm, _reg_lambda in reg_lambda
 
         hyper = Dict(
-            :objective => objective,
-            :eval_metric => eval_metric,
+            :objective => objective_name,
+            :eval_metric => eval_metric_name,
             :iterations => iterations,
             :early_stopping_rounds => early_stopping_rounds,
             :learning_rate => _learning_rate,
@@ -29,6 +47,7 @@ function get_hyper_catboost(
             :subsample => _subsample,
             :rsm => _rsm,
             :reg_lambda => _reg_lambda,
+            :task => task,
         )
 
         push!(hyper_list, hyper)
@@ -42,7 +61,7 @@ function run_experiment(
     ::Val{:CatBoost},
     data,
     hyper_list;
-    metrics=[:logloss, :accuracy],
+    metrics,
     print_every_n=10
 )
     dtrain = CatBoost.Pool(data[:dtrain][:, data[:feature_names]], label=PyList(data[:dtrain][:, data[:target_name]]))
@@ -55,18 +74,27 @@ function run_experiment(
     # warmup
     hyper = copy(first(hyper_list))
     hyper[:iterations] = 1
-    m = CatBoost.CatBoostClassifier(; hyper...)
+    task = pop!(hyper, :task)
+    learner = task == :classification ? CatBoost.CatBoostClassifier : CatBoost.CatBoostRegressor
+    m = learner(; hyper...)
     CatBoost.fit!(m, dtrain; eval_set=deval)
 
     for (i, hyper) in enumerate(hyper_list)
         @info "run_experiment(CatBoost) loop $i"
-        m = CatBoost.CatBoostClassifier(; hyper...)
+        model_hyper = copy(hyper)
+        pop!(model_hyper, :task)
+        m = learner(; model_hyper...)
         train_time = @elapsed fit_result = CatBoost.fit!(m, dtrain; eval_set=deval)
 
-        p_eval = CatBoost.predict(m, deval; prediction_type="Probability")[:, 2]
-        p_test = CatBoost.predict(m, dtest; prediction_type="Probability")[:, 2]
+        if task == :classification
+            p_eval = CatBoost.predict(m, deval; prediction_type="Probability")[:, 2]
+            p_test = CatBoost.predict(m, dtest; prediction_type="Probability")[:, 2]
+        else
+            p_eval = vec(CatBoost.predict(m, deval))
+            p_test = vec(CatBoost.predict(m, dtest))
+        end
 
-        res = Dict{Symbol,Any}(
+        res = OrderedDict{Symbol,Any}(
             :model_type => "catboost",
             :hyper_id => i,
             :train_time => train_time,

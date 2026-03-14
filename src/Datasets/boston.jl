@@ -1,6 +1,10 @@
 function data_recipe(::Type{Dataset{:boston}}, df; eval_perc=0.15, test_perc=0.15, seed=123, kwargs...)
+    rng = Xoshiro(seed)
 
-    idx = randperm(nrow(df))
+    transform!(df, :CHAS => (x -> parse.(Float64, string.(x))) => :CHAS)
+    transform!(df, :RAD => (x -> parse.(Float64, string.(x))) => :RAD)
+
+    idx = randperm(rng, nrow(df))
     eval_cut = floor(Int, (1 - eval_perc - test_perc) * nrow(df))
     test_cut = floor(Int, (1 - test_perc) * nrow(df))
 
@@ -14,6 +18,7 @@ function data_recipe(::Type{Dataset{:boston}}, df; eval_perc=0.15, test_perc=0.1
     return (;
         loss=:mse,
         metric=:mse,
+        metrics=[:mse, :gini],
         dtrain,
         deval,
         dtest,

@@ -87,7 +87,7 @@ function run_experiment(
         p_eval = m(deval)
         p_test = m(dtest)
 
-        res = Dict{Symbol,Any}(
+        res = OrderedDict{Symbol,Any}(
             :model_type => "neurotrees",
             :hyper_id => i,
             :train_time => train_time,
