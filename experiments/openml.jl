@@ -5,7 +5,7 @@ using EvoTrees
 using EvoTrees: fit, predict
 
 data_map = Dict(
-    :titanic => 40945, # 40945
+    :titanic => 40945,
     :higgs_11M => 45570,
     :higgs_1M => 42769,
     :boston => 531,
