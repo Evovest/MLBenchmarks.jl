@@ -29,7 +29,7 @@ cuDNN = "02a925ec-e4fe-4b08-9a7e-0d78e3d38ccd"
 [compat]
 CatBoost = "0.3.7"
 CategoricalArrays = "1"
-EvoTrees = "=0.18.3"
+EvoTrees = "=0.18.5"
 LightGBM = "2.2.1"
 OpenML = "0.3.3"
 XGBoost = "2.5.2"

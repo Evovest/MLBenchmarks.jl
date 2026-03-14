@@ -1,10 +1,23 @@
 abstract type Dataset{T} end
 
-function load_data(x::Symbol; kwargs...)
-    @assert x ∈ dataset_list
-    data = load_data(Dataset{x}; kwargs...)
+data_map = Dict(
+    :titanic => 40945,
+    :higgs_11M => 45570,
+    :higgs_1M => 42769,
+    :boston => 531,
+    :year => 44027,
+    :microsoft => 45579
+)
+
+function load_data(name::Symbol; kwargs...)
+    id = data_map[name]
+    desc = OpenML.describe_dataset(id)
+    df = OpenML.load(id) |> DataFrame
+    data = data_recipe(Dataset{name}, df; kwargs...)
     return data
 end
+
+data_recipe(data, df; kwargs...) = error("No data recipe defined for dataset $(data)")
 
 function read_arrow_aws(path; bucket="jeremiedb", aws_config=AWSConfig())
     raw = S3.get_object(bucket, path, Dict("response-content-type" => "application/octet-stream"); aws_config)

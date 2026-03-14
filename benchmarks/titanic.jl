@@ -1,79 +1,27 @@
 using MLBenchmarks
 import MLBenchmarks: mse, mae, logloss, accuracy, gini, ndcg
-import MLBenchmarks.Datasets: aws_config
+import MLBenchmarks: run_experiment
 
 using DataFrames
 using CSV
 using Statistics: mean, std
 using StatsBase: sample
 using OrderedCollections
-
-import NeuroTabModels
-import EvoTrees
-import XGBoost
-import LightGBM
-import CatBoost
-
 using Random: seed!
-seed!(123)
 
+seed!(123)
 uniformize = false
 
-data_name = uniformize ? "titanic/norm" : "titanic/raw"
-data = load_data(:titanic; uniformize)
-result_vars = [:model_type, :train_time, :best_nround, :logloss, :accuracy]
+data_name = :titanic
+data = load_data(:titanic)
 hyper_size = 16
-
-preds = Dict{String,Vector}()
-results_test = Dict{Symbol,Any}[]
 
 ################################
 # NeuroTrees
 ################################
-dtrain = data[:dtrain]
-deval = data[:deval]
-dtest = data[:dtest]
-feature_names = data[:feature_names]
-target_name = data[:target_name]
-batchsize = min(2048, nrow(dtrain))
-device = :cpu
-
-hyper_list = MLBenchmarks.get_hyper_neurotrees(; loss=:logloss, metric=:logloss, nrounds=200, early_stopping_rounds=2, lr=3e-2, ntrees=[16, 32, 64], stack_size=[1], depth=[3, 4, 5], hidden_size=[8, 16, 32], init_scale=0.0, batchsize)
-hyper_list = sample(hyper_list, hyper_size, replace=false)
-
-results = Dict{Symbol,Any}[]
-models = Vector()
-
-# warmup
-hyper = copy(first(hyper_list))
-hyper[:nrounds] = 1
-config = NeuroTreeModels.NeuroTreeRegressor(; hyper...)
-NeuroTabModels.fit(config, dtrain; deval, feature_names, target_name, print_every_n=10)
-
-for (i, hyper) in enumerate(hyper_list)
-    @info "Loop $i"
-    config = NeuroTreeModels.NeuroTreeRegressor(; hyper...)
-    train_time = @elapsed m = NeuroTabModels.fit(config, dtrain; deval, feature_names, target_name, print_every_n=10)
-    push!(models, m)
-    p_eval = m(deval)
-    _logloss = logloss(p_eval, data[:deval][:, data[:target_name]])
-    _accuracy = accuracy(p_eval, data[:deval][:, data[:target_name]])
-    res = Dict(:model_type => "neurotrees", :train_time => train_time, :best_nround => m.info[:logger][:best_iter], :logloss => _logloss, :accuracy => _accuracy, hyper...)
-    push!(results, res)
-end
-results_df = DataFrame(results)
-select!(results_df, result_vars, Not(result_vars))
+hyper_list = MLBenchmarks.get_hyper_neurotrees(hyper_size; loss=:logloss, metric=:logloss, nrounds=200, early_stopping_rounds=2, lr=3e-2, ntrees=[16, 32, 64], depth=[3, 4, 5], hidden_size=[8, 16, 32], init_scale=0.0)
+results_df = run_experiment(:NeuroTabModels, data, hyper_list)
 CSV.write(joinpath("results", data_name, "neurotrees.csv"), results_df)
-
-best_hyper = findmin(results_df.logloss)[2]
-m = models[best_hyper]
-p_test = m(dtest)
-_logloss = logloss(p_test, data[:dtest][:, data[:target_name]])
-_accuracy = accuracy(p_test, data[:dtest][:, data[:target_name]])
-_results_test = copy(results[best_hyper])
-push!(_results_test, :logloss => _logloss, :accuracy => _accuracy)
-push!(results_test, _results_test)
-push!(preds, "neurotrees" => p_test)
 
 ################################
 # EvoTrees
@@ -94,11 +42,11 @@ models = Vector()
 hyper = copy(first(hyper_list))
 hyper[:nrounds] = 1
 config = EvoTrees.EvoTreeRegressor(; hyper...)
-EvoTrees.fit_evotree(config, dtrain; deval, fnames=feature_names, target_name, metric=hyper[:metric], early_stopping_rounds=hyper[:early_stopping_rounds])
+EvoTrees.fit(config, dtrain; deval, feature_names, target_name)
 
 for (i, hyper) in enumerate(hyper_list)
     config = EvoTrees.EvoTreeRegressor(; hyper...)
-    train_time = @elapsed m, logger = EvoTrees.fit_evotree(config, dtrain; deval, fnames=feature_names, target_name, metric=hyper[:metric], early_stopping_rounds=hyper[:early_stopping_rounds], print_every_n=10, return_logger=true)
+    train_time = @elapsed m = EvoTrees.fit(config, dtrain; deval, feature_names, target_name, print_every_n=10)
     push!(models, m)
     p_eval = EvoTrees.predict(m, deval)
     _logloss = logloss(p_eval, data[:deval][:, data[:target_name]])
@@ -108,7 +56,7 @@ for (i, hyper) in enumerate(hyper_list)
 end
 results_df = DataFrame(results)
 select!(results_df, result_vars, Not(result_vars))
-CSV.write(joinpath("results", data_name, "evotrees.csv"), results_df)
+CSV.write(joinpath("results", string(data_name), "evotrees.csv"), results_df)
 
 best_hyper = findmin(results_df.logloss)[2]
 m = models[best_hyper]
@@ -143,7 +91,7 @@ for (i, hyper) in enumerate(hyper_list)
 end
 results_df = DataFrame(results)
 select!(results_df, result_vars, Not(result_vars))
-CSV.write(joinpath("results", data_name, "xgboost.csv"), results_df)
+CSV.write(joinpath("results", string(data_name), "xgboost.csv"), results_df)
 
 best_hyper = findmin(results_df.logloss)[2]
 m = models[best_hyper]
@@ -179,7 +127,7 @@ for (i, hyper) in enumerate(hyper_list)
 end
 results_df = DataFrame(results)
 select!(results_df, result_vars, Not(result_vars))
-CSV.write(joinpath("results", data_name, "lightgbm.csv"), results_df)
+CSV.write(joinpath("results", string(data_name), "lightgbm.csv"), results_df)
 
 best_hyper = findmin(results_df.logloss)[2]
 m = models[best_hyper]
@@ -216,7 +164,7 @@ for (i, hyper) in enumerate(hyper_list)
 end
 results_df = DataFrame(results)
 select!(results_df, result_vars, Not(result_vars))
-CSV.write(joinpath("results", data_name, "catboost.csv"), results_df)
+CSV.write(joinpath("results", string(data_name), "catboost.csv"), results_df)
 
 best_hyper = findmin(results_df.logloss)[2]
 m = models[best_hyper]
@@ -237,16 +185,16 @@ end
 df = vcat(df...)
 CSV.write(joinpath("results", data_name, "summary.csv"), df)
 
-################################
-# correlations
-################################
-using Statistics: cor
-using PlotlyLight
-using PlotlyKaleido
-PlotlyKaleido.start()
+# ################################
+# # correlations
+# ################################
+# using Statistics: cor
+# using PlotlyLight
+# using PlotlyKaleido
+# PlotlyKaleido.start()
 
-preds_df = DataFrame(preds)[!, ["neurotrees", "evotrees", "xgboost", "lightgbm", "catboost"]]
-cors = cor(Matrix(preds_df))
-p = plot.heatmap(; z=cors, x=names(preds_df), y=names(preds_df), colorscale="Viridis")
-PlotlyKaleido.savefig((; data=p.data, p.layout, p.config), joinpath("results", data_name, "corr.png"))
-PlotlyKaleido.kill_kaleido()
+# preds_df = DataFrame(preds)[!, ["neurotrees", "evotrees", "xgboost", "lightgbm", "catboost"]]
+# cors = cor(Matrix(preds_df))
+# p = plot.heatmap(; z=cors, x=names(preds_df), y=names(preds_df), colorscale="Viridis")
+# PlotlyKaleido.savefig((; data=p.data, p.layout, p.config), joinpath("results", data_name, "corr.png"))
+# PlotlyKaleido.kill_kaleido()

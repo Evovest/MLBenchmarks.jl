@@ -1,6 +1,7 @@
 module Metrics
 
 export mse, mae, logloss, accuracy, gini, ndcg
+export metric_dict
 
 using Statistics: mean, std
 
@@ -58,5 +59,14 @@ function ndcg(p, y, k=10)
 
     return idcg == 0 ? 1.0 : ndcg / idcg
 end
+
+const metric_dict = Dict{Symbol,Function}(
+    :mse => mse,
+    :mae => mae,
+    :logloss => logloss,
+    :accuracy => accuracy,
+    :gini => gini,
+    :ndcg => ndcg,
+)
 
 end
