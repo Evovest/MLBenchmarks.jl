@@ -1,17 +1,17 @@
-model_type,train_time,best_nround,logloss,accuracy,arch_config,metric,batchsize,nrounds,wd,loss,device,early_stopping_rounds,arch_name,lr
-neurotrees,0.348462929,131,0.46882066,0.7857142857142857,"Dict{Symbol, Any}(:actA => ""identity"", :hidden_size => 8, :ntrees => 32, :init_scale => 0.0, :depth => 3, :stack_size => 1)",logloss,2048,200,0.0,logloss,gpu,2,NeuroTreeConfig,0.03
-neurotrees,0.377060933,103,0.4687546,0.7806122448979592,"Dict{Symbol, Any}(:actA => ""identity"", :hidden_size => 16, :ntrees => 16, :init_scale => 0.0, :depth => 4, :stack_size => 1)",logloss,2048,200,0.0,logloss,gpu,2,NeuroTreeConfig,0.03
-neurotrees,0.359072011,89,0.47329244,0.7908163265306123,"Dict{Symbol, Any}(:actA => ""identity"", :hidden_size => 16, :ntrees => 32, :init_scale => 0.0, :depth => 5, :stack_size => 1)",logloss,2048,200,0.0,logloss,gpu,2,NeuroTreeConfig,0.03
-neurotrees,0.453701851,85,0.47503418,0.7959183673469388,"Dict{Symbol, Any}(:actA => ""identity"", :hidden_size => 32, :ntrees => 16, :init_scale => 0.0, :depth => 5, :stack_size => 1)",logloss,2048,200,0.0,logloss,gpu,2,NeuroTreeConfig,0.03
-neurotrees,0.483523472,142,0.46292996,0.7755102040816326,"Dict{Symbol, Any}(:actA => ""identity"", :hidden_size => 32, :ntrees => 64, :init_scale => 0.0, :depth => 3, :stack_size => 1)",logloss,2048,200,0.0,logloss,gpu,2,NeuroTreeConfig,0.03
-neurotrees,0.441167264,99,0.47049925,0.7908163265306123,"Dict{Symbol, Any}(:actA => ""identity"", :hidden_size => 16, :ntrees => 32, :init_scale => 0.0, :depth => 3, :stack_size => 1)",logloss,2048,200,0.0,logloss,gpu,2,NeuroTreeConfig,0.03
-neurotrees,0.399154339,116,0.4672808,0.7806122448979592,"Dict{Symbol, Any}(:actA => ""identity"", :hidden_size => 8, :ntrees => 32, :init_scale => 0.0, :depth => 4, :stack_size => 1)",logloss,2048,200,0.0,logloss,gpu,2,NeuroTreeConfig,0.03
-neurotrees,0.405829103,90,0.46989045,0.7806122448979592,"Dict{Symbol, Any}(:actA => ""identity"", :hidden_size => 8, :ntrees => 16, :init_scale => 0.0, :depth => 5, :stack_size => 1)",logloss,2048,200,0.0,logloss,gpu,2,NeuroTreeConfig,0.03
-neurotrees,0.428135068,111,0.469683,0.7908163265306123,"Dict{Symbol, Any}(:actA => ""identity"", :hidden_size => 8, :ntrees => 64, :init_scale => 0.0, :depth => 3, :stack_size => 1)",logloss,2048,200,0.0,logloss,gpu,2,NeuroTreeConfig,0.03
-neurotrees,0.430251592,98,0.4716684,0.7908163265306123,"Dict{Symbol, Any}(:actA => ""identity"", :hidden_size => 16, :ntrees => 64, :init_scale => 0.0, :depth => 4, :stack_size => 1)",logloss,2048,200,0.0,logloss,gpu,2,NeuroTreeConfig,0.03
-neurotrees,0.483089667,86,0.47420108,0.7908163265306123,"Dict{Symbol, Any}(:actA => ""identity"", :hidden_size => 8, :ntrees => 32, :init_scale => 0.0, :depth => 5, :stack_size => 1)",logloss,2048,200,0.0,logloss,gpu,2,NeuroTreeConfig,0.03
-neurotrees,0.455613127,92,0.47321036,0.7908163265306123,"Dict{Symbol, Any}(:actA => ""identity"", :hidden_size => 8, :ntrees => 16, :init_scale => 0.0, :depth => 4, :stack_size => 1)",logloss,2048,200,0.0,logloss,gpu,2,NeuroTreeConfig,0.03
-neurotrees,0.431354956,131,0.46392044,0.7806122448979592,"Dict{Symbol, Any}(:actA => ""identity"", :hidden_size => 16, :ntrees => 64, :init_scale => 0.0, :depth => 3, :stack_size => 1)",logloss,2048,200,0.0,logloss,gpu,2,NeuroTreeConfig,0.03
-neurotrees,0.451544317,101,0.471403,0.7908163265306123,"Dict{Symbol, Any}(:actA => ""identity"", :hidden_size => 8, :ntrees => 64, :init_scale => 0.0, :depth => 4, :stack_size => 1)",logloss,2048,200,0.0,logloss,gpu,2,NeuroTreeConfig,0.03
-neurotrees,0.527522818,102,0.4710222,0.7806122448979592,"Dict{Symbol, Any}(:actA => ""identity"", :hidden_size => 32, :ntrees => 64, :init_scale => 0.0, :depth => 4, :stack_size => 1)",logloss,2048,200,0.0,logloss,gpu,2,NeuroTreeConfig,0.03
-neurotrees,0.540444561,87,0.47374234,0.7857142857142857,"Dict{Symbol, Any}(:actA => ""identity"", :hidden_size => 8, :ntrees => 64, :init_scale => 0.0, :depth => 5, :stack_size => 1)",logloss,2048,200,0.0,logloss,gpu,2,NeuroTreeConfig,0.03
+eval_logloss,train_time,test_logloss,best_nround,hyper_id,model_type,eval_accuracy,test_accuracy
+0.4292572,0.293911485,0.3738852,97,1,neurotrees,0.8163265306122449,0.8527918781725888
+0.4304409,0.400471229,0.37676886,83,2,neurotrees,0.8061224489795918,0.8578680203045685
+0.42928255,0.509779539,0.37610656,86,3,neurotrees,0.8061224489795918,0.8578680203045685
+0.42723262,0.454783037,0.37385717,84,4,neurotrees,0.8214285714285714,0.8629441624365483
+0.42646214,0.387746745,0.37842667,93,5,neurotrees,0.8163265306122449,0.8629441624365483
+0.42897314,0.325128072,0.37464994,95,6,neurotrees,0.8163265306122449,0.8527918781725888
+0.42980024,0.380949516,0.37273028,87,7,neurotrees,0.8163265306122449,0.8629441624365483
+0.43118137,0.42727289,0.376837,82,8,neurotrees,0.8112244897959183,0.8578680203045685
+0.42940143,0.483808121,0.37584507,98,9,neurotrees,0.8112244897959183,0.8629441624365483
+0.4300494,0.404086407,0.37524965,101,10,neurotrees,0.8112244897959183,0.8629441624365483
+0.4294174,0.346254916,0.37427932,103,11,neurotrees,0.8112244897959183,0.8629441624365483
+0.42677614,0.404014265,0.373766,100,12,neurotrees,0.8214285714285714,0.868020304568528
+0.42995283,0.33267134,0.38005328,92,13,neurotrees,0.8061224489795918,0.8477157360406091
+0.43001285,0.354458639,0.3800672,78,14,neurotrees,0.8163265306122449,0.8578680203045685
+0.4269828,0.376092572,0.374617,100,15,neurotrees,0.8061224489795918,0.8527918781725888
+0.42689607,0.333928818,0.37646165,86,16,neurotrees,0.8112244897959183,0.8629441624365483

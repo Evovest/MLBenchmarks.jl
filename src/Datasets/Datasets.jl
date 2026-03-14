@@ -11,7 +11,7 @@ using StatsBase: median, tiedrank, quantile
 using OpenML
 using .Iterators: partition
 
-export load_data
+export load_data, get_openml_data, data_recipe
 
 include("utils.jl")
 include("titanic.jl")

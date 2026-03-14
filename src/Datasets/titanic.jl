@@ -25,7 +25,6 @@ function data_recipe(::Type{Dataset{:titanic}}, df; eval_perc=0.15, test_perc=0.
     deval = df[view(idx, eval_cut+1:test_cut), :]
     dtest = df[view(idx, test_cut+1:end), :]
 
-    # TODO: apply table-specific recipe
     target_name = "survived"
     feature_names = setdiff(names(df), [target_name])
 

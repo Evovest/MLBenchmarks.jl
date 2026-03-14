@@ -1,5 +1,6 @@
 using DataFrames
 using StatsBase: sample
+using Random: Xoshiro
 
 # Generic symbol entrypoint
 function run_experiment(algo::Symbol, data, hyper_list; kwargs...)

@@ -47,9 +47,9 @@ function get_hyper_neurotrees(
 
         push!(hyper_list, hyper)
     end
-    hyper_list = sample(hyper_list, hyper_size, replace=false)
+    rng = Xoshiro(123)
+    hyper_list = sample(rng, hyper_list, hyper_size, replace=false)
     return hyper_list
-
 end
 
 function run_experiment(

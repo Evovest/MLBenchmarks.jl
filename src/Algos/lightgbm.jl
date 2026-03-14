@@ -1,4 +1,7 @@
-function get_hyper_lgbm(;
+using LightGBM
+
+function get_hyper_lgbm(
+    hyper_size;
     objective="regression",
     metric="rmse",
     num_iterations=100,
@@ -38,7 +41,56 @@ function get_hyper_lgbm(;
         num_class == 0 ? delete!(hyper, :num_class) : nothing
         push!(hyper_list, hyper)
     end
-
+    rng = Xoshiro(123)
+    hyper_list = sample(rng, hyper_list, hyper_size, replace=false)
     return hyper_list
+end
 
+function run_experiment(
+    ::Val{:LightGBM},
+    data,
+    hyper_list;
+    metrics=[:logloss, :accuracy],
+    print_every_n=10
+)
+    dtrain = Matrix(data[:dtrain][:, data[:feature_names]])
+    ytrain = data[:dtrain][:, data[:target_name]]
+    deval = Matrix(data[:deval][:, data[:feature_names]])
+    yeval = data[:deval][:, data[:target_name]]
+    dtest = Matrix(data[:dtest][:, data[:feature_names]])
+    target_name = data[:target_name]
+
+    results = Dict{Symbol,Any}[]
+
+    # warmup
+    hyper = copy(first(hyper_list))
+    hyper[:num_iterations] = 1
+    m = LightGBM.LGBMRegression(; hyper...)
+    LightGBM.fit!(m, dtrain, ytrain, (deval, yeval))
+
+    for (i, hyper) in enumerate(hyper_list)
+        @info "run_experiment(LightGBM) loop $i"
+        m = LightGBM.LGBMRegression(; hyper...)
+        train_time = @elapsed fit_result = LightGBM.fit!(m, dtrain, ytrain, (deval, yeval))
+
+        p_eval = vec(LightGBM.predict(m, deval))
+        p_test = vec(LightGBM.predict(m, dtest))
+
+        res = Dict{Symbol,Any}(
+            :model_type => "lightgbm",
+            :hyper_id => i,
+            :train_time => train_time,
+            :best_nround => fit_result["best_iter"],
+        )
+
+        for metric in metrics
+            fun = metric_dict[metric]
+            res[Symbol("eval_", metric)] = fun(p_eval, data[:deval][!, target_name])
+            res[Symbol("test_", metric)] = fun(p_test, data[:dtest][!, target_name])
+        end
+
+        push!(results, res)
+    end
+
+    return DataFrame(results)
 end

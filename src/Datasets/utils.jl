@@ -9,10 +9,15 @@ data_map = Dict(
     :microsoft => 45579
 )
 
-function load_data(name::Symbol; kwargs...)
+function get_openml_data(name)
     id = data_map[name]
     desc = OpenML.describe_dataset(id)
     df = OpenML.load(id) |> DataFrame
+    return df
+end
+
+function load_data(name::Symbol; kwargs...)
+    df = get_openml_data(name)
     data = data_recipe(Dataset{name}, df; kwargs...)
     return data
 end

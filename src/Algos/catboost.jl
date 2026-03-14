@@ -1,4 +1,8 @@
-function get_hyper_catboost(;
+using CatBoost
+using PythonCall: PyList, pyconvert
+
+function get_hyper_catboost(
+    hyper_size;
     objective="RMSE",
     eval_metric="RMSE",
     iterations=500,
@@ -29,7 +33,54 @@ function get_hyper_catboost(;
 
         push!(hyper_list, hyper)
     end
-
+    rng = Xoshiro(123)
+    hyper_list = sample(rng, hyper_list, hyper_size, replace=false)
     return hyper_list
+end
 
+function run_experiment(
+    ::Val{:CatBoost},
+    data,
+    hyper_list;
+    metrics=[:logloss, :accuracy],
+    print_every_n=10
+)
+    dtrain = CatBoost.Pool(data[:dtrain][:, data[:feature_names]], label=PyList(data[:dtrain][:, data[:target_name]]))
+    deval = CatBoost.Pool(data[:deval][:, data[:feature_names]], label=PyList(data[:deval][:, data[:target_name]]))
+    dtest = CatBoost.Pool(data[:dtest][:, data[:feature_names]])
+    target_name = data[:target_name]
+
+    results = Dict{Symbol,Any}[]
+
+    # warmup
+    hyper = copy(first(hyper_list))
+    hyper[:iterations] = 1
+    m = CatBoost.CatBoostClassifier(; hyper...)
+    CatBoost.fit!(m, dtrain; eval_set=deval)
+
+    for (i, hyper) in enumerate(hyper_list)
+        @info "run_experiment(CatBoost) loop $i"
+        m = CatBoost.CatBoostClassifier(; hyper...)
+        train_time = @elapsed fit_result = CatBoost.fit!(m, dtrain; eval_set=deval)
+
+        p_eval = CatBoost.predict(m, deval; prediction_type="Probability")[:, 2]
+        p_test = CatBoost.predict(m, dtest; prediction_type="Probability")[:, 2]
+
+        res = Dict{Symbol,Any}(
+            :model_type => "catboost",
+            :hyper_id => i,
+            :train_time => train_time,
+            :best_nround => pyconvert(Int, fit_result.best_iteration_),
+        )
+
+        for metric in metrics
+            fun = metric_dict[metric]
+            res[Symbol("eval_", metric)] = fun(p_eval, data[:deval][!, target_name])
+            res[Symbol("test_", metric)] = fun(p_test, data[:dtest][!, target_name])
+        end
+
+        push!(results, res)
+    end
+
+    return DataFrame(results)
 end
