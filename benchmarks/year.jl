@@ -43,6 +43,6 @@ CSV.write(joinpath("results", string(data_name), "lightgbm.csv"), results_df)
 ################################
 # CatBoost
 ################################
-hyper_list = MLBenchmarks.get_hyper_catboost(hyper_size; data.loss, data.metric, iterations=4000, early_stopping_rounds=10, learning_rate=0.01, max_depth=5:10, subsample=[0.3, 0.6, 0.9], rsm=[0.5, 0.9], reg_lambda=[0, 1, 10])
+hyper_list = MLBenchmarks.get_hyper_catboost(hyper_size; data.loss, data.metric, iterations=4000, early_stopping_rounds=10, learning_rate=0.1, max_depth=5:10, subsample=[0.3, 0.6, 0.9], rsm=[0.5, 0.9], reg_lambda=[0, 1, 10])
 results_df = run_experiment(:CatBoost, data, hyper_list; data.metrics)
 CSV.write(joinpath("results", string(data_name), "catboost.csv"), results_df)

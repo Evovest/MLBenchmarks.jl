@@ -17,7 +17,7 @@ include("utils.jl")
 include("titanic.jl")
 include("boston.jl")
 include("year.jl")
-include("msrank.jl")
+include("microsoft.jl")
 include("higgs_1M.jl")
 
 end
