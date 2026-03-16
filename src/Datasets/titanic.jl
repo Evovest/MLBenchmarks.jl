@@ -2,7 +2,7 @@ function data_recipe(::Type{Dataset{:titanic}}, df; eval_perc=0.15, test_perc=0.
     rng = Xoshiro(seed)
 
     # treat string feature and missing values
-    transform!(df, :survived => (x -> levelcode.(x) .- 1) => :survived)
+    transform!(df, :survived => (x -> parse.(Int, string.(x))) => :survived)
 
     # convert string feature to Categorical
     transform!(df, :sex => categorical => :sex)
@@ -32,7 +32,7 @@ function data_recipe(::Type{Dataset{:titanic}}, df; eval_perc=0.15, test_perc=0.
     return (;
         loss=:logloss,
         metric=:logloss,
-        metrics=[:logloss, :accuracy],
+        metrics=[:logloss, :gini],
         dtrain,
         deval,
         dtest,

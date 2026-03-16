@@ -1,49 +1,27 @@
-function load_data(::Type{Dataset{:msrank}}; uniformize=false, aws_config=AWSConfig(), kwargs...)
+function data_recipe(::Type{Dataset{:microsoft}}, df; eval_perc=0.15, test_perc=0.15, seed=123, kwargs...)
+    rng = Xoshiro(seed)
 
-    train_raw = read_libsvm_aws("share/data/msrank/train.txt"; has_query=true, aws_config)
-    eval_raw = read_libsvm_aws("share/data/msrank/vali.txt"; has_query=true, aws_config)
-    test_raw = read_libsvm_aws("share/data/msrank/test.txt"; has_query=true, aws_config)
+    transform!(df, :relevance => (x -> parse.(Float64, string.(x))) => :relevance)
+    transform!(df, :relevance => (x -> (x .- mean(x)) ./ std(x)) => :relevance)
 
-    dtrain = DataFrame(train_raw[:x], :auto)
-    dtrain.q = train_raw[:q]
-    dtrain.y = train_raw[:y]
-    dtrain.y_scale = dtrain.y ./ 4
+    idx = randperm(rng, nrow(df))
+    eval_cut = floor(Int, (1 - eval_perc - test_perc) * nrow(df))
+    test_cut = floor(Int, (1 - test_perc) * nrow(df))
 
-    deval = DataFrame(eval_raw[:x], :auto)
-    deval.q = eval_raw[:q]
-    deval.y = eval_raw[:y]
-    deval.y_scale = deval.y ./ 4
+    dtrain = df[view(idx, 1:eval_cut), :]
+    deval = df[view(idx, eval_cut+1:test_cut), :]
+    dtest = df[view(idx, test_cut+1:end), :]
 
-    dtest = DataFrame(test_raw[:x], :auto)
-    dtest.q = test_raw[:q]
-    dtest.y = test_raw[:y]
-    dtest.y_scale = dtest.y ./ 4
+    target_name = "relevance"
+    feature_names = setdiff(names(df), [target_name, "query_id"])
 
-    feature_names = setdiff(names(dtrain), ["q", "y", "y_scale"])
-    target_name = "y"
-
-    if uniformize
-        ops = uniformer(
-            dtrain;
-            vars_in=feature_names,
-            vars_out=feature_names,
-            nbins=255,
-            min=-1,
-            max=1,
-        )
-
-        transform!(dtrain, ops)
-        transform!(deval, ops)
-        transform!(dtest, ops)
-    end
-
-    data = Dict(
-        :dtrain => dtrain,
-        :deval => deval,
-        :dtest => dtest,
-        :feature_names => feature_names,
-        :target_name => target_name
-    )
-
-    return data
+    return (;
+        loss=:mse,
+        metric=:mse,
+        metrics=[:mse, :gini],
+        dtrain,
+        deval,
+        dtest,
+        target_name,
+        feature_names)
 end

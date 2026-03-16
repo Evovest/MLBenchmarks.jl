@@ -53,7 +53,7 @@ function run_experiment(
     data,
     hyper_list;
     metrics=[:logloss, :accuracy],
-    print_every_n=10
+    print_every_n=100
 )
     dtrain = data[:dtrain]
     deval = data[:deval]

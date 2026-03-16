@@ -8,9 +8,10 @@ using Statistics: mean, std
 using StatsBase: sample
 using OrderedCollections
 
-data_name = :year
-hyper_size = 16
+data_name = :higgs_1M
+hyper_size = 1
 data = load_data(data_name)
+# df = MLBenchmarks.get_openml_data(data_name)
 
 ################################
 # NeuroTrees
@@ -22,27 +23,27 @@ CSV.write(joinpath("results", string(data_name), "neurotrees.csv"), results_df)
 ################################
 # EvoTrees
 ################################
-hyper_list = MLBenchmarks.get_hyper_evotrees(hyper_size; data.loss, data.metric, nrounds=4000, early_stopping_rounds=10, eta=0.05, max_depth=6:11, rowsample=[0.4, 0.6, 0.8, 1.0], colsample=[0.4, 0.6, 0.8, 1.0], L2=[0, 1, 10])
+hyper_list = MLBenchmarks.get_hyper_evotrees(hyper_size; data.loss, data.metric, nrounds=8000, early_stopping_rounds=10, eta=0.05, max_depth=7:12, rowsample=[0.4, 0.6, 0.8, 1.0], colsample=[0.4, 0.6, 0.8, 1.0], L2=[0, 1, 10])
 results_df = run_experiment(:EvoTrees, data, hyper_list; data.metrics)
 CSV.write(joinpath("results", string(data_name), "evotrees.csv"), results_df)
 
 ################################
 # XGBoost
 ################################
-hyper_list = MLBenchmarks.get_hyper_xgboost(hyper_size; data.loss, data.metric, num_round=4000, early_stopping_rounds=10, eta=0.05, max_depth=5:10, subsample=[0.4, 0.6, 0.8, 1.0], colsample_bytree=[0.4, 0.6, 0.8, 1.0], lambda=[0, 1, 10])
+hyper_list = MLBenchmarks.get_hyper_xgboost(hyper_size; data.loss, data.metric, num_round=8000, early_stopping_rounds=10, eta=0.05, max_depth=6:11, subsample=[0.4, 0.6, 0.8, 1.0], colsample_bytree=[0.4, 0.6, 0.8, 1.0], lambda=[0, 1, 10])
 results_df = run_experiment(:XGBoost, data, hyper_list; data.metrics)
 CSV.write(joinpath("results", string(data_name), "xgboost.csv"), results_df)
 
 ################################
 # LightGBM
 ################################
-hyper_list = MLBenchmarks.get_hyper_lgbm(hyper_size; data.loss, data.metric, num_iterations=4000, early_stopping_round=10, learning_rate=0.05, num_leaves=2 .^ (5:10), bagging_fraction=[0.3, 0.6, 0.9], feature_fraction=[0.5, 0.9], lambda_l2=[0, 1, 10])
+hyper_list = MLBenchmarks.get_hyper_lgbm(hyper_size; data.loss, data.metric, num_iterations=8000, early_stopping_round=10, learning_rate=0.05, num_leaves=2 .^ (6:11), bagging_fraction=[0.3, 0.6, 0.9], feature_fraction=[0.5, 0.9], lambda_l2=[0, 1, 10])
 results_df = run_experiment(:LightGBM, data, hyper_list; data.metrics)
 CSV.write(joinpath("results", string(data_name), "lightgbm.csv"), results_df)
 
 ################################
 # CatBoost
 ################################
-hyper_list = MLBenchmarks.get_hyper_catboost(hyper_size; data.loss, data.metric, iterations=4000, early_stopping_rounds=10, learning_rate=0.01, max_depth=5:10, subsample=[0.3, 0.6, 0.9], rsm=[0.5, 0.9], reg_lambda=[0, 1, 10])
+hyper_list = MLBenchmarks.get_hyper_catboost(hyper_size; data.loss, data.metric, iterations=8000, early_stopping_rounds=10, learning_rate=0.05, max_depth=6:11, subsample=[0.3, 0.6, 0.9], rsm=[0.5, 0.9], reg_lambda=[0, 1, 10])
 results_df = run_experiment(:CatBoost, data, hyper_list; data.metrics)
 CSV.write(joinpath("results", string(data_name), "catboost.csv"), results_df)

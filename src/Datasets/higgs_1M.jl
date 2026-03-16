@@ -1,9 +1,7 @@
-function data_recipe(::Type{Dataset{:boston}}, df; eval_perc=0.15, test_perc=0.15, seed=123, kwargs...)
+function data_recipe(::Type{Dataset{:higgs_1M}}, df; eval_perc=0.15, test_perc=0.15, seed=123, kwargs...)
     rng = Xoshiro(seed)
 
-    transform!(df, :CHAS => (x -> parse.(Float64, string.(x))) => :CHAS)
-    transform!(df, :RAD => (x -> parse.(Float64, string.(x))) => :RAD)
-    transform!(df, :MEDV => (x -> (x .- mean(x)) ./ std(x)) => :MEDV)
+    transform!(df, :target => (x -> parse.(Int, string.(x))) => :target)
 
     idx = randperm(rng, nrow(df))
     eval_cut = floor(Int, (1 - eval_perc - test_perc) * nrow(df))
@@ -13,13 +11,13 @@ function data_recipe(::Type{Dataset{:boston}}, df; eval_perc=0.15, test_perc=0.1
     deval = df[view(idx, eval_cut+1:test_cut), :]
     dtest = df[view(idx, test_cut+1:end), :]
 
-    target_name = "MEDV"
+    target_name = "target"
     feature_names = setdiff(names(df), [target_name])
 
     return (;
-        loss=:mse,
-        metric=:mse,
-        metrics=[:mse, :gini],
+        loss=:logloss,
+        metric=:logloss,
+        metrics=[:logloss, :gini],
         dtrain,
         deval,
         dtest,
