@@ -77,7 +77,7 @@ function run_experiment(
     dtest = Matrix(data[:dtest][:, data[:feature_names]])
     target_name = data[:target_name]
 
-    results = Dict{Symbol,Any}[]
+    results = OrderedDict{Symbol,Any}[]
 
     # warmup
     hyper = copy(first(hyper_list))
