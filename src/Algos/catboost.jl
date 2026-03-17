@@ -33,7 +33,7 @@ function get_hyper_catboost(
     metric_key = metric isa Symbol ? metric : Symbol(lowercase(metric))
     objective_name = _CAT_OBJECTIVE_MAP[loss_key]
     eval_metric_name = _CAT_METRIC_MAP[metric_key]
-    task = objective_name == "Logloss" || occursin("CrossEntropy", objective_name) ? :classification : :regression
+    task = objective_name ∈ ["Logloss", "CrossEntropy"] ? :classification : :regression
 
     for _learning_rate in learning_rate, _max_depth in max_depth, _subsample in subsample, _rsm in rsm, _reg_lambda in reg_lambda
 
