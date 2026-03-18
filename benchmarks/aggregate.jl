@@ -11,7 +11,7 @@ data_names = [
     "higgs_1M"
 ]
 
-data_name = data_names[4]
+data_name = data_names[5]
 dir_path = joinpath(@__DIR__, "..", "results", "$data_name")
 csv_files = filter(f -> occursin(r"\.csv$", f), readdir(dir_path, join=true))
 dfs = [CSV.read(file, DataFrame) for file in csv_files]
