@@ -1,4 +1,4 @@
-function data_recipe(::Type{Dataset{:microsoft}}, df; eval_perc=0.15, test_perc=0.15, seed=123, kwargs...)
+function data_recipe(::Type{Dataset{:microsoft}}, df; eval_perc=0.15, test_perc=0.15, seed=123, uniformize=false, kwargs...)
     rng = Xoshiro(seed)
 
     transform!(df, :relevance => (x -> parse.(Float64, string.(x))) => :relevance)
@@ -14,6 +14,21 @@ function data_recipe(::Type{Dataset{:microsoft}}, df; eval_perc=0.15, test_perc=
 
     target_name = "relevance"
     feature_names = setdiff(names(df), [target_name, "query_id"])
+
+    if uniformize
+        ops = uniformer(
+            dtrain;
+            vars_in=feature_names,
+            vars_out=feature_names,
+            nbins=128,
+            min=-1,
+            max=1,
+        )
+
+        transform!(dtrain, ops)
+        transform!(deval, ops)
+        transform!(dtest, ops)
+    end
 
     return (;
         loss=:mse,

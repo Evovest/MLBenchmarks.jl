@@ -10,13 +10,18 @@ using OrderedCollections
 
 data_name = :microsoft
 hyper_size = 16
-data = load_data(data_name)
-df = MLBenchmarks.get_openml_data(data_name)
+data = load_data(data_name; uniformize=true)
+# df = MLBenchmarks.get_openml_data(data_name)
+
+# m1 = combine(data[:dtrain], data[:feature_names] .=> mean .=> data[:feature_names])
+# std1 = combine(data[:dtrain], data[:feature_names] .=> std .=> data[:feature_names])
+# sort(vec(Matrix(m1)))
+# sort(vec(Matrix(std1)))
 
 ################################
 # TabM
 ################################
-hyper_list = MLBenchmarks.get_hyper_tabm(hyper_size; data.loss, data.metric, nrounds=200, early_stopping_rounds=2, lr=1e-3, arch_type=:tabm, k=[8, 16, 32], d_block=[32, 64, 128], n_blocks=2:3, dropout=0.1, n_bins=[8, 16], use_embeddings=true, embedding_type=[:piecewise], d_embedding=[8, 16])
+hyper_list = MLBenchmarks.get_hyper_tabm(hyper_size; data.loss, data.metric, nrounds=200, early_stopping_rounds=2, lr=1e-3, arch_type=:tabm, k=[8, 16, 32], d_block=[32, 64, 128], n_blocks=2:3, dropout=0.1, n_bins=[8, 16], use_embeddings=true, embedding_type=[:piecewise], d_embedding=[8, 16], batchsize=1024)
 results_df = run_experiment(:NeuroTabModels, data, hyper_list; data.metrics)
 CSV.write(joinpath("results", string(data_name), "tabm.csv"), results_df)
 

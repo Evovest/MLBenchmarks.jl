@@ -10,12 +10,12 @@ using OrderedCollections
 
 data_name = :year
 hyper_size = 16
-data = load_data(data_name)
+data = load_data(data_name; uniformize=true)
 
 ################################
 # TabM
 ################################
-hyper_list = MLBenchmarks.get_hyper_tabm(hyper_size; data.loss, data.metric, nrounds=200, early_stopping_rounds=2, lr=1e-3, arch_type=:tabm, k=[8, 16, 32], d_block=[32, 64, 128], n_blocks=2:3, dropout=0.1, n_bins=[16, 32, 64], use_embeddings=true, embedding_type=[:piecewise], d_embedding=[8, 16, 24], batchsize=512)
+hyper_list = MLBenchmarks.get_hyper_tabm(hyper_size; data.loss, data.metric, nrounds=200, early_stopping_rounds=2, lr=1e-3, arch_type=:tabm, k=[8, 16, 32], d_block=[32, 64, 128], n_blocks=2:3, dropout=0.1, n_bins=[16, 32, 64], use_embeddings=true, embedding_type=[:piecewise], d_embedding=[8, 16, 24], batchsize=1024)
 results_df = run_experiment(:NeuroTabModels, data, hyper_list; data.metrics)
 CSV.write(joinpath("results", string(data_name), "tabm.csv"), results_df)
 

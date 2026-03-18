@@ -85,7 +85,7 @@ function run_experiment(
         p_eval = XGBoost.predict(m, deval)
         p_test = XGBoost.predict(m, dtest)
 
-        res = Dict{Symbol,Any}(
+        res = OrderedDict{Symbol,Any}(
             :model_type => "xgboost",
             :hyper_id => i,
             :train_time => train_time,

@@ -10,7 +10,7 @@ using OrderedCollections
 
 data_name = :boston
 hyper_size = 16
-data = load_data(data_name)
+data = load_data(data_name; uniformize=true)
 
 ################################
 # TabM
@@ -22,7 +22,7 @@ CSV.write(joinpath("results", string(data_name), "tabm.csv"), results_df)
 ################################
 # NeuroTrees
 ################################
-hyper_list = MLBenchmarks.get_hyper_neurotrees(hyper_size; data.loss, data.metric, nrounds=200, early_stopping_rounds=2, lr=3e-2, ntrees=[16, 32, 64], depth=[3, 4, 5], hidden_size=[8, 16, 32], init_scale=0.0)
+hyper_list = MLBenchmarks.get_hyper_neurotrees(hyper_size; data.loss, data.metric, nrounds=200, early_stopping_rounds=2, lr=3e-2, ntrees=[16, 32, 64], depth=[3, 4, 5], hidden_size=[8, 16, 32], init_scale=0.1)
 results_df = run_experiment(:NeuroTabModels, data, hyper_list; data.metrics)
 CSV.write(joinpath("results", string(data_name), "neurotrees.csv"), results_df)
 

@@ -52,6 +52,7 @@ struct Uniformer{S,V} <: Function
 end
 
 function Uniformer(x::AbstractVector; nbins=99, min=0.0, max=1.0, type="quantiles")
+    x = Float32.(x)
     if type == "quantiles"
         edges = sort(unique(quantile(skipmissing(x), (1:nbins-1) / nbins)))
     elseif type == "linear"
@@ -64,8 +65,9 @@ function Uniformer(x::AbstractVector; nbins=99, min=0.0, max=1.0, type="quantile
     return Uniformer(edges, _nbins, T(min), T(max))
 end
 
-function (m::Uniformer)(x::AbstractVector{T}) where {T}
-    x_proj = zeros(T, length(x))
+function (m::Uniformer)(x::AbstractVector)
+    x = Float32.(x)
+    x_proj = zeros(Float32, length(x))
     @inbounds for i in eachindex(x)
         x_proj[i] =
             searchsortedfirst(m.edges, x[i]) / (m.nbins + 1) * (m.max - m.min) + m.min
