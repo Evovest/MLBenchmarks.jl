@@ -12,21 +12,17 @@ function get_hyper_tabm(
     d_block=128,
     n_blocks=3,
     dropout=0.1,
-    n_bins=16,
-    use_embeddings=true,
-    embedding_type=:piecewise,
-    d_embedding=8,
-    scaling_init=:normal,
+    embedding_type="piecewise",
+    d_embedding=16,
+    bins=16,
     batchsize=256,
-    stack_size=1,
-    hidden_size=1,
-    scaler=false
 )
 
     # tunable = [:eta, :max_depth, :subsample, :colsample_bytree, :lambda, :max_bin]
     hyper_list = Dict{Symbol,Any}[]
 
-    for _lr in lr, _wd in wd, _k in k, _d_block in d_block, _n_blocks in n_blocks, _dropout in dropout, _n_bins in n_bins, _embedding_type in embedding_type, _d_embedding in d_embedding
+    for _lr in lr, _wd in wd, _k in k, _d_block in d_block, _n_blocks in n_blocks, _dropout in dropout,
+        _d_embedding in d_embedding, _bins in bins
 
         hyper = Dict(
             :arch_name => "TabMConfig",
@@ -36,11 +32,13 @@ function get_hyper_tabm(
                 :d_block => _d_block,
                 :n_blocks => _n_blocks,
                 :dropout => _dropout,
-                :n_bins => _n_bins,
-                :use_embeddings => true,
-                :embedding_type => _embedding_type, # periodic, piecewise, linear
+            ),
+            :embedding_config => Dict(
+                :embedding_type => embedding_type,
                 :d_embedding => _d_embedding,
-                :scaling_init => scaling_init
+                :bins => _bins,
+                :frequencies => 16,
+                :activation => nothing,
             ),
             :loss => loss,
             :metric => metric,

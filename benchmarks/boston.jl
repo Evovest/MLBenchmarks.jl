@@ -15,14 +15,14 @@ data = load_data(data_name; uniformize=true)
 ################################
 # TabM
 ################################
-hyper_list = MLBenchmarks.get_hyper_tabm(hyper_size; data.loss, data.metric, nrounds=200, early_stopping_rounds=5, lr=3e-3, arch_type=:tabm, k=[4, 8, 16], d_block=[16, 32, 64], n_blocks=2:3, dropout=0.05, n_bins=[8, 16], use_embeddings=true, embedding_type=[:piecewise], d_embedding=[8, 16])
+hyper_list = MLBenchmarks.get_hyper_tabm(hyper_size; data.loss, data.metric, nrounds=200, early_stopping_rounds=5, lr=2e-3, arch_type=:tabm, k=[8, 16], d_block=[16, 32, 64], n_blocks=2:3, dropout=0.1, bins=[16, 32], embedding_type=:piecewise, d_embedding=[8, 16], batchsize=1024)
 results_df = run_experiment(:NeuroTabModels, data, hyper_list; data.metrics)
 CSV.write(joinpath("results", string(data_name), "tabm.csv"), results_df)
 
 ################################
 # NeuroTrees
 ################################
-hyper_list = MLBenchmarks.get_hyper_neurotrees(hyper_size; data.loss, data.metric, nrounds=200, early_stopping_rounds=2, lr=3e-2, ntrees=[16, 32, 64], depth=[3, 4, 5], hidden_size=[8, 16, 32], init_scale=0.1)
+hyper_list = MLBenchmarks.get_hyper_neurotrees(hyper_size; data.loss, data.metric, nrounds=200, early_stopping_rounds=2, lr=2e-2, k=[4, 8, 16], ntrees=[16, 32, 64], depth=[3, 4, 5], hidden_size=[8, 16, 32], embedding_type=:batchnorm, init_scale=1.0, batchsize=1024)
 results_df = run_experiment(:NeuroTabModels, data, hyper_list; data.metrics)
 CSV.write(joinpath("results", string(data_name), "neurotrees.csv"), results_df)
 

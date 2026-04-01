@@ -7,31 +7,46 @@ function get_hyper_neurotrees(
     nrounds=200,
     lr=1e-3,
     wd=0.0,
+    k=1,
     ntrees=64,
     depth=4,
-    actA=["identity"],
-    tree_type=["binary"],
-    init_scale=1,
-    batchsize=2048,
+    actA="identity",
+    tree_type="binary",
+    embedding_type="batchnorm",
+    d_embedding=16,
+    bins=16,
     stack_size=1,
     hidden_size=1,
-    scaler=false
+    scaler=false,
+    init_scale=0.1,
+    batchsize=1024,
 )
 
     # tunable = [:eta, :max_depth, :subsample, :colsample_bytree, :lambda, :max_bin]
     hyper_list = Dict{Symbol,Any}[]
 
-    for _lr in lr, _wd in wd, _ntrees in ntrees, _depth in depth, _stack_size in stack_size, _hidden_size in hidden_size, _actA in actA, _init_scale in init_scale
+    for _lr in lr, _wd in wd, _k in k, _ntrees in ntrees, _depth in depth, _stack_size in stack_size, _hidden_size in hidden_size, _init_scale in init_scale,
+        _d_embedding in d_embedding, _bins in bins
 
         hyper = Dict(
             :arch_name => "NeuroTreeConfig",
             :arch_config => Dict(
-                :depth => _depth,
+                :k => _k,
+                :tree_type => tree_type,
                 :ntrees => _ntrees,
-                :hidden_size => _hidden_size,
-                :actA => _actA,
+                :depth => _depth,
+                :actA => actA,
+                :scaler => scaler,
                 :init_scale => _init_scale,
+                :hidden_size => _hidden_size,
                 :stack_size => _stack_size
+            ),
+            :embedding_config => Dict(
+                :embedding_type => embedding_type,
+                :d_embedding => _d_embedding,
+                :bins => _bins,
+                :frequencies => 16,
+                :activation => nothing,
             ),
             :loss => loss,
             :metric => metric,
