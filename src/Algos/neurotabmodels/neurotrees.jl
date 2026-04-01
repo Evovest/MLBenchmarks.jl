@@ -17,7 +17,7 @@ function get_hyper_neurotrees(
     bins=16,
     stack_size=1,
     hidden_size=1,
-    scaler=false,
+    scaler=true,
     init_scale=0.1,
     batchsize=1024,
 )
