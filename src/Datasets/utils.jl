@@ -1,10 +1,31 @@
 abstract type Dataset{T} end
 
-function load_data(x::Symbol; kwargs...)
-    @assert x ∈ dataset_list
-    data = load_data(Dataset{x}; kwargs...)
+data_map = Dict(
+    :titanic => 40945,
+    :higgs_11M => 45570,
+    :higgs_1M => 42769,
+    :boston => 531,
+    :year => 44027,
+    :microsoft => 45579,
+    :sberbank => 46898, #TODO
+    :allstate_claims => 45046, #TODO
+    :creditcard => 1597 #TODO
+)
+
+function get_openml_data(name)
+    id = data_map[name]
+    desc = OpenML.describe_dataset(id)
+    df = OpenML.load(id) |> DataFrame
+    return df
+end
+
+function load_data(name::Symbol; kwargs...)
+    df = get_openml_data(name)
+    data = data_recipe(Dataset{name}, df; kwargs...)
     return data
 end
+
+data_recipe(data, df; kwargs...) = error("No data recipe defined for dataset $(data)")
 
 function read_arrow_aws(path; bucket="jeremiedb", aws_config=AWSConfig())
     raw = S3.get_object(bucket, path, Dict("response-content-type" => "application/octet-stream"); aws_config)
@@ -34,6 +55,7 @@ struct Uniformer{S,V} <: Function
 end
 
 function Uniformer(x::AbstractVector; nbins=99, min=0.0, max=1.0, type="quantiles")
+    x = Float32.(x)
     if type == "quantiles"
         edges = sort(unique(quantile(skipmissing(x), (1:nbins-1) / nbins)))
     elseif type == "linear"
@@ -46,8 +68,9 @@ function Uniformer(x::AbstractVector; nbins=99, min=0.0, max=1.0, type="quantile
     return Uniformer(edges, _nbins, T(min), T(max))
 end
 
-function (m::Uniformer)(x::AbstractVector{T}) where {T}
-    x_proj = zeros(T, length(x))
+function (m::Uniformer)(x::AbstractVector)
+    x = Float32.(x)
+    x_proj = zeros(Float32, length(x))
     @inbounds for i in eachindex(x)
         x_proj[i] =
             searchsortedfirst(m.edges, x[i]) / (m.nbins + 1) * (m.max - m.min) + m.min

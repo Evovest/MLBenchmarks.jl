@@ -1,4 +1,7 @@
-function get_hyper_evotrees(;
+using EvoTrees
+
+function get_hyper_evotrees(
+    hyper_size;
     loss="mse",
     metric="mse",
     tree_type="binary",
@@ -13,6 +16,7 @@ function get_hyper_evotrees(;
     rowsample=0.5,
     colsample=0.5,
     nbins=128,
+    seed=123
 )
 
     # tunable = [:eta, :max_depth, :subsample, :colsample_bytree, :lambda, :max_bin]
@@ -39,7 +43,68 @@ function get_hyper_evotrees(;
 
         push!(hyper_list, hyper)
     end
-
+    rng = Xoshiro(123)
+    hyper_list = sample(rng, hyper_list, hyper_size, replace=false)
     return hyper_list
+end
 
+function run_experiment(
+    ::Val{:EvoTrees},
+    data,
+    hyper_list;
+    metrics=[:logloss, :accuracy],
+    print_every_n=100
+)
+    dtrain = data[:dtrain]
+    deval = data[:deval]
+    dtest = data[:dtest]
+    feature_names = data[:feature_names]
+    target_name = data[:target_name]
+
+    results = OrderedDict{Symbol,Any}[]
+
+    # warmup
+    hyper = copy(first(hyper_list))
+    hyper[:nrounds] = 1
+    config = EvoTrees.EvoTreeRegressor(; hyper...)
+    EvoTrees.fit(
+        config,
+        dtrain;
+        deval,
+        feature_names,
+        target_name,
+    )
+
+    for (i, hyper) in enumerate(hyper_list)
+        @info "run_experiment(EvoTrees) loop $i"
+        config = EvoTrees.EvoTreeRegressor(; hyper...)
+        train_time = @elapsed m = EvoTrees.fit(
+            config,
+            dtrain;
+            deval,
+            feature_names,
+            target_name,
+            print_every_n=print_every_n,
+        )
+
+        p_eval = EvoTrees.predict(m, deval)
+        p_test = EvoTrees.predict(m, dtest)
+
+        res = OrderedDict{Symbol,Any}(
+            :model_type => "evotrees",
+            :hyper_id => i,
+            :train_time => train_time,
+            :best_nround => m.info[:logger][:best_iter],
+        )
+
+        for metric in metrics
+            fun = metric_dict[metric]
+            res[Symbol("eval_", metric)] = fun(p_eval, deval[!, target_name])
+            res[Symbol("test_", metric)] = fun(p_test, dtest[!, target_name])
+        end
+
+        push!(results, res)
+    end
+
+    return DataFrame(results)
 end

@@ -1,7 +1,7 @@
 # MLBenchmarks.jl 
 
 This repo provides Julia based benchmarks for ML algo on tabular data. 
-It was developed to support both [NeuroTreeModels.jl](https://github.com/Evovest/NeuroTreeModels.jl) and [EvoTrees.jl](https://github.com/Evovest/EvoTrees.jl) projects.
+It was developed to support both [NeuroTabModels.jl](https://github.com/Evovest/NeuroTabModels.jl) and [EvoTrees.jl](https://github.com/Evovest/EvoTrees.jl) projects.
 
 ## Methodology
 
@@ -10,9 +10,27 @@ For each dataset and algo, the following methodology is followed:
 - A random grid of 16 hyper-parameters is generated
 - For each parameter configuration, a model is trained on `train` data until the evaluation metric tracked against the `eval` stops improving (early stopping)
 - The trained model is evaluated against the `test` data
-- The metric presented in below are the ones obtained on the `test` for the model that generated the best `eval` metric.
+- The metric presented below are the ones obtained on the `test` for the model that generated the best `eval` metric.
 
 ## Datasets
+
+### Datasets are now sourced from OpenML, using[OpenML](https://github.com/JuliaAI/OpenML.jl):
+
+```julia
+data_map = Dict(
+    :titanic => 40945,
+    :higgs_11M => 45570,
+    :higgs_1M => 42769,
+    :boston => 531,
+    :year => 44027,
+    :microsoft => 45579,
+    :sberbank => 46898, #TODO
+    :allstate_claims => 45046, #TODO
+    :creditcard => 1597 #TODO
+)
+```
+
+### Legacy datasets from older release
 
 The following selection of common tabular datasets is covered:
 
@@ -27,6 +45,7 @@ The following selection of common tabular datasets is covered:
 
 Comparison is performed against the following algos (implementation in link) considered as state of the art on tabular data problems tasks:
 
+- [NeuroTabModels](https://github.com/Evovest/NeuroTabModels.jl)
 - [EvoTrees](https://github.com/Evovest/EvoTrees.jl)
 - [XGBoost](https://github.com/dmlc/XGBoost.jl)
 - [LightGBM](https://github.com/IQVIA-ML/LightGBM.jl)
@@ -35,63 +54,58 @@ Comparison is performed against the following algos (implementation in link) con
 
 ### Boston
 
-| **model\_type** | **train\_time** | **mse** | **gini** |
-|:---------------:|:---------------:|:-------:|:--------:|
-| neurotrees      | 16.6            | **13.2**|**0.951** |
-| evotrees        | 0.392           | 23.5    | 0.932    |
-| xgboost         | 0.103           | 21.6    | 0.931    |
-| lightgbm        | 0.406           | 26.7    | 0.931    |
-| catboost        | 0.127           | 14.9    | 0.944    |
+| **model\_type** | **train\_time** | **test\_mse** | **test\_gini** |
+|:---------------:|:---------------:|:-------------:|:--------------:|
+|    catboost     |      0.175      |     0.194     |     0.945      |
+|    evotrees     |      0.198      |     0.254     |     0.935      |
+|    lightgbm     |      0.314      |     0.326     |     0.934      |
+|   neurotrees    |      4.58       |     0.269     |     0.925      |
+|      tabm       |      5.34       |     0.224     |     0.934      |
+|     xgboost     |     0.0846      |     0.265     |      0.93      |
 
 ### Titanic
 
-| **model\_type** | **train\_time** | **logloss** | **accuracy** |
-|:---------------:|:---------------:|:-----------:|:------------:|
-| neurotrees      | 7.95            | 0.445       | 0.821        |
-| evotrees        | 0.11            | 0.405       | 0.821        |
-| xgboost         | 0.0512          | 0.412       | 0.799        |
-| lightgbm        | 0.128           | **0.388**   | 0.828        |
-| catboost        | 0.264           | 0.393       | **0.843**    |
+| **model\_type** | **train\_time** | **test\_logloss** | **test\_gini** |
+|:---------------:|:---------------:|:-----------------:|:--------------:|
+|    catboost     |     0.0759      |       0.375       |     0.802      |
+|    evotrees     |     0.0399      |       0.362       |     0.806      |
+|    lightgbm     |      0.209      |       0.363       |     0.809      |
+|   neurotrees    |      3.15       |       0.373       |     0.815      |
+|      tabm       |      6.45       |       0.383       |     0.774      |
+|     xgboost     |     0.0195      |       0.37        |     0.795      |
 
 ### Year
 
-| **model\_type** | **train\_time** | **mse** | **gini** |
-|:---------------:|:---------------:|:-------:|:--------:|
-| neurotrees      | 308.0           | **76.8**| **0.651**|
-| evotrees        | 71.9            | 80.4    | 0.626    |
-| xgboost         | 33.8            | 82.0    | 0.614    |
-| lightgbm        | 15.2            | 79.4    | 0.633    |
-| catboost        | 127.0           | 80.2    | 0.630    |
+| **model\_type** | **train\_time** | **test\_mse** | **test\_gini** |
+|:---------------:|:---------------:|:-------------:|:--------------:|
+|    catboost     |      65.7       |     0.621     |     0.664      |
+|    evotrees     |      79.9       |     0.613     |     0.666      |
+|    lightgbm     |      104.0      |     0.607     |      0.67      |
+|   neurotrees    |      519.0      |     0.594     |      0.68      |
+|      tabm       |      27.9       |     0.616     |     0.669      |
+|     xgboost     |      42.6       |     0.614     |     0.666      |
 
-### MSRank
+### Microsoft
 
-| **model\_type** | **train\_time** | **mse** | **ndcg** |
-|:---------------:|:---------------:|:-------:|:--------:|
-| neurotrees      | 85.1            | 0.577   | 0.467    |
-| evotrees        | 39.8            | 0.554   | 0.505    |
-| xgboost         | 19.4            | 0.554   | 0.501    |
-| lightgbm        | 38.5            |**0.553**| **0.507**|
-| catboost        | 112.0           |**0.553**| 0.504    |
-
-### Yahoo
-
-| **model\_type** | **train\_time** | **mse** | **ndcg** |
-|:---------------:|:---------------:|:-------:|:--------:|
-| neurotrees      | 299.0           | 0.583   | 0.781    |
-| evotrees        | 442.0           | 0.545   | 0.797    |
-| xgboost         | 129.0           | 0.544   | 0.797    |
-| lightgbm        | 215.0           |**0.539**| **0.798**|
-| catboost        | 241.0           | 0.555   | 0.796    |
+| **model\_type** | **train\_time** | **test\_mse** | **test\_gini** |
+|:---------------:|:---------------:|:-------------:|:--------------:|
+|    catboost     |      186.0      |     0.73      |     0.561      |
+|    evotrees     |      97.8       |     0.722     |     0.567      |
+|    lightgbm     |      38.7       |     0.717     |     0.571      |
+|   neurotrees    |     1110.0      |     0.76      |     0.529      |
+|      tabm       |      345.0      |     0.773     |     0.515      |
+|     xgboost     |      42.1       |     0.719     |      0.57      |
 
 ### Higgs
 
-| **model\_type** | **train\_time** | **logloss** | **accuracy** |
-|:---------------:|:---------------:|:-----------:|:------------:|
-| neurotrees      | 15900.0         | **0.453**   | **0.781**    |
-| evotrees        | 2710.0          | 0.465       | 0.775        |
-| xgboost         | 1390.0          | 0.464       | 0.776        |
-| lightgbm        | 993.0           | 0.464       | 0.774        |
-| catboost        | 8020.0          | 0.463       | 0.776        |
+| **model\_type** | **train\_time** | **test\_logloss** | **test\_gini** |
+|:---------------:|:---------------:|:-----------------:|:--------------:|
+|    catboost     |      150.0      |       0.494       |     0.674      |
+|    evotrees     |      55.3       |       0.496       |      0.67      |
+|    lightgbm     |      67.0       |       0.495       |     0.673      |
+|   neurotrees    |      291.0      |       0.487       |     0.686      |
+|      tabm       |      37.6       |       0.497       |     0.671      |
+|     xgboost     |      35.5       |       0.496       |      0.67      |
 
 ## References
 

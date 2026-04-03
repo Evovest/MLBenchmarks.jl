@@ -1,9 +1,8 @@
-function data_recipe(::Type{Dataset{:boston}}, df; eval_perc=0.15, test_perc=0.15, seed=123, uniformize=false, kwargs...)
+function data_recipe(::Type{Dataset{:microsoft}}, df; eval_perc=0.15, test_perc=0.15, seed=123, uniformize=false, kwargs...)
     rng = Xoshiro(seed)
 
-    transform!(df, :CHAS => (x -> parse.(Float64, string.(x))) => :CHAS)
-    transform!(df, :RAD => (x -> parse.(Float64, string.(x))) => :RAD)
-    transform!(df, :MEDV => (x -> (x .- mean(x)) ./ std(x)) => :MEDV)
+    transform!(df, :relevance => (x -> parse.(Float64, string.(x))) => :relevance)
+    transform!(df, :relevance => (x -> (x .- mean(x)) ./ std(x)) => :relevance)
 
     idx = randperm(rng, nrow(df))
     eval_cut = floor(Int, (1 - eval_perc - test_perc) * nrow(df))
@@ -13,8 +12,8 @@ function data_recipe(::Type{Dataset{:boston}}, df; eval_perc=0.15, test_perc=0.1
     deval = df[view(idx, eval_cut+1:test_cut), :]
     dtest = df[view(idx, test_cut+1:end), :]
 
-    target_name = "MEDV"
-    feature_names = setdiff(names(df), [target_name])
+    target_name = "relevance"
+    feature_names = setdiff(names(df), [target_name, "query_id"])
 
     if uniformize
         ops = uniformer(

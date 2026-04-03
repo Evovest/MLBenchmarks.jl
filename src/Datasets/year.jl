@@ -1,35 +1,25 @@
-function load_data(::Type{Dataset{:year}}; uniformize=false, aws_config=AWSConfig(), kwargs...)
+function data_recipe(::Type{Dataset{:year}}, df; eval_perc=0.15, test_perc=0.15, seed=123, uniformize=false, kwargs...)
+    rng = Xoshiro(seed)
 
-    path = "share/data/year/year.csv"
-    raw = S3.get_object("jeremiedb", path, Dict("response-content-type" => "application/octet-stream"); aws_config)
-    df = DataFrame(CSV.File(raw, header=false))
-    df_tot = copy(df)
+    transform!(df, :year => (x -> (x .- mean(x)) ./ std(x)) => :year)
 
-    path = "share/data/year/year-train-idx.txt"
-    raw = S3.get_object("jeremiedb", path, Dict("response-content-type" => "application/octet-stream"); aws_config)
-    train_idx = DataFrame(CSV.File(raw, header=false))[:, 1] .+ 1
+    idx = randperm(rng, nrow(df))
+    eval_cut = floor(Int, (1 - eval_perc - test_perc) * nrow(df))
+    test_cut = floor(Int, (1 - test_perc) * nrow(df))
 
-    path = "share/data/year/year-eval-idx.txt"
-    raw = S3.get_object("jeremiedb", path, Dict("response-content-type" => "application/octet-stream"); aws_config)
-    eval_idx = DataFrame(CSV.File(raw, header=false))[:, 1] .+ 1
+    dtrain = df[view(idx, 1:eval_cut), :]
+    deval = df[view(idx, eval_cut+1:test_cut), :]
+    dtest = df[view(idx, test_cut+1:end), :]
 
-    transform!(df_tot, "Column1" => identity => "y")
-    transform!(df_tot, "y" => (x -> (x .- mean(x)) ./ std(x)) => "y_norm")
-    select!(df_tot, Not("Column1"))
-    feature_names = setdiff(names(df_tot), ["y", "y_norm"])
-    df_tot.w .= 1.0
-    target_name = "y"
-
-    dtrain = df_tot[train_idx, :]
-    deval = df_tot[eval_idx, :]
-    dtest = df_tot[(end-51630+1):end, :]
+    target_name = "year"
+    feature_names = setdiff(names(df), [target_name])
 
     if uniformize
         ops = uniformer(
             dtrain;
             vars_in=feature_names,
             vars_out=feature_names,
-            nbins=255,
+            nbins=128,
             min=-1,
             max=1,
         )
@@ -39,13 +29,13 @@ function load_data(::Type{Dataset{:year}}; uniformize=false, aws_config=AWSConfi
         transform!(dtest, ops)
     end
 
-    data = Dict(
-        :dtrain => dtrain,
-        :deval => deval,
-        :dtest => dtest,
-        :feature_names => feature_names,
-        :target_name => target_name
-    )
-
-    return data
+    return (;
+        loss=:mse,
+        metric=:mse,
+        metrics=[:mse, :gini],
+        dtrain,
+        deval,
+        dtest,
+        target_name,
+        feature_names)
 end
