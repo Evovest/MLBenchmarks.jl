@@ -6,7 +6,10 @@ data_map = Dict(
     :higgs_1M => 42769,
     :boston => 531,
     :year => 44027,
-    :microsoft => 45579
+    :microsoft => 45579,
+    :sberbank => 46898, #TODO
+    :allstate_claims => 45046, #TODO
+    :creditcard => 1597 #TODO
 )
 
 function get_openml_data(name)
