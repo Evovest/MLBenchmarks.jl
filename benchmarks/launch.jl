@@ -5,10 +5,7 @@
 ############################################################
 
 BENCHMARKS = ["boston", "titanic", "year", "microsoft", "higgs_1M"]
-# BENCHMARKS = ["boston"]
-
 nthreads = 12
-@info Base.active_project()
 
 for bench in BENCHMARKS
     @info "Running benchmark: $bench"
