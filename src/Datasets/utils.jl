@@ -7,7 +7,7 @@ data_map = Dict(
     :boston => 531,
     :year => 44027,
     :microsoft => 45579,
-    :sberbank => 46898,
+    :sberbank => 46787,
     :allstate_claims => 45046,
     :creditcard => 1597
 )
