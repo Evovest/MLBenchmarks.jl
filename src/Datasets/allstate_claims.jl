@@ -18,6 +18,7 @@ function data_recipe(
             transform!(df, cn => (x -> parse.(Float64, string.(x))) => cn)
         end
     end
+    select!(df, Not("cat77"))
 
     disallowmissing!(df)
 

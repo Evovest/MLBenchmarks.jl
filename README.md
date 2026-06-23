@@ -107,6 +107,28 @@ Comparison is performed against the following algos (implementation in link) con
 |      tabm       |      37.6       |       0.497       |     0.671      |
 |     xgboost     |      35.5       |       0.496       |      0.67      |
 
+### AllState claims
+
+| **model\_type** | **train\_time** | **test\_mse** | **test\_gini** |
+|:---------------:|:---------------:|:-------------:|:--------------:|
+|    catboost     |      2.43       |     0.438     |     0.741      |
+|    evotrees     |       3.3       |     0.44      |      0.74      |
+|    lightgbm     |      2.29       |     0.437     |     0.742      |
+|    NeuroTree    |      42.6       |     0.442     |     0.738      |
+|      TabM       |      14.0       |     0.448     |     0.736      |
+|     xgboost     |       1.1       |     0.439     |     0.741      |
+
+### Creditcart
+
+| **model\_type** | **train\_time** | **test\_logloss** | **test\_gini** |
+|:---------------:|:---------------:|:-----------------:|:--------------:|
+|    catboost     |      3.46       |      0.00211      |      0.97      |
+|    evotrees     |      2.18       |      0.00199      |     0.982      |
+|    lightgbm     |      5.78       |      0.00208      |     0.979      |
+|    NeuroTree    |      25.5       |      0.00245      |     0.981      |
+|      TabM       |      12.9       |      0.00224      |     0.981      |
+|     xgboost     |       0.7       |      0.00198      |      0.98      |
+
 ## References
 
 - [Neural Oblivious Decision Ensembles for Deep Learning on Tabular Data](https://arxiv.org/abs/1909.06312v2).

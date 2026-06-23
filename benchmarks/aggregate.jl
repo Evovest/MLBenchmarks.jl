@@ -8,10 +8,12 @@ data_names = [
     "titanic",
     "year",
     "microsoft",
-    "higgs_1M"
+    "higgs_1M",
+    "allstate_claims",
+    "creditcard",
 ]
 
-data_name = data_names[5]
+data_name = data_names[7]
 dir_path = joinpath(@__DIR__, "..", "results", "$data_name")
 csv_files = filter(f -> occursin(r"\.csv$", f), readdir(dir_path, join=true))
 dfs = [CSV.read(file, DataFrame) for file in csv_files]
