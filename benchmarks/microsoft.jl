@@ -7,6 +7,8 @@ using CSV
 using Statistics: mean, std
 using StatsBase: sample
 using OrderedCollections
+# using Zygote
+using Reactant
 
 data_name = :microsoft
 hyper_size = 16

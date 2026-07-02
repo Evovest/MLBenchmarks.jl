@@ -21,11 +21,13 @@ function run_experiment(
     # warmup
     hyper = copy(first(hyper_list))
     hyper[:nrounds] = 1
+    hyper[:backend] = "reactant"
     config = NeuroTabModels.NeuroTabRegressor(; hyper...)
     NeuroTabModels.fit(config, dtrain; deval, feature_names, target_name)
 
     for (i, hyper) in enumerate(hyper_list)
         @info "run_experiment(NeuroTabModels) loop $i"
+        hyper[:backend] = "reactant"
         config = NeuroTabModels.NeuroTabRegressor(; hyper...)
         train_time = @elapsed m = NeuroTabModels.fit(
             config,
@@ -38,8 +40,9 @@ function run_experiment(
         p_eval = m(deval)
         p_test = m(dtest)
 
+        model_type = replace(last(split(string(typeof(config.arch)), ".")), r"config$"i => "")
         res = OrderedDict{Symbol,Any}(
-            :model_type => "neurotrees",
+            :model_type => model_type,
             :hyper_id => i,
             :train_time => train_time,
             :best_nround => m.info[:logger][:best_iter],
@@ -55,4 +58,3 @@ function run_experiment(
 
     return DataFrame(results)
 end
-

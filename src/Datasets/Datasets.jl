@@ -19,5 +19,8 @@ include("boston.jl")
 include("year.jl")
 include("microsoft.jl")
 include("higgs_1M.jl")
+include("sberbank.jl")
+include("allstate_claims.jl")
+include("creditcard.jl")
 
 end

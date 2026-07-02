@@ -7,9 +7,9 @@ data_map = Dict(
     :boston => 531,
     :year => 44027,
     :microsoft => 45579,
-    :sberbank => 46898, #TODO
-    :allstate_claims => 45046, #TODO
-    :creditcard => 1597 #TODO
+    :sberbank => 46787,
+    :allstate_claims => 45046,
+    :creditcard => 1597
 )
 
 function get_openml_data(name)
