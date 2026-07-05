@@ -14,7 +14,7 @@ function get_hyper_neurotrees(
     tree_type="binary",
     embedding_type="batchnorm",
     d_embedding=16,
-    bins=16,
+    nbins=16,
     stack_size=1,
     hidden_size=1,
     scaler=true,
@@ -26,7 +26,7 @@ function get_hyper_neurotrees(
     hyper_list = Dict{Symbol,Any}[]
 
     for _lr in lr, _wd in wd, _k in k, _ntrees in ntrees, _depth in depth, _stack_size in stack_size, _hidden_size in hidden_size, _init_scale in init_scale,
-        _d_embedding in d_embedding, _bins in bins
+        _d_embedding in d_embedding, _nbins in nbins
 
         hyper = Dict(
             :arch_name => "NeuroTreeConfig",
@@ -44,7 +44,7 @@ function get_hyper_neurotrees(
             :embedding_config => Dict(
                 :embedding_type => embedding_type,
                 :d_embedding => _d_embedding,
-                :bins => _bins,
+                :nbins => _nbins,
                 :frequencies => 16,
                 :activation => nothing,
             ),

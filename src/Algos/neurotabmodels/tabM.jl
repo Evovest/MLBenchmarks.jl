@@ -14,7 +14,7 @@ function get_hyper_tabm(
     dropout=0.1,
     embedding_type="piecewise",
     d_embedding=16,
-    bins=16,
+    nbins=16,
     batchsize=256,
 )
 
@@ -22,7 +22,7 @@ function get_hyper_tabm(
     hyper_list = Dict{Symbol,Any}[]
 
     for _lr in lr, _wd in wd, _k in k, _d_block in d_block, _n_blocks in n_blocks, _dropout in dropout,
-        _d_embedding in d_embedding, _bins in bins
+        _d_embedding in d_embedding, _nbins in nbins
 
         hyper = Dict(
             :arch_name => "TabMConfig",
@@ -36,7 +36,7 @@ function get_hyper_tabm(
             :embedding_config => Dict(
                 :embedding_type => embedding_type,
                 :d_embedding => _d_embedding,
-                :bins => _bins,
+                :nbins => _nbins,
                 :frequencies => 16,
                 :activation => nothing,
             ),
