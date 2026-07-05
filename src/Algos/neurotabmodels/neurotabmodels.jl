@@ -40,7 +40,7 @@ function run_experiment(
         p_eval = m(deval)
         p_test = m(dtest)
 
-        model_type = replace(last(split(string(typeof(config.arch)), ".")), r"config$"i => "")
+        model_type = replace(last(split(string(typeof(config.arch)), ".")), r"config$"i => "") |> lowercase
         res = OrderedDict{Symbol,Any}(
             :model_type => model_type,
             :hyper_id => i,
